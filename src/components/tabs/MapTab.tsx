@@ -249,12 +249,27 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
   // geometry, so they belong to the active map's view.
   const pins = view.pins ?? []
   const isPinned = (c: Concept) => !!c.def && pins.includes(c.id)
+  /**
+   * Size by tier, on top of the label measurement. Secondary is 1 — the size
+   * this board has always drawn — so a middle card is unchanged. Primary is
+   * larger and tertiary smaller, which makes the vertical order a size order
+   * too. Every measurement multiplies by this; at 1 the arithmetic below is
+   * the historical formula.
+   */
+  const TIER_SCALE = { p: 1.26, s: 1, t: 0.8 } as const
+  const cardScale = (c: Concept) => {
+    const t = tierOf(c.id)
+    return t === "p" || t === "t" ? TIER_SCALE[t] : 1
+  }
   const cardW = (c: Concept) => {
-    const dl = isPinned(c) ? Math.min(c.def!.length, 46) * 5.2 + 22 : 0
+    const s = cardScale(c)
+    const pad = 22 * s
+    const dl = isPinned(c) ? Math.min(c.def!.length, 46) * 5.2 * s + pad : 0
     // Measured off the NAME as drawn, not the raw label: a label-less concept
     // renders the placeholder, and sizing the box from "" put a 19-character
-    // string in a 90px card.
-    return Math.min(240, Math.max(90, Math.max(conceptNameText(c).length * 6.4 + 22, dl)))
+    // string in a 90px card. The 6.4 is the px-per-character of the 12.5px
+    // name, scaled with the tier so a larger type still fits its box.
+    return Math.min(240 * s, Math.max(90 * s, Math.max(conceptNameText(c).length * 6.4 * s + pad, dl)))
   }
   /**
    * The pinned description, wrapped to the card rather than cut (TJ,
@@ -267,10 +282,18 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
    * reason: text on this board is never cut. The card grows a line at a time
    * to fit, which is why cardH is measured from the lines rather than fixed.
    */
-  const defLines = (c: Concept) =>
-    isPinned(c) ? wrapLabel(c.def!, Math.max(10, Math.floor((cardW(c) - 22) / 5.2))) : []
-  // 38 + 12/line keeps a one-line pinned card at the 50px it has always been.
-  const cardH = (c: Concept) => isPinned(c) ? 38 + defLines(c).length * 12 : 34
+  const defLines = (c: Concept) => {
+    const s = cardScale(c)
+    // Pad and px-per-character scale with the card, so a tier changes the
+    // size of the gloss without changing how many characters fit on a line.
+    return isPinned(c) ? wrapLabel(c.def!, Math.max(10, Math.floor((cardW(c) - 22 * s) / (5.2 * s)))) : []
+  }
+  // 38 + 12/line keeps a one-line pinned secondary card at the 50px it has
+  // always been. Other tiers are that same card, scaled.
+  const cardH = (c: Concept) => {
+    const s = cardScale(c)
+    return isPinned(c) ? 38 * s + defLines(c).length * 12 * s : 34 * s
+  }
 
   const togglePin = (c: Concept) => {
     void ensureActiveMap().then((m) => {
@@ -962,18 +985,19 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           })}
           {placed.map(c => {
             const pos = effPos[c.id], w = cardW(c), h = cardH(c)
+            const s = cardScale(c)
             const twoLine = isPinned(c)
             return (
               <g key={c.id} cursor={readOnly ? "default" : "grab"} data-card={c.id}>
-                <rect x={pos.x} y={pos.y} width={w} height={h} rx={4} fill="#fff" stroke="var(--ochre)" strokeWidth={1.2} />
-                <text x={pos.x + w / 2} y={pos.y + (twoLine ? 19 : h / 2 + 4)} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={12.5} fill={conceptName(c).unlabeled ? "var(--ink-soft)" : "var(--ink)"}>
-                  {short(conceptNameText(c), Math.floor(w / 6.4))}
+                <rect x={pos.x} y={pos.y} width={w} height={h} rx={4 * s} fill="#fff" stroke="var(--ochre)" strokeWidth={1.2} />
+                <text x={pos.x + w / 2} y={pos.y + (twoLine ? 19 * s : h / 2 + 4 * s)} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={12.5 * s} fill={conceptName(c).unlabeled ? "var(--ink-soft)" : "var(--ink)"}>
+                  {short(conceptNameText(c), Math.floor(w / (6.4 * s)))}
                   <title>{conceptNameText(c)}</title>
                 </text>
                 {twoLine && (
-                  <text x={pos.x + w / 2} y={pos.y + 36} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={10} fontStyle="italic" fill="var(--ink-soft)">
+                  <text x={pos.x + w / 2} y={pos.y + 36 * s} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={10 * s} fontStyle="italic" fill="var(--ink-soft)">
                     {defLines(c).map((ln, i) => (
-                      <tspan key={i} x={pos.x + w / 2} dy={i ? 12 : 0}>{ln}</tspan>
+                      <tspan key={i} x={pos.x + w / 2} dy={i ? 12 * s : 0}>{ln}</tspan>
                     ))}
                   </text>
                 )}
