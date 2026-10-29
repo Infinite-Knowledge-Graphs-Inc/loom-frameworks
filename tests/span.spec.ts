@@ -80,6 +80,25 @@ test('an id that is not on the shelf is dropped from a bookmark, not trusted', a
   await expect(page.locator('main button.chip[aria-pressed="true"]')).toHaveCount(0);
 });
 
+test('two readings offer the linking bench, without coining and without 02\'s own threads', async ({ page }) => {
+  test.setTimeout(90_000);
+  await openSpan(page);
+  await expect(pickers(page).nth(1)).toBeVisible({ timeout: 15000 });
+  await pickers(page).nth(0).click();
+  await pickers(page).nth(1).click();
+
+  // The bench is 02's own (ThrowTab), in its `across` mode.
+  await expect(page.locator('#throwBench')).toBeVisible({ timeout: 20000 });
+  await expect(page.locator('#threadList h2')).toContainText('between these readings');
+  // No "+": a concept coined with no single reading in scope is placed in every
+  // reading's warp (scope.ts), which would change 02 everywhere. Read in
+  // ThrowTab/scope.ts; the absence is the contract.
+  await expect(page.locator('#warp .pchip-add')).toHaveCount(0);
+  // One reading: the plain list returns and the bench does not.
+  await pickers(page).nth(1).click();
+  await expect(page.locator('#throwBench')).toHaveCount(0);
+});
+
 test('with nothing chosen there is no board to sort on', async ({ page }) => {
   await openSpan(page);
   await expect(page.getByText('pick at least one')).toBeVisible({ timeout: 15000 });
