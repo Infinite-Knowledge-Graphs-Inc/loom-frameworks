@@ -990,7 +990,20 @@ export async function createMap(data: { scopeKey: string; name: string }): Promi
     throw new Error("That is a lot of projections — delete one you are done with first.")
   }
 
-  const scopeKey = scopeFromKey(data.scopeKey).key
+  const scope = scopeFromKey(data.scopeKey)
+  const scopeKey = scope.key
+  // Station 05 stores a SET of readings as its scope key. This function is an
+  // endpoint anyone signed in can POST to, so a set is held to the rule a
+  // single claimed reading already meets in createPassage (`if (data.sourceId)
+  // await authorizeSourceAccess`): every id must be a reading this person may
+  // open. Sequential and early-exit, so the first stranger ends it. Set size is
+  // not capped here — each id costs one authorizeSourceAccess query and a
+  // stranger throws, so the cost is bounded by how many real readings the
+  // person can open (not measured against a real shelf). One reading and the
+  // whole weave are left as they were; this change is about sets only.
+  if (scope.sourceIds.length > 1) {
+    for (const sourceId of scope.sourceIds) await authorizeSourceAccess(sourceId)
+  }
   const name = data.name.trim().slice(0, 80) || "Projection"
 
   const inserted = await db.insert(maps).values({ courseId, userId, scopeKey, name }).returning()
