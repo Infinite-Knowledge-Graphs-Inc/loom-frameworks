@@ -82,6 +82,24 @@ test.describe("Download the drawing", () => {
       expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#f4f2ec"/)
 
       /**
+       * Linking words used to be one <text> with a 4px paper-coloured stroke
+       * and paint-order="stroke". A viewer that ignores paint-order paints
+       * that stroke over the letters and the word vanishes. The halo is now
+       * a second copy in the paper colour; the copy that carries the ink
+       * has no stroke. "constrains" is a Link on the seeded Object Worlds
+       * cloth (scripts/seed-demo.ts), and both of its ends are tiered on
+       * that reading's projection, so it is on the cloth and the board.
+       */
+      expect(file.text, `${label}: paint-order is not what keeps the word visible`).not.toContain("paint-order")
+      const labelled = [...file.text.matchAll(/<text\b([^>]*)>([\s\S]*?)<\/text>/g)].filter((m) =>
+        m[2].includes("constrains")
+      )
+      expect(labelled.length, `${label}: a paper halo and an ink copy`).toBeGreaterThanOrEqual(2)
+      const ink = labelled.find((m) => !m[1].includes("244, 242, 236"))
+      expect(ink, `${label}: an unstroked copy of the linking word`).toBeTruthy()
+      expect(ink?.[1], `${label}: the ink copy has no stroke`).not.toMatch(/stroke-width/)
+
+      /**
        * The invisible hit twins are gone. Both drawings lay a transparent
        * shape over every clickable mark so the target is bigger than the ink;
        * in a file they are geometry a reader cannot see and an editor can.

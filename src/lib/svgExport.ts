@@ -205,9 +205,9 @@ export function serializeSvg(source: SVGSVGElement, options: SvgExportOptions): 
 
 /**
  * The ground each drawing sits on in the app, so an export matches the screen.
- * Both wrappers set it in the same literal — #mapWrap at globals.css:747 and
- * #tableWrap inline at MapTab.tsx:858 — and it is NOT `--paper`: the cloth's
- * text halo is drawn in this exact colour (ClothMap.tsx:367), so a background
- * that drifted from it would leave a visible plate behind every arc label.
+ * Both wrappers set it in the same literal — #mapWrap at globals.css:806 and
+ * #tableWrap inline at MapTab.tsx:907 — and it is NOT `--paper`: the linking-word
+ * halo is this exact colour (`DRAWING_GROUND`, drawn by HaloText), so a
+ * background that drifted from it would leave a plate behind every label.
  */
 export const DRAWING_GROUND = "#f4f2ec"
