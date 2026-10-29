@@ -78,6 +78,10 @@ const READINGS: {
     isDescriptionVisible: true,
     metadataProvenance: "Manual seed metadata written in scripts/seed-sources.ts.",
     file: "Bucciarelli-Designing Engineers.pdf",
+    // The three course readings carry a blobKey so a CI database seeded from
+    // empty needs no PDF on disk. Keys are the store's root objects; verified
+    // 2026-10-29 by get() with the CI token: 1392967, 242816 and 157769 bytes.
+    blobKey: "Bucciarelli-Designing Engineers.pdf",
     legacySourceLabels: ["Bucciarelli, Designing Engineers"],
   },
   {
@@ -90,6 +94,7 @@ const READINGS: {
     isDescriptionVisible: true,
     metadataProvenance: "Manual seed metadata written in scripts/seed-sources.ts.",
     file: "Wenger_communities-of-practice.pdf",
+    blobKey: "Wenger_communities-of-practice.pdf",
     legacySourceLabels: ["Wenger, Communities of Practice"],
   },
   {
@@ -102,6 +107,7 @@ const READINGS: {
     isDescriptionVisible: true,
     metadataProvenance: "Manual seed metadata written in scripts/seed-sources.ts.",
     file: "Star, 2010 'This Is Not A Boundary Object'.pdf",
+    blobKey: "Star, 2010 'This Is Not A Boundary Object'.pdf",
     legacySourceLabels: ["Star, This Is Not A Boundary Object"],
   },
   /**
