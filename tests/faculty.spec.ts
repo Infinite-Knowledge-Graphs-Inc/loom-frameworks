@@ -57,7 +57,10 @@ test("the nav offers the read side only — no Readings, no Courses", async ({ p
 
   // The write surfaces are absent from the bar, not merely disabled — the
   // staff group is filtered by isAdmin, and faculty are staff but not admin.
-  await expect(nav.getByRole("link", { name: "Readings" })).toHaveCount(0)
+  // `exact`: a role name matches as a case-insensitive SUBSTRING by default,
+  // and 05's link — "Projections across readings (beta)" — is on this bar for
+  // everyone. This line is about the admin-only Readings manager.
+  await expect(nav.getByRole("link", { name: "Readings", exact: true })).toHaveCount(0)
   await expect(nav.getByRole("link", { name: "Courses" })).toHaveCount(0)
 })
 

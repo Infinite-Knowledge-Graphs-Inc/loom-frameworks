@@ -10,7 +10,7 @@
  *
  * Run: npx tsx scripts/check-scoped-graph.ts   (part of `npm run check`)
  */
-import { scopedGraph, scopeOf, tallyByReading, WHOLE_WEAVE } from "../src/lib/scope"
+import { scopedGraph, scopeOf, spanPath, spanScopeKey, tallyByReading, WHOLE_WEAVE } from "../src/lib/scope"
 import type { Concept, Edge, LoomState, Passage } from "../src/lib/types"
 
 let failures = 0
@@ -132,6 +132,28 @@ assert(
   "the shelf tally for the other reading matches its warp",
   `tally ${tallies.get(THERE)?.concepts} warp ${there.concepts.length}`
 )
+
+const both = scopedGraph(state, scopeOf([THERE, HERE]))
+assert(
+  labels(both) === state.concepts.map((c) => c.id).sort().join(","),
+  "a span of both readings holds every concept either one holds",
+  `got ${labels(both)}`
+)
+assert(
+  edgeIds(both) === "e-cross,e-minted-here,e-minted-there,e-unstamped" && both.bridges.length === 0,
+  "a thread between the two readings' concepts is internal on the span, so the board can draw it",
+  `edges ${edgeIds(both)} bridges ${both.bridges.map((e) => e.id).join(",")}`
+)
+assert(
+  spanPath([THERE, HERE]) === "/span/reading-1/reading-2",
+  "the span URL is scope order, independent of the order the ids were given",
+  spanPath([THERE, HERE])
+)
+assert(spanScopeKey("/span/reading-2/reading-1", ["reading-2", "reading-1"]) === "reading-1,reading-2",
+  "the span route's scope key matches scopeOf",
+  String(spanScopeKey("/span/reading-2/reading-1", ["reading-2", "reading-1"])))
+assert(spanScopeKey("/span", undefined) === "", "an empty span is the whole-weave key", String(spanScopeKey("/span", undefined)))
+assert(spanScopeKey("/reading/reading-1", undefined) === null, "a reading route is not a span", String(spanScopeKey("/reading/reading-1", undefined)))
 
 console.log(`\n${checks} checks, ${failures} failing`)
 if (failures) process.exit(1)

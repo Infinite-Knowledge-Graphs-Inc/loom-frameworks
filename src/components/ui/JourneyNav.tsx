@@ -27,7 +27,7 @@ import Link from "next/link"
 import { usePathname, useSearchParams } from "next/navigation"
 import { useReadings } from "@/components/providers/ReadingsProvider"
 
-export type Station = "readings" | "open" | "throw" | "read" | "map"
+export type Station = "readings" | "open" | "throw" | "read" | "map" | "span"
 
 const STATIONS: { key: Station; label: string; hidden?: boolean }[] = [
   { key: "readings", label: "Library" },
@@ -39,9 +39,24 @@ const STATIONS: { key: Station; label: string; hidden?: boolean }[] = [
   // Graph, and `?tab=` keeps speaking them (refactor spec §F).
   { key: "map", label: "Knowledge Graph" },
   { key: "read", label: "Vocabulary" },
+  // Beta station, last so the derived number is 05. It is not one of the
+  // model's five (loom-model-build.md §3) and it is not the weave TJ removed
+  // on 2026-08-11: that surface was every reading at once. This one is a
+  // chosen set, and the scope key it uses is the one `scopeOf` already writes
+  // (src/lib/scope.ts — sorted ids, comma-joined).
+  //
+  // The key stays `span` (code speaks July); the label speaks the model:
+  // "Projection" is the object a student makes here, and loom-model-build.md
+  // §3 says nothing in the UI is called a "Map". The "(beta)" is the label's
+  // own — it comes off with this line, not from a flag. The tag was asked for
+  // in a chat on 2026-10-28 ("it's okay to tag (beta) on the end of the tab");
+  // that was not a ruling by TJ, and the rest of the wording is this file's
+  // reading of the model, not a ruling either.
+  { key: "span", label: "Projections across readings (beta)" },
   // "Keep" was station 05 until 2026-08-11. Download happens at each object
   // now — the cloth at 01, threads at 02, a projection and the Capture Log at
-  // 03, vocabulary at 04 — so the bar is exactly the model's five.
+  // 03, vocabulary at 04. The model's bar was those five; the beta station
+  // sits after them.
   // There was a hidden "weave" station here, and a `/weave` route behind it.
   // TJ retired both on 2026-08-11: "we are removing whole weave as it exists
   // in the app because it is poorly defined and not supported in the course.
@@ -79,7 +94,16 @@ const DEFAULT_HREF: Record<Station, string> = {
   throw: "/",
   read: "/",
   map: "/",
+  span: "/span",
 }
+
+/**
+ * Why Projections across readings is grey inside the practice loom. Opening
+ * it would leave the guide for the real loom — its projections are ordinary
+ * map rows.
+ */
+export const SPAN_OFF_IN_PRACTICE =
+  "leave the guide to make projections across readings — it works on your real loom"
 
 /**
  * Stations that only exist inside a reading (TJ, 2026-08-09).
@@ -105,7 +129,9 @@ const DEFAULT_HREF: Record<Station, string> = {
  */
 const READING_ONLY: ReadonlySet<Station> = new Set<Station>(["open", "throw", "map", "read"])
 
-const TIP: Partial<Record<Station, string>> = {}
+const TIP: Partial<Record<Station, string>> = {
+  span: "choose readings, then sort the concepts they share and hold on one board",
+}
 
 /**
  * The staff group, drawn to the RIGHT of the journey and in its own colour
@@ -222,6 +248,8 @@ export default function JourneyNav({
   active,
   onStation = {},
   labels = {},
+  hrefs = {},
+  off = {},
   search,
   home,
   status,
@@ -229,6 +257,17 @@ export default function JourneyNav({
   active: Station | null
   /** Stations handled in place (workbench tabs) — rendered as buttons. */
   onStation?: Partial<Record<Station, () => void>>
+  /**
+   * Where a station goes when it is a link. Overrides `DEFAULT_HREF` — the
+   * workbench sends Span to `/span/<this reading>` so the open text starts
+   * chosen.
+   */
+  hrefs?: Partial<Record<Station, string>>
+  /**
+   * Drawn greyed, with this reason, ahead of any handler or link. The
+   * practice loom uses it for Span (`SPAN_OFF_IN_PRACTICE`).
+   */
+  off?: Partial<Record<Station, string>>
   /** Per-context label overrides, e.g. "Reading" (this text) inside one. */
   labels?: Partial<Record<Station, string>>
   /**
@@ -273,6 +312,15 @@ export default function JourneyNav({
         const handler = onStation[key]
         const text = labels[key] ?? label
         const activeCls = active === key ? " active" : ""
+        const whyOff = off[key]
+        if (whyOff) {
+          return (
+            <span key={key} className="station off" aria-label={`${text} — ${whyOff}`} data-tip={whyOff}>
+              <span className="step">{step}</span>
+              {text}
+            </span>
+          )
+        }
         if (handler) {
           return (
             // `station`, like the <Link> and <span> forms below. It was the one
@@ -305,7 +353,7 @@ export default function JourneyNav({
           )
         }
         return (
-          <Link key={key} href={DEFAULT_HREF[key]} className={`station${activeCls}`} data-tip={TIP[key]}>
+          <Link key={key} href={hrefs[key] ?? DEFAULT_HREF[key]} className={`station${activeCls}`} data-tip={TIP[key]}>
             <span className="step">{step}</span>
             {text}
           </Link>

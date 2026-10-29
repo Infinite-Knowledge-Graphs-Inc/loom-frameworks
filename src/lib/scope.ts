@@ -37,6 +37,35 @@ export function scopeFromKey(key: string): Scope {
   return scopeOf(key ? key.split(",") : [])
 }
 
+/**
+ * Station 05's URL. Order is `scopeOf`'s — sorted — so `/span/b/a` and
+ * `/span/a/b` are one scope and one bookmark. No ids is the picker with
+ * nothing chosen (`/span`).
+ */
+export function spanPath(sourceIds: string[]): string {
+  const ids = scopeOf(sourceIds).sourceIds
+  return ids.length ? `/span/${ids.join("/")}` : "/span"
+}
+
+/**
+ * The scope key for station 05, or null when this URL is not that station.
+ *
+ * `/span` with nothing chosen is `""`, the same whole-weave key every
+ * non-reading route already uses (`WHOLE_WEAVE`). The station does not draw
+ * the board until a reading is chosen, so that empty key does not become a
+ * surface. A chosen set is `scopeOf`'s key: sorted ids, comma-joined, which
+ * is what a map row already stores.
+ */
+export function spanScopeKey(pathname: string | null, sourceIds: string | string[] | undefined): string | null {
+  if (pathname !== "/span" && !pathname?.startsWith("/span/")) return null
+  const ids = Array.isArray(sourceIds)
+    ? sourceIds
+    : typeof sourceIds === "string" && sourceIds
+      ? [sourceIds]
+      : []
+  return scopeOf(ids).key
+}
+
 export const isWholeWeave = (scope: Scope) => scope.key === ""
 
 /** The one reading this scope is, or null when it is a set or the whole weave. */

@@ -64,6 +64,7 @@ const student: Flow = {
     "src/lib/auth.ts (sign-in + enrolment)",
     "src/components/Workbench.tsx (the tabs)",
     "src/components/tabs/*.tsx",
+    "src/components/span/SpanStation.tsx (05 · Projections across readings, beta)",
     "src/actions/loom.ts",
     "src/components/ui/MyLoomModal.tsx (my loom · start over)",
     "src/components/ui/CourseSwitch.tsx · src/actions/courses.ts (setActiveCourse)",
@@ -150,6 +151,11 @@ const student: Flow = {
     // (VocabularyTab's MERGE_VISIBLE). The diagram is generated, so a step the
     // student can no longer take would simply be drawn, wrongly, forever.
     { id: "vocab", label: "Sharpen descriptions, see what recurs", where: "04 · Vocabulary" },
+    // A side trip, like `practice`. 05 · Projections across readings is in
+    // beta: choose readings and project their concepts together. It is not a
+    // step of the course, and it is not the weave removed on 2026-08-11 — that
+    // was every reading at once, with no choice.
+    { id: "span", label: "Choose readings and tier their concepts on one board", where: "05 · Projections across readings (beta) — /span" },
     { id: "overlay", label: "Compare a section, or all of them", where: "Overlays — faculty and admins only" },
     // There used to be a "weave" node here — "Every reading at once", at
     // /weave. It came out in 2026-08-09 because the diagram drew a step no
@@ -178,6 +184,8 @@ const student: Flow = {
     { from: "library", to: "practice", label: "practise" },
     { from: "practice", to: "library", label: "nothing kept", back: true },
     { from: "library", to: "switch", label: "more than one course" },
+    { from: "library", to: "span", label: "prototype" },
+    { from: "span", to: "library", label: "back to the shelf", back: true },
     { from: "switch", to: "library", label: "the other shelf", back: true },
     { from: "open", to: "read" },
     { from: "read", to: "ahead" },

@@ -90,7 +90,7 @@ const sortOrder = (concepts: Concept[], order?: string[]): Concept[] => {
   return out
 }
 
-export default function MapTab({ practice = false, focusProjectionId, onThrowPair }: {
+export default function MapTab({ practice = false, focusProjectionId, onThrowPair, projectionOnly = false }: {
   /** The practice loom: no Capture Log, which reads the student's real
    *  record over its own route rather than through the provider. */
   practice?: boolean
@@ -106,6 +106,13 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
    * are the Workbench's tabs, and this component is one of them.
    */
   onThrowPair?: (fromId: string, toId: string) => void
+  /**
+   * Station 05. The sort list, the three-tier board and the read — the same
+   * projection as 03 — over whatever scope the provider is already in. The
+   * cloth and the Capture Log stay on 03: the log is one reading's record
+   * (`useCaptureLog` treats a missing sourceId as every act).
+   */
+  projectionOnly?: boolean
 } = {}) {
   // `readOnly` is Open Loom (src/lib/viewUser.ts, TJ 2026-08-21). What stays
   // is every read: switching among the student's projections (`selectMap` is
@@ -673,9 +680,14 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
    * keeping it here stops the JSX below reading as though the switcher were
    * part of the sort column.
    */
+  // More than one reading in scope: the one-line is about the set. A single
+  // reading keeps the sentence 03's test looks for (`maps.spec.ts`).
+  const across = scope.sourceIds.length > 1
+  const projectionOf = across ? "these readings" : "this reading"
+
   const mapSwitcher = (
     <div className="mapbar" id="mapSwitcher">
-      <span className="label">Your projections of this reading</span>
+      <span className="label">Your projections of {projectionOf}</span>
       <span className="chips" style={{ margin: 0, alignItems: "center" }}>
         {scopeMaps.map(m => (
           <span
@@ -734,6 +746,8 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
 
   return (
     <>
+      {!projectionOnly && (
+      <>
       <p className="tasktitle">Examine your cloth — lay out your projection.</p>
       <p className="tasksub">Your data, projected to be read: sort your concepts into tiers on the list, then arrange them by hand as cards on the board (Novak &amp; Gowin, <i>Learning How to Learn</i>, 1984). The tool draws the lines you already threw and counts what it sees — it never sorts, places, or links for you. Keep more than one projection: each is its own reading of the material, with its own tiers, its own one-line and its own paragraph. When a projection reads right here, draw the real concept map (paper or Figma) and build your chalk talk from it.</p>
 
@@ -757,9 +771,13 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         scopeLabel={scopeLabelOf(scope.key, titleOf)}
         onThrowPair={onThrowPair}
       />
+      </>
+      )}
 
-      <h2 className="sectionhead" id="projections" ref={projectionsRef} style={{ marginTop: 34 }}>
-        Projections <span className="n">each one a reading of that same cloth, with its own tiers, one-line and paragraph</span>
+      <h2 className="sectionhead" id="projections" ref={projectionsRef} style={{ marginTop: projectionOnly ? 8 : 34 }}>
+        Projections <span className="n">{projectionOnly
+          ? "primary, secondary, tertiary — the same board as on Knowledge Graph, over the readings you chose"
+          : "each one a reading of that same cloth, with its own tiers, one-line and paragraph"}</span>
       </h2>
 
       {/* The switcher sits at the head of its own section now: which projection
@@ -1128,7 +1146,9 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
 
       <div className="card">
         <h2>Your read of this projection {activeMap ? <span className="n">&ldquo;{activeMap.name}&rdquo; — its one-line and paragraph travel with it</span> : <span className="n">starts with your first sort</span>}</h2>
-        <p className="readq">In a sentence — what is this reading <i>about</i>?</p>
+        <p className="readq">{across
+          ? <>In a sentence — what are these readings <i>about</i>, taken together?</>
+          : <>In a sentence — what is this reading <i>about</i>?</>}</p>
         {/* Plain text in Open Loom (TJ, 2026-08-21): the one-line and the
             paragraph are the student's read of their own projection, which is
             most of what a staff viewer came to see. */}

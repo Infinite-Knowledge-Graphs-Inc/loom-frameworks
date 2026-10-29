@@ -199,13 +199,14 @@ export default function Header({ deployEnv, isBranchPreview = false }: { deployE
 
             <p>Loom turns reading into weaving. You read anywhere — paper, PDF, screen — and bring the passages worth keeping here, where they become concepts, the concepts get threaded to one another, and the whole thing lays out as something you can read back. The structure is yours: the tool holds it and counts it, and never writes a word of it.</p>
 
-            <h3>The five stations</h3>
+            <h3>The stations</h3>
             <ul>
               <li><b>00 Library</b> — the course&apos;s readings. Each card opens its own workbench, and the work you do behind it belongs to that text.</li>
               <li><b>01 Reading</b> — the text and your captures in one place. Highlight a passage, name the concept it evidences, and title your cloth: your own reading of the text as a whole.</li>
               <li><b>02 Linking</b> — pick two concepts and say how they hang together. That sentence IS the thread; a short label is a convenience that lets one of your words recur.</li>
               <li><b>03 Knowledge Graph</b> — sort your concepts into tiers and arrange them as cards on a board. Each arrangement is a projection: keep several, and each can say something different about the same cloth.</li>
               <li><b>04 Vocabulary</b> — every concept you have named and every label you have given a link, across all your readings. A concept does not belong to a text; a passage does.</li>
+              <li><b>05 Projections across readings</b> — in beta. Choose readings, see every concept they evidence, and sort those concepts on the same three-tier board. One reading is that reading&apos;s Knowledge Graph; two or more are a projection of their own.</li>
             </ul>
 
             <h3>What Loom will not do</h3>
