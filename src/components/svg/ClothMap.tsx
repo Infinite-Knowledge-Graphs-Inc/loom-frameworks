@@ -442,7 +442,7 @@ export default function ClothMap({
             <text
               transform={`translate(${x + 4},${baseY + 13}) rotate(30)`}
               fontFamily="var(--sans)"
-              fontSize={11.5}
+              fontSize={12}
               fill={isSel || picked ? "var(--red)" : "var(--ink)"}
               opacity={op}
               cursor={nodeCursor}

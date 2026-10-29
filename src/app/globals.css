@@ -688,7 +688,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .crow:hover{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .crow .clabel{font-size:16px}
 .crow.picked{box-shadow:inset 3px 0 var(--ochre);background:color-mix(in srgb, var(--ochre) 10%, transparent)}
-.pickedtag{font-family:var(--sans);font-size:9px;letter-spacing:0;color:var(--ochre);white-space:nowrap}
+.pickedtag{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ochre);white-space:nowrap}
 /* bench */
 .slots{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin-bottom:11px}
 @media(max-width:560px){.slots{grid-template-columns:1fr}}
@@ -711,8 +711,8 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .openchip{font-family:var(--sans);font-style:italic;font-size:13.5px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:3px 11px;cursor:pointer;color:var(--ink-soft)}
 .openchip:hover{border-color:var(--sage);color:var(--sage)}
 .benchbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:10px}
-.drawnote{font-family:var(--sans);font-size:9.5px;letter-spacing:0;color:var(--grey);margin:-4px 0 10px;line-height:1.7}
-.borrowbtn{font-family:var(--sans);font-size:10px;letter-spacing:0;background:transparent;color:var(--lav);border:1px solid var(--lav);border-radius:3px;padding:5px 9px;cursor:pointer;margin-top:9px}
+.drawnote{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey);margin:-4px 0 10px;line-height:1.7}
+.borrowbtn{font-family:var(--sans);font-size:12px;letter-spacing:0;background:transparent;color:var(--lav);border:1px solid var(--lav);border-radius:3px;padding:5px 9px;cursor:pointer;margin-top:9px}
 .readsas{font-size:13.5px;color:var(--ink-soft);margin:8px 0;font-style:italic}
 .readsas b{font-style:normal;color:var(--ink);font-weight:500}
 /* thread list */
@@ -775,7 +775,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .thread .tmeta{font-family:var(--mono);font-size:10px;margin-top:6px;display:flex;
   gap:6px 12px;align-items:center;flex-wrap:wrap}
 .thread .tmeta .act,.thread .tmeta .rm{white-space:nowrap}
-.pill{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:0;padding:1px 7px;border-radius:9px}
+.pill{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;padding:1px 7px;border-radius:9px}
 .pill.loose{color:var(--grey);border:1px dashed var(--grey)}
 .pill.beaten{color:var(--sage);border:1px solid var(--sage)}
 /* A reading a student added for themselves — slate, its own hue, because in
@@ -802,7 +802,7 @@ button.act,button.rm{appearance:none;background:none;border:none;padding:0}
   display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .sectionhead .n{font-family:var(--body);font-size:13.5px;font-weight:400;color:var(--ink-soft);letter-spacing:0}
 .mapbar{display:flex;gap:16px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.loosebanner{font-family:var(--sans);font-size:11px;letter-spacing:0;color:var(--grey);margin-bottom:10px}
+.loosebanner{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey);margin-bottom:10px}
 /* Scrolls rather than clips: the cloth lays itself out to its container down
    to 480px and stops there, so a narrower column gets a scrollbar instead of
    losing the concepts at the right-hand end. */
@@ -979,14 +979,14 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
 /* The evidence, folded. Same twirl idiom as every other disclosure here. */
 .canvasfoot .footmore{margin-top:7px}
 .canvasfoot .footmore > summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;
-  font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
+  font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft)}
 .canvasfoot .footmore > summary::-webkit-details-marker{display:none}
 .canvasfoot .footmore > summary:hover{color:var(--ink)}
 .canvasfoot .footmore > summary .tw{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--ochre);transition:transform .15s}
 .canvasfoot .footmore[open] > summary .tw{transform:rotate(90deg)}
 /* Nothing selected: one quiet line, not an empty panel. */
 .canvasfoot.idle{color:var(--ink-soft);font-size:13px}
-.canvasfoot .who{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--grey)}
+.canvasfoot .who{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey)}
 .canvasfoot .said{font-size:14px;font-style:italic;color:var(--ink-soft);min-width:0}
 .canvasfoot .subject{font-family:var(--display);font-size:16px;color:var(--red)}
 /* The pair's offer. TOP LAYER, via popover="auto" — #mapWrap directly above
@@ -1067,7 +1067,7 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
 .report .ct{font-family:var(--mono);font-size:11px;color:var(--grey)}
 .passagequote{margin:5px 0 10px;padding-left:9px;border-left:2px solid var(--rule-strong);font-family:var(--read);font-size:15px;color:var(--ink)}
 .passagequote .src{font-family:var(--mono);font-size:10px}
-.legend{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft);margin-top:8px;display:flex;gap:22px;flex-wrap:wrap}
+.legend{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft);margin-top:8px;display:flex;gap:22px;flex-wrap:wrap}
 .legend .sw{display:inline-block;width:22px;height:0;border-top-width:2px;vertical-align:middle;margin-right:5px}
 /* footer rule, poster-style. pointer-events:none because a fixed full-width
    strip is a click shield over whatever scrolls beneath it — the shelf's
@@ -1075,7 +1075,7 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
    The footer is print, not controls, so clicks belong to the page below. */
 footer{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;
   padding:5px 26px;border-top:1px solid var(--ink);background:var(--paper);z-index:5;pointer-events:none}
-footer span{font-family:var(--sans);font-size:11px;letter-spacing:0}
+footer span{font-family:var(--sans);font-size:12px;letter-spacing:0}
 footer .fl{color:var(--ink)} footer .fr{color:var(--ink-soft)}
 /* The footer stopped being print on 2026-08-17: its left half carries the
    signed-in name, the role badge and Sign out. pointer-events stays OFF on the
@@ -1131,7 +1131,7 @@ body[data-reading-focus] header{display:none}
 .do.calm{color:var(--ink-soft);font-weight:400}
 /* rhythm rail: pick·pick·say·throw / look·trace·question·write */
 .rail{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap;align-items:center}
-.rail .rstep{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey);
+.rail .rstep{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey);
   border:1px solid var(--rule);border-radius:11px;padding:3px 10px;transition:all .15s}
 .rail .rstep.now{color:var(--paper);background:var(--ink);border-color:var(--ink)}
 .rail .rstep.done{color:var(--sage);border-color:var(--sage)}
@@ -1140,7 +1140,7 @@ body[data-reading-focus] header{display:none}
 .sleeper{position:relative;transition:opacity .2s}
 .sleeper.asleep{opacity:.42}
 .sleeper.asleep::after{content:"";position:absolute;inset:0;cursor:default;background:transparent}
-.sleepmsg{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--grey);
+.sleepmsg{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey);
   text-align:center;padding:8px 0 2px;display:none}
 .sleeper.asleep .sleepmsg{display:block}
 /* distil demoted to a quiet optional disclosure */
@@ -1244,9 +1244,9 @@ body[data-reading-focus] header{display:none}
    one line in there not addressed to a student, so it sits below everything
    and takes no attention it is not asked for. */
 .aboutbuild{margin:18px 0 0;padding-top:10px;border-top:1px solid var(--rule);
-  font-family:var(--sans);font-size:9.5px;letter-spacing:0;
+  font-family:var(--sans);font-size:12px;letter-spacing:0;
   color:var(--grey)}
-.info-dialog .info-k{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre)}
+.info-dialog .info-k{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ochre)}
 .info-dialog h2{font-family:var(--display);font-size:25px;font-weight:600;margin:6px 34px 8px 0}
 .info-dialog p{font-size:15.5px;line-height:1.5;margin:0 0 10px}
 .info-dialog ul{margin:10px 0 12px;padding-left:19px;font-size:15px;line-height:1.45}
@@ -1371,11 +1371,11 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* Where you are, above the tabs: which reading, and the way back to the shelf. */
 .scopebar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
   padding:9px 26px;border-bottom:1px solid var(--rule);background:var(--paper)}
-.scopeback{font-family:var(--sans);font-size:11px;letter-spacing:0;
+.scopeback{font-family:var(--sans);font-size:12px;letter-spacing:0;
   color:var(--ink-soft);text-decoration:none}
 .scopeback:hover{color:var(--ochre)}
 .scopetitle{font-family:var(--display);font-size:18px}
-.scopemeta{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey)}
+.scopemeta{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey)}
 
 /* `.shelfbar` held the shelf's quick links, then only its tally, and on
    2026-08-17 the tally moved to the footer — where the same words already
@@ -1398,7 +1398,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .shelfbody h3{font-family:var(--display);font-size:16px;font-weight:500;margin:0 0 3px}
 .shelfauthor{font-size:13px;color:var(--ink-soft);margin:0 0 6px}
 .shelfdesc{font-size:13.5px;line-height:1.4;color:var(--ink-soft);margin:0}
-.shelftally{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);margin:0}
+.shelftally{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ochre);margin:0}
 .shelfquiet{color:var(--grey)}
 
 /* Shelf search: which reading says this? A hit is a link into the reading,
@@ -1527,7 +1527,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
   display:flex;flex-direction:column;gap:2px}
 .headermenu-item{display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;
   padding:7px 9px;border-radius:3px;color:var(--ink);text-decoration:none;
-  font-family:var(--sans);font-size:11px;letter-spacing:0}
+  font-family:var(--sans);font-size:12px;letter-spacing:0}
 .headermenu-item:hover{background:var(--paper-2)}
 /* What the item is for, under its name — the same sentence its tooltip used
    to carry, said outright now there is room for it. */
@@ -1553,7 +1553,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* What the open search covers. Mono caps like every other label in the app,
    quiet enough to read as a caption rather than as a result, and it stands
    above the input so it is still there once the placeholder has gone. */
-.stationsearch-covers{margin:0 0 9px;font-family:var(--sans);font-size:9.5px;
+.stationsearch-covers{margin:0 0 9px;font-family:var(--sans);font-size:12px;
   letter-spacing:0;color:var(--ink-soft);line-height:1.5}
 .searchinput{max-width:none}
 .searchresults{margin-top:12px;display:flex;flex-direction:column;gap:10px}
@@ -1670,7 +1670,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 }
 .searchhithead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .searchhithead h3{font-family:var(--display);font-size:16px;font-weight:500;margin:0}
-.searchwhere{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);margin:2px 0 0}
+.searchwhere{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ochre);margin:2px 0 0}
 .searchsnip{font-size:13.5px;line-height:1.45;color:var(--ink-soft);margin:6px 0 0}
 .searchsnip .n{font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey);margin-right:7px}
 .snipmark{background:rgba(255,204,0,.35);color:inherit;padding:0 1px;border-radius:2px}
@@ -1762,7 +1762,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .logjump:hover{text-decoration:underline}
 
 /* A day's worth of work, headed where the date turns over. */
-.logday{font-family:var(--sans);font-size:10px;letter-spacing:0;
+.logday{font-family:var(--sans);font-size:12px;letter-spacing:0;
   color:var(--ochre);padding:12px 12px 4px;border-bottom:1px solid var(--rule)}
 /* The act's number — the same unit the slider is ticked in, so a row and a
    notch are legibly the same thing. */
@@ -1771,7 +1771,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* Concepts from the student's other readings — reachable, out of the way. */
 .outsideband{border-top:1px solid var(--rule);background:rgba(0,0,0,.015)}
 .bandtoggle{display:flex;align-items:center;gap:6px;width:100%;padding:9px 12px;
-  font-family:var(--sans);font-size:10px;letter-spacing:0;
+  font-family:var(--sans);font-size:12px;letter-spacing:0;
   color:var(--ink-soft);background:none;border:none;cursor:pointer;text-align:left}
 .bandtoggle:hover{color:var(--ochre)}
 .bandtoggle .tw{display:inline-block;transition:transform .15s}
@@ -1825,7 +1825,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    first row of its own main. Same border-bottom idiom as the journey
    stations. */
 .rostertabs{display:flex;gap:2px;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--rule)}
-.rostertabs a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:8px 12px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.rostertabs a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:8px 12px;border-bottom:2px solid transparent;margin-bottom:-1px}
 .rostertabs a:hover{color:var(--ink)}
 .rostertabs a.on{color:var(--ink);border-bottom-color:var(--ochre)}
 .rostertabsline{margin-left:auto;font-size:13px;color:var(--ink-soft);padding-right:4px}
@@ -1840,7 +1840,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .rosterfind{display:flex;gap:6px;align-items:center;margin-left:18px}
 .rosterfind .tinput{width:210px;font-size:12.5px;padding:4px 7px}
 .rosterdl{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.rosterfilter a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:4px 8px;border:1px solid var(--rule);border-radius:3px}
+.rosterfilter a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:4px 8px;border:1px solid var(--rule);border-radius:3px}
 .rosterfilter a:hover{color:var(--ink);border-color:var(--ink)}
 .rosterfilter a.on{color:var(--ink);border-color:var(--ochre)}
 .rosterlist{padding:0}
@@ -1876,12 +1876,12 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .signinrow .sigrefused{color:var(--red)}
 .rosterstamp{font-family:var(--mono);font-size:11px;color:var(--ink-soft);white-space:nowrap}
 .rosterhead{border-bottom:1px solid var(--rule);padding-top:7px;padding-bottom:7px}
-.rosterhead button{background:none;border:none;padding:0;font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft);cursor:pointer;text-align:left}
+.rosterhead button{background:none;border:none;padding:0;font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft);cursor:pointer;text-align:left}
 /* The one header that is not a sort button — `open loom` — had this class in
    the markup and no rule anywhere, so it fell back to the 17px body serif
    beside seven 10px mono headings. A header row reads as a row or it reads as
    a mistake; sortable or not is not a reason to look different. */
-.rosterhead .rostercol{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
+.rosterhead .rostercol{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft)}
 .rosterhead button:hover{color:var(--ink)}
 .rosterhead button.on{color:var(--ochre)}
 /* Two sorts over one column — name over address. The separator is quiet and
@@ -1932,7 +1932,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .catlist{padding:0}
 .cathead,a.catrow{display:grid;grid-template-columns:minmax(240px,1fr) 140px 90px 90px 90px 110px;gap:6px 14px;align-items:center;padding:6px 14px}
 .cathead{border-bottom:1px solid var(--rule);padding-top:8px;padding-bottom:8px}
-.cathead span{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
+.cathead span{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ink-soft)}
 a.catrow{border-bottom:1px dotted var(--rule);color:inherit;text-decoration:none}
 a.catrow:last-child{border-bottom:none}
 a.catrow:hover{background:rgba(0,0,0,.025)}
@@ -2001,7 +2001,7 @@ a.catrow.on{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .foldline input.numin{width:66px;text-align:center}
 .foldline .hint{margin:0;font-size:13px}
 .radiorow{display:flex;flex-wrap:wrap;gap:8px}
-.radiopick{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:11px;
+.radiopick{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:12px;
   letter-spacing:0;color:var(--ink-soft);background:#fff;
   border:1px solid var(--rule);border-radius:999px;padding:6px 12px;cursor:pointer}
 .radiopick:hover{border-color:var(--sage)}
@@ -2457,9 +2457,9 @@ a.catrow.on{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .scrollx{overflow-x:auto;margin-top:14px}
 .mtable{border-collapse:collapse;width:100%;font-size:14px}
 .mtable th,.mtable td{text-align:left;padding:7px 10px;border-bottom:1px dotted var(--rule);vertical-align:top}
-.mtable thead th{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey);border-bottom:1px solid var(--rule)}
+.mtable thead th{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--grey);border-bottom:1px solid var(--rule)}
 .mtable tbody th[scope="row"]{font-weight:400;font-family:var(--body)}
-.mgroup th{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);padding-top:16px;border-bottom:none}
+.mgroup th{font-family:var(--sans);font-size:12px;letter-spacing:0;color:var(--ochre);padding-top:16px;border-bottom:none}
 /* One column each for the three roles: narrow, so the glyphs line up and the
    eye can run down a role rather than across a row. */
 .mcell{width:132px}
