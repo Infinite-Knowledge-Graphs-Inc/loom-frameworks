@@ -99,7 +99,10 @@ test.describe("Download the drawing", () => {
       // as rgb(255, 255, 255); the ink copy is the sage or grey of the thread.
       const ink = labelled.find((m) => !/255,\s*255,\s*255/.test(m[1]) && !m[1].includes("#ffffff"))
       expect(ink, `${label}: an unstroked copy of the linking word`).toBeTruthy()
-      expect(ink?.[1], `${label}: the ink copy has no stroke`).not.toMatch(/stroke-width/)
+      // `stroke-width` is not the test: the export copies the computed value,
+      // and that is "1px" on every element, stroked or not. Observed on the
+      // ink copy of "constrains": `stroke:none;stroke-width:1px`.
+      expect(ink?.[1], `${label}: the ink copy has no stroke`).toMatch(/stroke:\s*none/)
 
       /**
        * The invisible hit twins are gone. Both drawings lay a transparent
