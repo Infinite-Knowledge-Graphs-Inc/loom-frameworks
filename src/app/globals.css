@@ -1676,7 +1676,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .snipmark{background:rgba(255,204,0,.35);color:inherit;padding:0 1px;border-radius:2px}
 
 /* The seam: the same concept met in a second text. Counted, never advised. */
-.seam{margin-top:12px;padding:11px 13px;border-left:2px solid var(--sage);background:rgba(122,138,110,.09);border-radius:0 4px 4px 0}
+.seam{margin-top:12px;padding:11px 13px;border-left:2px solid var(--sage);background:color-mix(in srgb, var(--sage) 9%, transparent);border-radius:0 4px 4px 0}
 .seam p{font-size:14px;line-height:1.45;margin:4px 0 9px}
 .fromwhere{display:block;font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey);margin-top:2px}
 

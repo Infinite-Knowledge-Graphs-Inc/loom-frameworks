@@ -29,7 +29,7 @@ const SUGGESTED_LABELS = 12;
 function EmptyState({ caption }: { caption: string }) {
   return (
     <div className="empty">
-      <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="#a39f92" strokeWidth="1.3"><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13"/></svg>
+      <svg width="34" height="18" viewBox="0 0 34 18" fill="none" stroke="var(--grey)" strokeWidth="1.3"><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13"/></svg>
       <span className="cap">{caption}</span>
     </div>
   )
