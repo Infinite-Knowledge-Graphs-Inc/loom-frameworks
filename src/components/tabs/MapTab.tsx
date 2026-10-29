@@ -12,6 +12,7 @@
 // live on the map (a tier is a rank relative to the concepts it sits among),
 // so the same concept may be primary here and tertiary on another map.
 
+import Explainer from "@/components/ui/Explainer"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useReadings } from "@/components/providers/ReadingsProvider"
@@ -749,7 +750,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
       {!projectionOnly && (
       <>
       <p className="tasktitle">Examine your cloth — lay out your projection.</p>
-      <p className="tasksub">Your data, projected to be read: sort your concepts into tiers on the list, then arrange them by hand as cards on the board (Novak &amp; Gowin, <i>Learning How to Learn</i>, 1984). The tool draws the lines you already threw and counts what it sees — it never sorts, places, or links for you. Keep more than one projection: each is its own reading of the material, with its own tiers, its own one-line and its own paragraph. When a projection reads right here, draw the real concept map (paper or Figma) and build your chalk talk from it.</p>
+      <Explainer className="tasksub">Your data, projected to be read: sort your concepts into tiers on the list, then arrange them by hand as cards on the board (Novak &amp; Gowin, <i>Learning How to Learn</i>, 1984). The tool draws the lines you already threw and counts what it sees — it never sorts, places, or links for you. Keep more than one projection: each is its own reading of the material, with its own tiers, its own one-line and its own paragraph. When a projection reads right here, draw the real concept map (paper or Figma) and build your chalk talk from it.</Explainer>
 
       {/* TWO SECTIONS, in the order of the two acts (TJ, 2026-08-12): examine
           the cloth you wove, then lay out a projection of it. The cloth is one
@@ -811,7 +812,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         ) : (
         <>
         <p className="do">Give each concept a tier: <b>P</b>rimary (the projection hangs on it) · <b>S</b>econdary · <b>T</b>ertiary (example / detail) · <b>–</b> set aside. Sorted concepts land on the board below.</p>
-        <p className="hint">A–Z until you say otherwise: drag a row by its handle — or focus the handle and press ↑ / ↓ — to re-order this list, and your sequence sticks. That re-sequences the list only; the board, the counts and the concept-map kit are untouched. <b>Make all primary</b> is a starting point, not a recommendation: it puts everything on the top tier in one move so you can demote from there.</p>
+        <Explainer className="hint">A–Z until you say otherwise: drag a row by its handle — or focus the handle and press ↑ / ↓ — to re-order this list, and your sequence sticks. That re-sequences the list only; the board, the counts and the concept-map kit are untouched. <b>Make all primary</b> is a starting point, not a recommendation: it puts everything on the top tier in one move so you can demote from there.</Explainer>
         </>
         )}
         <div id="triageList" onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropAt(null) }}>
@@ -916,9 +917,9 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         {/* The read-only line keeps the ⋮ half — the menu is a read — and
             drops the drag narration (TJ, 2026-08-21). */}
         {readOnly ? (
-          <p className="hint">The projection as the student arranged it — general above, specific below. Each card carries its own <b>⋮</b> — its description and the passages behind it.</p>
+          <Explainer className="hint">The projection as the student arranged it — general above, specific below. Each card carries its own <b>⋮</b> — its description and the passages behind it.</Explainer>
         ) : (
-        <p className="hint">Drag cards to arrange — general above, specific below. Dropping a card into another band re-tiers it. Drag a <i>line</i> to bow it out of the way and re-seat its label. Each card carries its own <b>⋮</b> — its description and the passages behind it, on the same card you meet a concept on everywhere else.</p>
+        <Explainer className="hint">Drag cards to arrange — general above, specific below. Dropping a card into another band re-tiers it. Drag a <i>line</i> to bow it out of the way and re-seat its label. Each card carries its own <b>⋮</b> — its description and the passages behind it, on the same card you meet a concept on everywhere else.</Explainer>
         )}
 
       {/* position:relative anchors the card menus, which are HTML over the SVG. */}
@@ -1183,7 +1184,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           }}
           onBlur={flushMapText}
         />
-        <p className="hint" style={{ marginTop: 8 }}>Arranging and articulating feed each other: as the projection settles, say in one short paragraph what it is about and what holds it together. One-line, paragraph, tiers and arrangement belong to this projection — switch projections and each keeps its own.</p>
+        <Explainer className="hint" style={{ marginTop: 8 }}>Arranging and articulating feed each other: as the projection settles, say in one short paragraph what it is about and what holds it together. One-line, paragraph, tiers and arrangement belong to this projection — switch projections and each keeps its own.</Explainer>
         <textarea
           id="yourRead2"
           placeholder="Write your read of this projection here — a paragraph is enough. Trace a prompt above if you want your threads laid out to work from."
@@ -1204,11 +1205,11 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             three lines wide and still cryptic. "Copy your read" went in the
             same pass — it duplicated the paragraph you can select and copy,
             one field away. */}
-        <p className="hint" style={{ marginTop: 14 }}>
+        <Explainer className="hint" style={{ marginTop: 14 }}>
           The kit is this projection as a file: your concepts grouped by the tiers you
           gave them, with the threads between them. Take it to paper or Figma and draw
           the real concept map from it.
-        </p>
+        </Explainer>
         <ObjectDownload
           id="mapKit"
           kind="concept-map-kit"

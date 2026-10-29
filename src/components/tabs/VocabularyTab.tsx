@@ -16,6 +16,7 @@
 // here moved to 03 · Knowledge Graph, where the projection they describe
 // already lives (TJ, 2026-08-08; this station is 04).
 
+import Explainer from "@/components/ui/Explainer"
 import { useMemo, useState } from "react"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useReadings } from "@/components/providers/ReadingsProvider"
@@ -293,12 +294,12 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
           markdown={(p) => buildVocabularyMarkdown(state, p)}
         />
       </div>
-      <p className="tasksub">
+      <Explainer className="tasksub">
         Every concept you have named and every label you have given a link — across all
         your readings, not just this one. A concept does not belong to a text; it emerges from
         one and may then be evidenced in several. Sharpen a description, and see which of
         your words are becoming yours.
-      </p>
+      </Explainer>
 
       <div className="two">
         <div className="card">
@@ -338,17 +339,17 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
           {/* The read-only line drops the verbs — "edit" and "remove" name acts
               the mode refuses (TJ, 2026-08-21). */}
           {readOnly ? (
-            <p className="hint">
+            <Explainer className="hint">
               Click a concept to open it — its description, and the readings that
               evidence it. Two rows with the same name are two concepts, which is legal.
-            </p>
+            </Explainer>
           ) : (
-          <p className="hint">
+          <Explainer className="hint">
             Click a concept to open it — edit its description, and see which readings
             evidence it. Two rows with the same name are two concepts, which is legal:
             if they are one idea, file the passages under the one you are keeping and
             remove the other.
-          </p>
+          </Explainer>
           )}
           <div className="quietrow" style={{ marginBottom: "10px" }}>
             <input
@@ -471,17 +472,17 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
           {/* The read-only line drops the coaching verb, as the Concepts hint
               does (TJ, 2026-08-21). */}
           {readOnly ? (
-            <p className="hint">
+            <Explainer className="hint">
               The words used to label the relations themselves — across every reading.
               A label reached for again is a word becoming the student&apos;s; open one to
               read its description and the threads that use it.
-            </p>
+            </Explainer>
           ) : (
-          <p className="hint">
+          <Explainer className="hint">
             The words you use to label the relations themselves — yours, across every
             reading. A label you reach for again is a word becoming yours; open one to
             give it your own description and read the threads that use it.
-          </p>
+          </Explainer>
           )}
           <div className="quietrow" style={{ marginBottom: "10px" }}>
             <input

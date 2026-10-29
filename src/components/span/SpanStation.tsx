@@ -10,6 +10,7 @@
 // a different scope key — sorted ids, comma-joined — and a projection of
 // their own.
 
+import Explainer from "@/components/ui/Explainer"
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useParams, usePathname, useRouter } from "next/navigation"
@@ -184,13 +185,13 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
       <JourneyNav active="span" />
       <main className="station-work">
         <p className="tasktitle">Choose readings. See their concepts. Project them.</p>
-        <p className="tasksub">
+        <Explainer className="tasksub">
           In beta. The list is every concept in the readings you choose — evidenced by a passage there,
           or named there before a passage existed — and the board sorts them into primary, secondary and
           tertiary the same way Knowledge Graph does. The lines are threads you have already thrown.
           With two or more readings you can also throw a thread between concepts of different
           readings. Nothing here places a card for you.
-        </p>
+        </Explainer>
 
         {!loadingShelf && savedSets.length > 0 && (
           <>
@@ -334,10 +335,10 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
             )}
 
             {selected.length === 1 && (
-              <p className="hint">
+              <Explainer className="hint">
                 One reading, so this board is that reading&apos;s Knowledge Graph — the same projections as on 03.
                 Add a second reading and the projection belongs to the pair.
-              </p>
+              </Explainer>
             )}
 
             {/* Nothing to sort with no concepts, and the list above already

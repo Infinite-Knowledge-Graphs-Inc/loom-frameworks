@@ -18,6 +18,7 @@
  * it goes anywhere.
  */
 
+import Explainer from "@/components/ui/Explainer"
 import SourceThumbnail from "@/components/library/SourceThumbnail"
 
 export type PracticeCard = {
@@ -53,11 +54,11 @@ export default function PracticeShelf({
   return (
     <main>
       <p className="tasktitle">Pick a reading.</p>
-      <p className="tasksub">
+      <Explainer className="tasksub">
         This is the Library as a student meets it: every reading on the course, each
         card a door into your work on that text. In the guide only one of them opens —
         the rest are here so the shelf looks like the shelf.
-      </p>
+      </Explainer>
 
       <div className="shelfgrid" style={{ marginTop: 14 }}>
         {cards.map((card) => {

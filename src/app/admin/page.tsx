@@ -1,3 +1,4 @@
+import Explainer from "@/components/ui/Explainer"
 import { getRecentAuthEvents, getRoster, getStaffViewer } from "@/actions/admin"
 import { AUTH_EVENT_DAYS } from "@/lib/authEvent"
 import { firstParam, getCourse, listSections, resolveSectionId } from "@/lib/courses"
@@ -339,13 +340,13 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
       ) : view === "invite" ? (
         <div className="card">
           <h2>Invite learners</h2>
-          <p className="hint" style={{ marginTop: "10px" }}>
+          <Explainer className="hint" style={{ marginTop: "10px" }}>
             Sign-in succeeds for anyone invited to or enrolled in a course. A learner joins this
             course the first time they sign in with the GitHub email you invite here, landing in
             whichever section you gave them — you can move them afterwards. An invitation
             addressed to the Faculty Section enrols as faculty: they get this course&apos;s
             read-side admin view alongside their own workspace.
-          </p>
+          </Explainer>
           <InviteLearners courseId={courseId} sections={courseSections} />
         </div>
       ) : view === "invited" ? (

@@ -1168,6 +1168,23 @@ body[data-reading-focus] header{display:none}
 /* READ — task framing + interpretive prompts */
 .tasktitle{font-family:var(--display);font-size:21px;font-weight:500;margin:0 0 3px}
 .tasksub{font-size:14px;color:var(--ink-soft);margin:0 0 14px;max-width:70ch}
+/* EXPLAINER — one line, the rest behind a quiet chevron (components/ui/Explainer.tsx).
+   The wrapper carries the paragraph's old class (.tasksub, .hint, .info-note…), so
+   margin / max-width / size / colour come from the rules that always styled it;
+   the <p> inside only inherits. min-width:0 on both so a nowrap line can never
+   widen a flex or grid parent. */
+.explainer{display:flex;align-items:flex-start;gap:2px;min-width:0}
+.explainer-text{margin:0;flex:1 1 auto;min-width:0;font:inherit;color:inherit;font-style:inherit}
+.explainer:not(.open) .explainer-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Discreet on purpose: no border, no fill, a 10px chevron at 55% until hovered or focused.
+   Height is one line of the paragraph (1.5em) so it sits on the first line when open. */
+.explainer-toggle{flex:none;display:inline-flex;align-items:center;justify-content:center;
+  width:1.6em;height:1.5em;padding:0;margin:0;border:0;border-radius:3px;background:none;
+  color:inherit;opacity:.55;cursor:pointer;font:inherit;line-height:1}
+.explainer-toggle:hover{opacity:1;background:rgba(0,0,0,.05)}
+.explainer-toggle:focus-visible{opacity:1;outline:2px solid var(--ochre);outline-offset:1px}
+.explainer-toggle svg{transition:transform .15s}
+.explainer.open .explainer-toggle svg{transform:rotate(180deg)}
 .prompt{border:1px solid var(--rule);border-radius:5px;padding:11px 12px;margin-bottom:9px;cursor:pointer;
   background:rgba(255,255,255,.55);transition:border-color .15s}
 .prompt:hover{border-color:var(--ochre)}

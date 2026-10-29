@@ -13,6 +13,7 @@
 // Nothing here writes an interpretation: it counts and sorts and poses a
 // generic question (red lines #1/#7). "Counted, not judged."
 
+import Explainer from "@/components/ui/Explainer"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { findLink } from "@/lib/linkResolve"
 import LinkDescription from "@/components/ui/LinkDescription"
@@ -579,10 +580,10 @@ export default function ClothReflection({ onProjectionCreated, showLog = false, 
             {names.map((n, i) => <span key={n!.id}><span className="red">{conceptNameText(n!)}</span>{i < names.length - 1 ? " · " : ""}</span>)}
             <span className="n"> · {inc.length} thread{inc.length !== 1 ? 's' : ''} meet here</span>
           </div>
-          <p className="hint" style={{ margin: "4px 0 9px" }}>
+          <Explainer className="hint" style={{ margin: "4px 0 9px" }}>
             The threads that converge on your busiest concept{readSel.ids.length > 1 ? 's' : ''} — your own sentences. <b>You</b> decide whether this is the core, and weave it into your read.
             Make it a projection and these concepts start on the top tier, with the rest set aside — a starting arrangement you can re-sort in a press.
-          </p>
+          </Explainer>
           <button
             className="btn ghost mini"
             onClick={() => createProjectionFrom(inc, readSel.ids ?? [])}
@@ -638,10 +639,10 @@ export default function ClothReflection({ onProjectionCreated, showLog = false, 
               <div className="threadhead">
                 <span className="red">{conceptNameText(c)}</span> <span className="n"> · {comp.edges.length} crossing{comp.edges.length !== 1 ? 's' : ''}</span>
               </div>
-              <p className="hint" style={{ margin: "4px 0 9px" }}>
+              <Explainer className="hint" style={{ margin: "4px 0 9px" }}>
                 Your threads, in walking order — your own sentences, laid out as raw material. <b>You</b> weave them into a read below, in your own words.
                 Make it a projection and these concepts start on the top tier, with the rest set aside — a starting arrangement you can re-sort in a press.
-              </p>
+              </Explainer>
               <button
                 className="btn ghost mini"
                 onClick={() => createProjectionFrom(comp.edges, [c.id])}
@@ -1097,7 +1098,7 @@ export default function ClothReflection({ onProjectionCreated, showLog = false, 
             </section>
           </div>
         )}
-        <p className="hint">Click a prompt to light it up on the cloth and lay those threads out below. <b>You don&apos;t write anything here</b> — your one short read goes underneath.</p>
+        <Explainer className="hint">Click a prompt to light it up on the cloth and lay those threads out below. <b>You don&apos;t write anything here</b> — your one short read goes underneath.</Explainer>
 
         <div id="clothPrompts">
           {state.concepts.length === 0 && <p className="empty">Nothing laid yet — prompts appear as you weave.</p>}
