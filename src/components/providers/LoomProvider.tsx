@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo, ReactNode } from "react"
 import { useSession } from "next-auth/react"
-import { useParams } from "next/navigation"
+import { useParams, usePathname } from "next/navigation"
 import type { Passage, CardTableView, Cloth, Concept, Edge, Link, LoomMap, LoomState, LoomViews, Tier } from "@/lib/types"
-import { asLoomState, scopeOf, scopedGraph, soleSourceId, WHOLE_WEAVE, type Scope, type ScopedGraph } from "@/lib/scope"
+import { asLoomState, scopeFromKey, scopeOf, scopedGraph, soleSourceId, spanScopeKey, WHOLE_WEAVE, type Scope, type ScopedGraph } from "@/lib/scope"
 import { emptyViews } from "@/lib/graphExport"
 import { getUserLoomData } from "@/lib/reads"
 import {
@@ -228,13 +228,16 @@ export function LoomProvider({
 
   // Scope comes from the URL, not from state a gesture has to set: `/reading/x`
   // IS the act of working in that reading, so there is no window where the app
-  // has rendered against the wrong one. Everywhere else is the whole weave.
-  const params = useParams<{ sourceId?: string }>()
+  // has rendered against the wrong one. `/span/...` is station 05 — the ids in
+  // the path are the scope (`spanScopeKey`). Everywhere else is the whole weave.
+  const pathname = usePathname()
+  const params = useParams<{ sourceId?: string; sourceIds?: string | string[] }>()
   const routeSourceId = typeof params?.sourceId === "string" ? params.sourceId : null
-  const scope = useMemo(
-    () => (routeSourceId ? scopeOf([routeSourceId]) : WHOLE_WEAVE),
-    [routeSourceId]
-  )
+  const spanKey = spanScopeKey(pathname, params?.sourceIds)
+  const scope = useMemo(() => {
+    if (spanKey !== null) return scopeFromKey(spanKey)
+    return routeSourceId ? scopeOf([routeSourceId]) : WHOLE_WEAVE
+  }, [spanKey, routeSourceId])
   const scoped = useMemo(() => scopedGraph(state, scope), [state, scope])
   const scopedState = useMemo(() => asLoomState(state, scoped), [state, scoped])
 

@@ -22,7 +22,8 @@ import OpenTab from "@/components/tabs/OpenTab"
 import ThrowTab from "@/components/tabs/ThrowTab"
 import VocabularyTab from "@/components/tabs/VocabularyTab"
 import MapTab from "@/components/tabs/MapTab"
-import JourneyNav, { type Station } from "@/components/ui/JourneyNav"
+import JourneyNav, { SPAN_OFF_IN_PRACTICE, type Station } from "@/components/ui/JourneyNav"
+import { spanPath } from "@/lib/scope"
 import StationSearch from "@/components/ui/StationSearch"
 import SaveLight from "@/components/ui/SaveLight"
 import Identity from "@/components/ui/Identity"
@@ -387,6 +388,8 @@ export default function Workbench({
         <JourneyNav
           active={STATION_OF[activeTab]}
           onStation={Object.fromEntries(tabs.map((tab) => [STATION_OF[tab], () => goTo(tab)]))}
+          hrefs={practice ? undefined : { span: spanPath([source.id]) }}
+          off={practice ? { span: SPAN_OFF_IN_PRACTICE } : undefined}
         />
         <main>
           <div className="empty" style={{ marginTop: "100px" }}>
@@ -440,6 +443,8 @@ export default function Workbench({
         onStation={Object.fromEntries(
           tabs.map((tab) => [STATION_OF[tab], () => goTo(tab)])
         )}
+        hrefs={practice ? undefined : { span: spanPath([source.id]) }}
+        off={practice ? { span: SPAN_OFF_IN_PRACTICE } : undefined}
         /* Scope follows the station, never a toggle (TJ, 2026-08-13: "library
            is your loom, vocabulary is your loom, all else this reading/cloth").
            Vocabulary is the User's holdings across every reading — JourneyNav

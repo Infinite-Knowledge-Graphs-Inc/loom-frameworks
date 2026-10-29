@@ -1,0 +1,23 @@
+/* The reading picker's pressed state, and nothing else.
+
+   The button also carries the global `.chip` class, so its shape, type and
+   border come from whatever globals.css says a chip is — today and after the
+   chrome rewrite. `.chip` has no selected paint of its own (searched
+   globals.css on master and on design/simpler-chrome: only `.tchip.on`
+   fills), so the pressed state lives here instead of as new rules in
+   globals.css, which the chrome branch is rewriting.
+
+   `--surface` exists only on the chrome branch (src/app/tokens.css); on
+   master the fallback to `--paper` gives the same light-on-ink as before. */
+
+.pick {
+  color: var(--ink);
+  text-align: left;
+}
+
+.pick[aria-pressed="true"],
+.pick[aria-pressed="true"]:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface, var(--paper));
+}

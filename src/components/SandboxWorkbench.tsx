@@ -22,7 +22,7 @@ import Link from "next/link"
 import SandboxLoomProvider from "@/components/providers/SandboxLoomProvider"
 import PracticeGuide from "@/components/practice/PracticeGuide"
 import PracticeShelf, { type PracticeCard } from "@/components/practice/PracticeShelf"
-import JourneyNav from "@/components/ui/JourneyNav"
+import JourneyNav, { SPAN_OFF_IN_PRACTICE } from "@/components/ui/JourneyNav"
 import Workbench, { type WorkbenchSource } from "@/components/Workbench"
 import { PRACTICE_TEXT_PAGE } from "@/lib/practiceGuide"
 import Identity from "@/components/ui/Identity"
@@ -159,7 +159,7 @@ export default function SandboxWorkbench({
               first stage must be the Library a student knows, not a
               differently-shaped page wearing its name (TJ, 2026-08-12). What
               this place IS gets said by the floating notice above. */}
-          <JourneyNav active="readings" />
+          <JourneyNav active="readings" off={{ span: SPAN_OFF_IN_PRACTICE }} />
           <PracticeShelf cards={cards} openableId={sourceId} tally={tally} onOpen={open} />
           {/* The practice Library's footer, matching the real one's shape
               (TJ, 2026-08-17) — identity left, subject right. The subject
