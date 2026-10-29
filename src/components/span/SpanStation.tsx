@@ -33,7 +33,7 @@ function idsFromParam(raw: string | string[] | undefined): string[] {
 
 export default function SpanStation({ isPreviewDeployment = false }: { isPreviewDeployment?: boolean }) {
   const { data: session, status } = useSession()
-  const { readings, isLoading: loadingShelf, titleOf } = useReadings()
+  const { readings, isLoading: loadingShelf, error: shelfError, refresh, titleOf } = useReadings()
   const { state, scopedState, scoped, isLoading } = useLoom()
   const router = useRouter()
   const pathname = usePathname()
@@ -52,12 +52,17 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   // `spanPath`'s order. `replace` so the cleanup is not its own history step.
   // Compared against `pathname`, not the scope key: `scopeOf` sorts, so
   // `/span/b/a` and `/span/a/b` are one key and would otherwise both stay.
+  //
+  // Not while the shelf failed to load: ReadingsProvider leaves `readings` as
+  // [] on a first-load error (and says so in `error`), so every id would look
+  // unknown and a bookmark like /span/a/b would be rewritten to /span by a
+  // network blip. Read in ReadingsProvider.tsx; not reproduced in a browser.
   useEffect(() => {
-    if (loadingShelf) return
+    if (loadingShelf || shelfError) return
     const kept = scopeOf(rawKey ? rawKey.split(",") : []).sourceIds.filter((id) => knownIds.has(id))
     const next = spanPath(kept)
     if (pathname !== next) router.replace(next)
-  }, [loadingShelf, knownIds, rawKey, pathname, router])
+  }, [loadingShelf, shelfError, knownIds, rawKey, pathname, router])
 
   const toggle = (id: string) => {
     const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]
@@ -157,7 +162,13 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
         </h2>
 
         {loadingShelf && <p className="hint">Reading the shelf…</p>}
-        {!loadingShelf && readings.length === 0 && (
+        {!loadingShelf && shelfError && readings.length === 0 && (
+          <div className="empty" role="alert">
+            <span className="cap">could not load your readings — {shelfError}</span>
+            <button type="button" className="btn ghost mini" onClick={refresh}>try again</button>
+          </div>
+        )}
+        {!loadingShelf && !shelfError && readings.length === 0 && (
           <div className="empty">
             <span className="cap">no readings published to your course yet</span>
           </div>
