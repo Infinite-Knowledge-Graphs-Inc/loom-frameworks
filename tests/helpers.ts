@@ -51,16 +51,20 @@ export async function deletePassageInPassagesView(page: Page, passageId: string)
 }
 
 /**
- * Delete a concept — from 04 · Vocabulary, which is the only place that does it.
+ * Delete a concept — from 04 · Vocabulary.
  *
  * Your work used to carry its own "delete this concept". It went on
  * 2026-08-17 (TJ: "i sense that delete concept should only be in vocabulary.
  * and that in reading it is remove concept from passage"): a concept belongs
  * to the student and travels through every text they have read, so destroying
  * it from inside one reading was a loom-wide act behind a reading-scoped door.
+ * 02 · Linking's warp grew the same control later, because its + coins the
+ * concept on that page; it calls the same dialog (`useRemoveConcept`). This
+ * helper still uses Vocabulary, which is mounted on its own and does not
+ * depend on the warp being open.
  *
- * So cleanup takes the route a student now takes. Slower than the old two
- * clicks, and it exercises the real path rather than a shortcut that no longer
+ * So cleanup takes a route a student can take. Slower than the old two
+ * clicks, and it exercises a real path rather than a shortcut that no longer
  * exists.
  *
  * Waits on the POST, not the row: the list clears optimistically, and ending a

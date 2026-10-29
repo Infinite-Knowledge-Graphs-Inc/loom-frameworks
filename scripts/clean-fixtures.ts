@@ -56,6 +56,7 @@ const CONCEPT_PATTERNS: { like: string; from: string }[] = [
   { like: "single reading concept ______", from: "reuse-seam.spec.ts" },
   { like: "crossing concept ______", from: "reuse-seam.spec.ts" },
   { like: "practice concept", from: "sandbox.spec.ts (should never reach the real db)" },
+  { like: "warp remove ______", from: "warp-remove.spec.ts" },
 ]
 
 const SOURCE_PATTERNS: { like: string; from: string }[] = [
