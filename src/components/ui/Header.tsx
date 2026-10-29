@@ -96,8 +96,8 @@ export default function Header({ deployEnv, isBranchPreview = false }: { deployE
             aria-hidden="true"
             focusable="false"
           >
-            <path d="M2 15 L7 4 L12 15 L17 4 L22 15" stroke="#a8843f"/>
-            {isDev && <path d="M1 9.5 L23 9.5" stroke="#b23a2b" strokeWidth="1.6"/>}
+            <path d="M2 15 L7 4 L12 15 L17 4 L22 15" stroke="var(--ochre)"/>
+            {isDev && <path d="M1 9.5 L23 9.5" stroke="var(--red)" strokeWidth="1.6"/>}
           </svg>
           <div aria-hidden="true">
             Loom

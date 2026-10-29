@@ -16,20 +16,20 @@ function renderCoverFallbackSvg(title: string) {
   return `
     <svg xmlns="http://www.w3.org/2000/svg" width="420" height="600" viewBox="0 0 420 600" role="img" aria-label="${safeTitle}">
       <defs>
-        <linearGradient id="loom-cover-bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#f5f1e5" />
-          <stop offset="100%" stop-color="#e7deca" />
+        <linearGradient id="loom-cover-bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f3f4f6" />
+          <stop offset="100%" stop-color="#e6e8ec" />
         </linearGradient>
       </defs>
-      <rect width="420" height="600" rx="22" fill="url(#loom-cover-bg)" />
-      <rect x="28" y="28" width="364" height="544" rx="18" fill="none" stroke="#cbc7ba" stroke-width="2" />
-      <text x="42" y="88" fill="#a8843f" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="18" letter-spacing="3">LOOM LIBRARY</text>
+      <rect width="420" height="600" fill="url(#loom-cover-bg)" />
+      <rect x="28" y="28" width="364" height="544" fill="none" stroke="#c0c4cc" stroke-width="2" />
+      <text x="42" y="88" fill="#8c5a12" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="600">Loom library</text>
       <foreignObject x="42" y="126" width="336" height="360">
-        <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;height:100%;align-items:flex-start;color:#1a1916;font-family:Georgia,serif;font-size:34px;line-height:1.18;font-weight:600;">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;height:100%;align-items:flex-start;color:#16181d;font-family:ui-sans-serif, system-ui, sans-serif;font-size:32px;line-height:1.2;font-weight:600;">
           <div>${safeTitle}</div>
         </div>
       </foreignObject>
-      <text x="42" y="548" fill="#6b675c" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="15" letter-spacing="2">PREVIEW UNAVAILABLE</text>
+      <text x="42" y="548" fill="#525868" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14">Preview unavailable</text>
     </svg>
   `
 }

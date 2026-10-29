@@ -77,9 +77,13 @@ test.describe("Download the drawing", () => {
        */
       expect(file.text, `${label}: no unresolved custom properties`).not.toContain("var(--")
       expect(file.text, `${label}: colours resolved to literals`).toMatch(/rgb\(\d+, ?\d+, ?\d+\)/)
+      // A `color-mix()` paint on a drawing comes back from getComputedStyle as
+      // `color(srgb …)`, which Illustrator and Inkscape do not read. A wash on
+      // an SVG mark is a token plus `strokeOpacity`/`fillOpacity`, not a mix.
+      expect(file.text, `${label}: no CSS Color 4 values`).not.toMatch(/color\(|color-mix/)
 
       // Its own ground, so a dark viewer does not put dark ink on black.
-      expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#f4f2ec"/)
+      expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#ffffff"/)
 
       /**
        * Linking words used to be one <text> with a 4px paper-coloured stroke
@@ -95,9 +99,14 @@ test.describe("Download the drawing", () => {
         m[2].includes("constrains")
       )
       expect(labelled.length, `${label}: a paper halo and an ink copy`).toBeGreaterThanOrEqual(2)
-      const ink = labelled.find((m) => !m[1].includes("244, 242, 236"))
+      // The knockout is DRAWING_GROUND, #ffffff. getComputedStyle writes that
+      // as rgb(255, 255, 255); the ink copy is the sage or grey of the thread.
+      const ink = labelled.find((m) => !/255,\s*255,\s*255/.test(m[1]) && !m[1].includes("#ffffff"))
       expect(ink, `${label}: an unstroked copy of the linking word`).toBeTruthy()
-      expect(ink?.[1], `${label}: the ink copy has no stroke`).not.toMatch(/stroke-width/)
+      // `stroke-width` is not the test: the export copies the computed value,
+      // and that is "1px" on every element, stroked or not. Observed on the
+      // ink copy of "constrains": `stroke:none;stroke-width:1px`.
+      expect(ink?.[1], `${label}: the ink copy has no stroke`).toMatch(/stroke:\s*none/)
 
       /**
        * The invisible hit twins are gone. Both drawings lay a transparent

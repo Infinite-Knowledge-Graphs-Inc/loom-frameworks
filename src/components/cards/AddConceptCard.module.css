@@ -47,9 +47,9 @@
   width: 100%;
   padding: 0 18px 0 0;
   color: var(--ink-soft);
-  font: 8.5px/1.4 var(--mono);
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font: 600 12px/1.4 var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .close {
@@ -134,21 +134,24 @@
 }
 
 .row button {
-  padding: 5px 8px;
-  background: var(--paper-2);
-  color: var(--ink);
-  font: 8.5px/1.2 var(--mono);
-  letter-spacing: .04em;
-  text-transform: uppercase;
+  padding: 5px 10px;
+  background: var(--ink);
+  color: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: 600 13px/1.2 var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
   cursor: pointer;
 }
 
 .row button:hover:not(:disabled) {
-  border-color: var(--ink-soft);
-  background: var(--paper);
+  border-color: transparent;
+  background: var(--ink-hover);
 }
 
 .row button:disabled {
+  background: var(--paper-2);
   color: var(--dot);
   cursor: default;
 }
