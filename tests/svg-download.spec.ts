@@ -77,6 +77,10 @@ test.describe("Download the drawing", () => {
        */
       expect(file.text, `${label}: no unresolved custom properties`).not.toContain("var(--")
       expect(file.text, `${label}: colours resolved to literals`).toMatch(/rgb\(\d+, ?\d+, ?\d+\)/)
+      // A `color-mix()` paint on a drawing comes back from getComputedStyle as
+      // `color(srgb …)`, which Illustrator and Inkscape do not read. A wash on
+      // an SVG mark is a token plus `strokeOpacity`/`fillOpacity`, not a mix.
+      expect(file.text, `${label}: no CSS Color 4 values`).not.toMatch(/color\(|color-mix/)
 
       // Its own ground, so a dark viewer does not put dark ink on black.
       expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#ffffff"/)

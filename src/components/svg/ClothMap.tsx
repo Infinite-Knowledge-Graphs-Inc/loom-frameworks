@@ -280,7 +280,7 @@ export default function ClothMap({
           all (the warp line is drawn under, but it wins any pixel the arc's
           hairline does not exactly cover). */}
       {cs.map((c, i) => (
-        <line key={`warp-${c.id}`} x1={X(i)} y1={28} x2={X(i)} y2={baseY} stroke="color-mix(in srgb, var(--ochre) 14%, transparent)" strokeWidth={1} pointerEvents="none" />
+        <line key={`warp-${c.id}`} x1={X(i)} y1={28} x2={X(i)} y2={baseY} stroke="var(--ochre)" strokeOpacity={0.14} strokeWidth={1} pointerEvents="none" />
       ))}
 
       {/* Edges */}
