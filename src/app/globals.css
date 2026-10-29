@@ -1083,6 +1083,13 @@ footer .fl{color:var(--ink)} footer .fr{color:var(--ink-soft)}
    that is what silently ate the shelf's "Choose file" — and is handed back to
    the one part that is now a control. */
 footer .footid{display:flex;align-items:center;gap:9px;pointer-events:auto}
+/* The footer is 34px and the page reserves for exactly that (the 34px measured
+   in the `main.canvasfull` comment). The 13px sans label made Sign out 25px
+   instead of 23px at `line-height:normal`, and the footer 36px: two px under
+   a hard-coded reserve, enough to flip tests/warp-remove.spec.ts at 1280x720
+   (footer top 686 on master, 683 with that change). `line-height:1` gives the
+   button its 23px back. */
+footer .btn{line-height:1}
 footer .fr{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
 /* The reading's own name reads as a title, not as another mono caption: it is
    the one proper noun in the row. */
