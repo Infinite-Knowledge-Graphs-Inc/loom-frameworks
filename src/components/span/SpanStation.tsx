@@ -1,6 +1,6 @@
 "use client"
 
-// 05 · Span — a prototype. Choose readings, see every concept they evidence,
+// 05 · Projections across readings (beta). Choose readings, see every concept they evidence,
 // and sort those concepts on the same three-tier board as 03 · Knowledge Graph.
 //
 // The scope is the URL (`/span` or `/span/<id>/<id>/…`). LoomProvider reads
@@ -142,7 +142,7 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
       <main className="station-work">
         <p className="tasktitle">Choose readings. See their concepts. Project them.</p>
         <p className="tasksub">
-          A prototype. The list is every concept in the readings you choose — evidenced by a passage there,
+          In beta. The list is every concept in the readings you choose — evidenced by a passage there,
           or named there before a passage existed — and the board sorts them into primary, secondary and
           tertiary the same way Knowledge Graph does. The lines are threads you have already thrown.
           Nothing here places a card for you.

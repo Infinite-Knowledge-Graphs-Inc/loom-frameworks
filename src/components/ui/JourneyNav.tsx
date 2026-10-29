@@ -39,15 +39,24 @@ const STATIONS: { key: Station; label: string; hidden?: boolean }[] = [
   // Graph, and `?tab=` keeps speaking them (refactor spec §F).
   { key: "map", label: "Knowledge Graph" },
   { key: "read", label: "Vocabulary" },
-  // Prototype station, last so the derived number is 05. It is not one of the
+  // Beta station, last so the derived number is 05. It is not one of the
   // model's five (loom-model-build.md §3) and it is not the weave TJ removed
-  // on 2026-08-11: that surface was every reading at once. Span is a chosen
-  // set, and the scope key it uses is the one `scopeOf` already writes
+  // on 2026-08-11: that surface was every reading at once. This one is a
+  // chosen set, and the scope key it uses is the one `scopeOf` already writes
   // (src/lib/scope.ts — sorted ids, comma-joined).
-  { key: "span", label: "Span" },
+  //
+  // The key stays `span` (code speaks July); the label speaks the model:
+  // "Projection" is the object a student makes here, and loom-model-build.md
+  // §3 says nothing in the UI is called a "Map". The "(beta)" is the label's
+  // own — it comes off with this line, not from a flag. The tag was asked for
+  // in a chat on 2026-10-28 ("it's okay to tag (beta) on the end of the tab");
+  // that was not a ruling by TJ, and the rest of the wording is this file's
+  // reading of the model, not a ruling either.
+  { key: "span", label: "Projections across readings (beta)" },
   // "Keep" was station 05 until 2026-08-11. Download happens at each object
   // now — the cloth at 01, threads at 02, a projection and the Capture Log at
-  // 03, vocabulary at 04. The model's bar was those five; Span sits after them.
+  // 03, vocabulary at 04. The model's bar was those five; the beta station
+  // sits after them.
   // There was a hidden "weave" station here, and a `/weave` route behind it.
   // TJ retired both on 2026-08-11: "we are removing whole weave as it exists
   // in the app because it is poorly defined and not supported in the course.
@@ -89,11 +98,12 @@ const DEFAULT_HREF: Record<Station, string> = {
 }
 
 /**
- * Why Span is grey inside the practice loom. Opening it would leave the
- * guide for the real loom — Span's projections are ordinary map rows.
+ * Why Projections across readings is grey inside the practice loom. Opening
+ * it would leave the guide for the real loom — its projections are ordinary
+ * map rows.
  */
 export const SPAN_OFF_IN_PRACTICE =
-  "leave the guide to use Span — it works on your real loom"
+  "leave the guide to make projections across readings — it works on your real loom"
 
 /**
  * Stations that only exist inside a reading (TJ, 2026-08-09).
@@ -120,7 +130,7 @@ export const SPAN_OFF_IN_PRACTICE =
 const READING_ONLY: ReadonlySet<Station> = new Set<Station>(["open", "throw", "map", "read"])
 
 const TIP: Partial<Record<Station, string>> = {
-  span: "choose readings and lay their concepts on one board",
+  span: "choose readings, then sort the concepts they share and hold on one board",
 }
 
 /**

@@ -206,7 +206,7 @@ export default function Header({ deployEnv, isBranchPreview = false }: { deployE
               <li><b>02 Linking</b> — pick two concepts and say how they hang together. That sentence IS the thread; a short label is a convenience that lets one of your words recur.</li>
               <li><b>03 Knowledge Graph</b> — sort your concepts into tiers and arrange them as cards on a board. Each arrangement is a projection: keep several, and each can say something different about the same cloth.</li>
               <li><b>04 Vocabulary</b> — every concept you have named and every label you have given a link, across all your readings. A concept does not belong to a text; a passage does.</li>
-              <li><b>05 Span</b> — a prototype. Choose readings, see every concept they evidence, and sort those concepts on the same three-tier board. One reading is that reading&apos;s Knowledge Graph; two or more are a projection of their own.</li>
+              <li><b>05 Projections across readings</b> — in beta. Choose readings, see every concept they evidence, and sort those concepts on the same three-tier board. One reading is that reading&apos;s Knowledge Graph; two or more are a projection of their own.</li>
             </ul>
 
             <h3>What Loom will not do</h3>
