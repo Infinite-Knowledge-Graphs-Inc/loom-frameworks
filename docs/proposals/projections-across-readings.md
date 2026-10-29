@@ -1,11 +1,26 @@
 # Projections across readings — proposal
 
-**Status: proposal — numbered questions unanswered.** Written against the
+**Status: proposal — built as a beta on the owner's direction; questions not individually answered.** Written against the
 `prototype/05-span` branch so that a ruling exists on what it *is*. Under
 AGENTS.md nothing here ships while the questions stand; the station is
 labelled "(beta)" in the nav as a courtesy to whoever opens it, which is not
 a ruling and does not lift the gate (the tag was asked for in chat on
 2026-10-28; nothing in that exchange was a ruling by TJ).
+
+**Owner direction, 2026-10-28.** The project owner said in chat that TJ is no
+longer on the project and asked to "just make this work" without interfering
+with the other tabs, with persistence. That is direction to build; it is not
+an answer to the nine questions below, none of which was put to them one by
+one. What the build does about each, so the choices are visible:
+
+- Q1, Q2, Q4, Q3 (name): built as the recommendations say — a chosen set,
+  never "all"; a Projection scoped to a set of Readings (`map.scopeKey`); a
+  sixth station; the model's word "Projection" in the label.
+- Q5 (Capture Log), Q6 (reset), Q7 (search), Q8, Q9: **left as found.** Each
+  would change what another tab shows or does, which the direction rules out.
+- The model (`loom-model-build.md`) is **not amended**. Where this build and
+  §1–§3 disagree, the model still reads as written; amending it is the
+  owner's call and has not been made.
 
 ## The problem
 
