@@ -1,5 +1,6 @@
 "use client"
 
+import Explainer from "@/components/ui/Explainer"
 import { useRef, useState } from "react"
 import { uploadReading } from "@/lib/readingUploadClient"
 import { MAX_READING_BYTES, MAX_READING_LABEL, formatBytes } from "@/lib/readingUpload"
@@ -118,12 +119,12 @@ export default function UploadReadingsForm({ course }: UploadReadingsFormProps) 
         <span className="tw">▸</span>
         <h2>Add Readings to the Library</h2>
       </summary>
-      <p className="hint" style={{ marginTop: "10px" }}>
+      <Explainer className="hint" style={{ marginTop: "10px" }}>
         Select one or more PDFs, up to {MAX_READING_LABEL} each. They upload straight from
         your browser to storage, one at a time — each is stored, OCR&apos;d and scored on
         its own, so one bad file never takes the others down. Review titles and
         provenance afterwards.
-      </p>
+      </Explainer>
 
       <div style={{ marginTop: "14px" }}>
         <div className="form-row">

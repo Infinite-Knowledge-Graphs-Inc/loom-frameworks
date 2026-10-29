@@ -1,5 +1,6 @@
 "use client"
 
+import Explainer from "@/components/ui/Explainer"
 import { CAPABILITIES, MATRIX_NOTES, type Access, type CapabilityGroup } from "@/lib/capabilities"
 
 /**
@@ -46,12 +47,12 @@ export default function RoleMatrix() {
 
   return (
     <section className="matrix">
-      <p className="hint">
+      <Explainer className="hint">
         Read off the code that enforces it, not the buttons that are drawn.
         <b> ●</b> yes · <b>◐</b> yes, with the limit named · <b>—</b> no.
         A student is not a stored role — it is an active course membership that
         is not faculty, held by someone who is not a site admin.
-      </p>
+      </Explainer>
 
       <div className="scrollx">
         <table className="mtable">

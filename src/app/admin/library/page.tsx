@@ -1,3 +1,4 @@
+import Explainer from "@/components/ui/Explainer"
 import { checkAdmin } from "@/actions/admin"
 import { buildStamp } from "@/lib/buildStamp"
 import { getRepairSummary, getRepairsForSource } from "@/actions/repairs"
@@ -85,10 +86,10 @@ export default async function AdminLibraryPage({
           copy of the app is this" belongs beside the readings rather than only
           in the About card a student reads. Same one line, same source. */}
       <p className="aboutbuild" style={{ marginTop: 0, borderTop: "none", paddingTop: 0 }}>{buildStamp()}</p>
-      <p className="tasksub" style={{ marginBottom: "20px" }}>
+      <Explainer className="tasksub" style={{ marginBottom: "20px" }}>
         One shared library. Every reading is uploaded and OCR&apos;d once, then included in any
         number of courses — each with its own week, visibility, and core/supplemental status.
-      </p>
+      </Explainer>
 
       <UploadReadingsForm
         course={activeCourse ? { id: activeCourse.id, name: activeCourse.name } : null}
@@ -102,10 +103,10 @@ export default async function AdminLibraryPage({
             <span className="pill loose">{unscheduled} in no course</span>
           ) : null}
         </div>
-        <p className="hint" style={{ marginBottom: "14px" }}>
+        <Explainer className="hint" style={{ marginBottom: "14px" }}>
           Metadata and scores are shared across every course that includes a reading. Week,
           visibility, and core status are per-course — set those on the Courses tab.
-        </p>
+        </Explainer>
 
         {live.length === 0 ? (
           <div className="card empty">

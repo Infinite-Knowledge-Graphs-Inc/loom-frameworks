@@ -8,6 +8,7 @@
 // own vocabulary is the thing this tab is for, and the comparison is a second
 // look at it, never the first.
 
+import Explainer from "@/components/ui/Explainer"
 import { useCallback, useEffect, useState } from "react"
 
 import { getVocabularyOverlay } from "@/lib/reads"
@@ -108,12 +109,12 @@ export default function VocabularyOverlay({
       <h2>
         What others named <span className="n">counted, not judged</span>
       </h2>
-      <p className="hint">
+      <Explainer className="hint">
         The same words other people reached for
         {sourceId ? " in this reading" : " across the course's readings"}
         {" "}— no names, and never anyone&apos;s notes or questions. Faculty and admins only:
         a comparison put in front of a student would name the text for them before they had read it.
-      </p>
+      </Explainer>
 
       {/* A picker, not two buttons (TJ, 2026-08-08): faculty teach across
           sections, so a single "my section" had no referent for them. */}

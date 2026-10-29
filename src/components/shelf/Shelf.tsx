@@ -8,6 +8,7 @@
 // scored: no completion, no checkmarks, no "not started" — red line #7 holds
 // only if the shelf reports what the student did and never grades it.
 
+import Explainer from "@/components/ui/Explainer"
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
@@ -248,12 +249,12 @@ export default function Shelf({ isPreviewDeployment = false }: { isPreviewDeploy
       <JourneyNav active="readings" search={<StationSearch scope="loom" />} />
       <main>
         <p className="tasktitle" style={{ margin: "0 0 3px" }}>Pick a reading.</p>
-        <p className="tasksub">
+        <Explainer className="tasksub">
           Each reading is its own piece of work: capture its passages, name what they
           evidence, thread those concepts together, and read the whole. Your concepts
           carry across — meet one again in a later text and it is the same concept, with
           the evidence of both.
-        </p>
+        </Explainer>
 
         {/* The search is in the journey bar now (TJ, 2026-08-13) — one per
             station, scoped and labeled. A standing band stood here, and while a
@@ -319,11 +320,11 @@ export default function Shelf({ isPreviewDeployment = false }: { isPreviewDeploy
         {!isLoading && state.concepts.length === 0 && (
           <div className="card" style={{ marginTop: 8 }}>
             <h2>New to this?</h2>
-            <p className="hint">
+            <Explainer className="hint">
               The guide walks you through it on a real reading: highlight a passage,
               name what it evidences, thread two concepts together, lay out a board.
               <b>Nothing there is kept</b>, so nothing you do can go wrong.
-            </p>
+            </Explainer>
             <Link className="btn ghost mini" href="/sandbox">open the guide</Link>
           </div>
         )}
@@ -446,11 +447,11 @@ function Untethered({ readings }: { readings: ReadingMeta[] }) {
           shelf. Only the student can say which reading each set came from.
         </p>
       ) : (
-      <p className="hint">
+      <Explainer className="hint">
         These were captured before a reading was open, so they sit outside every card on
         your shelf. Say which reading each set came from and they find their place. Loom
         will not guess for you — a wrong guess would file your evidence under the wrong text.
-      </p>
+      </Explainer>
       )}
       {groups.map(([key, ids]) => (
         <div key={key} className="untethered">
@@ -614,10 +615,10 @@ function AddOwnReading({ onAdded }: { onAdded: () => void }) {
         >
           + a reading of your own
         </button>
-        <p className="hint" style={{ marginTop: 6 }}>
+        <Explainer className="hint" style={{ marginTop: 6 }}>
           Coding something your course readings don&apos;t include? Upload the PDF and it
           reads like any other card — or card a book or lecture and capture by hand.
-        </p>
+        </Explainer>
       </div>
     )
   }
@@ -626,10 +627,10 @@ function AddOwnReading({ onAdded }: { onAdded: () => void }) {
     return (
       <div className="card">
         <h2>On your shelf — now its card</h2>
-        <p className="hint">
+        <Explainer className="hint">
           The reading is uploaded. Draft its details from the PDF itself, or type them —
           either way you review every line, and nothing is saved until you do.
-        </p>
+        </Explainer>
         <div className="form-row">
           <span className="label">Title</span>
           <input value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
@@ -688,11 +689,11 @@ function AddOwnReading({ onAdded }: { onAdded: () => void }) {
   return (
     <div className="card">
       <h2>A reading of your own</h2>
-      <p className="hint">
+      <Explainer className="hint">
         With the PDF, the reading opens on 00 and you capture from the text itself.
         Without one — a book, a lecture — the card still stands, and you capture its
         passages by hand on 01 · Reading. It sits on your shelf and nobody else&apos;s.
-      </p>
+      </Explainer>
       <div className="form-row">
         <span className="label">PDF File <span style={{ textTransform: "none", letterSpacing: 0 }}>(up to {MAX_READING_LABEL} — optional for a book or lecture)</span></span>
         <input

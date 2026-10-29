@@ -7,6 +7,7 @@
 // would imply this page reads either. It reads neither; these flows are the
 // same for every course.
 
+import Explainer from "@/components/ui/Explainer"
 import { useState } from "react"
 import FlowDiagram from "@/components/admin/FlowDiagram"
 import { FLOWS, toMermaid } from "@/lib/workflows"
@@ -77,12 +78,12 @@ export default function WorkflowsBoard({ showAll = true }: { showAll?: boolean }
 
       <div className="card" style={{ marginTop: "14px" }}>
         <h2>Keeping this true</h2>
-        <p className="hint">
+        <Explainer className="hint">
           The diagram is generated from <b>src/lib/workflows.ts</b> — it is not drawn by
           hand. When a refactor changes how someone moves through Loom, edit the flow
           there and the picture follows; <b>scripts/check-workflows.ts</b> runs in{" "}
           <code>npm run check</code> and fails on a step wired to nothing.
-        </p>
+        </Explainer>
         <p className="hint" style={{ marginTop: "8px" }}>
           The code behind <b>{flow.title}</b>:
         </p>

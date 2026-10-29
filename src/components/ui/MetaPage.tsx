@@ -1,3 +1,4 @@
+import Explainer from "@/components/ui/Explainer"
 import JourneyNav from "@/components/ui/JourneyNav"
 
 /**
@@ -57,7 +58,7 @@ export default function MetaPage({
         {/* A real <h1>. A reference page with no heading has no document
             structure for a screen reader — or for a test — to hold on to. */}
         <h1>{title}</h1>
-        <p className="tasksub" style={{ marginBottom: "20px" }}>{meta}</p>
+        <Explainer className="tasksub" style={{ marginBottom: "20px" }}>{meta}</Explainer>
         {children}
       </main>
     </>

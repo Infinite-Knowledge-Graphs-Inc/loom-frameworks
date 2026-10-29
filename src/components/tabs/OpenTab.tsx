@@ -1,5 +1,6 @@
 "use client"
 
+import Explainer from "@/components/ui/Explainer"
 import { useEffect, useRef, useState } from "react"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useReadings } from "@/components/providers/ReadingsProvider"
@@ -391,7 +392,7 @@ export default function OpenTab({ onGotoPassage, focusPassageId, focusConceptId,
   const captureForm = (
     <>
         <p className="do">Do this — paste or type the passage, then name the concept it evidences and gloss it in your own words.</p>
-        <p className="hint">A passage = the author&apos;s words, verbatim, with its citation. Choosing the passage is <i>your</i> judgment — that&apos;s the point. Loom can carry over source details and offer passage words to tap; it does not summarize or choose the concept for you.</p>
+        <Explainer className="hint">A passage = the author&apos;s words, verbatim, with its citation. Choosing the passage is <i>your</i> judgment — that&apos;s the point. Loom can carry over source details and offer passage words to tap; it does not summarize or choose the concept for you.</Explainer>
         
         {/* 2026-08-09 (TJ): this said "(this reading, unless you say
             otherwise)" and could not keep the promise. Typing here sets
@@ -424,10 +425,10 @@ export default function OpenTab({ onGotoPassage, focusPassageId, focusConceptId,
             line read as an echo of the input — the exact opposite of its job,
             which is to show that the two are different things. */}
         {activeSourceId ? (
-          <p className="ghostnote" style={{ marginTop: "-4px", marginBottom: "10px" }}>
+          <Explainer className="ghostnote" style={{ marginTop: "-4px", marginBottom: "10px" }}>
             Filed under <i>{titleOf(activeSourceId)}</i> — the reading you have open. The citation
             travels with the passage and may name someone else; the filing follows the reading.
-          </p>
+          </Explainer>
         ) : null}
 
         <div className="form-row">
@@ -613,7 +614,7 @@ export default function OpenTab({ onGotoPassage, focusPassageId, focusConceptId,
         {!compact && !readOnly && (
           <>
             <p className="do calm">Everything you capture from this reading lands here, A–Z.</p>
-            <p className="hint">Click a row to open it — edit the description, or file the same passage under another concept. When you have a handful, go to <b>02 — Linking</b> and start connecting them.</p>
+            <Explainer className="hint">Click a row to open it — edit the description, or file the same passage under another concept. When you have a handful, go to <b>02 — Linking</b> and start connecting them.</Explainer>
           </>
         )}
 
@@ -815,11 +816,11 @@ export default function OpenTab({ onGotoPassage, focusPassageId, focusConceptId,
             is no field above — so the note is not drawn there; the Vocabulary
             station itself stays reachable from the journey bar (TJ, 2026-08-21). */}
         {view === "concepts" && scoped.outside.length > 0 && !readOnly && (
-          <p className="ghostnote" style={{ marginTop: "10px" }}>
+          <Explainer className="ghostnote" style={{ marginTop: "10px" }}>
             This list is this reading&apos;s work. Concepts you named in other readings
             are still offered as you type a concept above — filing a passage from here
             under one is what joins the two texts{onGotoVocabulary ? <> — and <button type="button" className="linkish" onClick={onGotoVocabulary}>Vocabulary</button> shows every concept you own</> : null}.
-          </p>
+          </Explainer>
         )}
 
         {/* Naming a concept BEFORE its evidence is a first-class move, not an

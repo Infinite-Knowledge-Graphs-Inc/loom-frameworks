@@ -1,5 +1,6 @@
 "use client"
 
+import Explainer from "@/components/ui/Explainer"
 import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { scopedGraph, scopeOf } from "@/lib/scope"
 import LinkDescription from "@/components/ui/LinkDescription"
@@ -734,12 +735,12 @@ export default function ThrowTab({ onGotoPassage, pair, across = false }: {
           {/* Not in Open Loom: it explains a control the rows there do not
               carry (TJ, 2026-08-21). */}
           {orderedEdges.length > 0 && !readOnly && (
-            <p className="hint">
+            <Explainer className="hint">
               As a thread matures you can promote its description to a <b>label</b> — one
               short word for the relation, chosen because it captures the essence of what
               you already said. That is what <i>edit label</i> on a row is for. A thread
               that stays a description is finished work, not a draft.
-            </p>
+            </Explainer>
           )}
 
           <div className="scrollbox">

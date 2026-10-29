@@ -1,5 +1,6 @@
 "use client"
 
+import Explainer from "@/components/ui/Explainer"
 import { useState } from "react"
 
 /**
@@ -54,12 +55,12 @@ export default function NameConceptCard({
   return (
   <div className="aheadofit">
     <span className="label">Name a concept before its evidence</span>
-    <p className="hint" style={{ marginTop: 2 }}>
+    <Explainer className="hint" style={{ marginTop: 2 }}>
       Expecting an idea before you have found it in the text? Name it, say what you
       think it is, and go looking. It shows as <b>no evidence</b> until a passage
       backs it — a state, not a fault — and it stays on this reading&apos;s linking
       list while you hunt. A passage is what carries it into another reading.
-    </p>
+    </Explainer>
     <div className="form-row">
       {/* The explanation moves INTO the label and the placeholder becomes
           an example (TJ, 2026-08-17). It was the other way round: the

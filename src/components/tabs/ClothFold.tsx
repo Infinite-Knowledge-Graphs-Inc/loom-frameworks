@@ -12,6 +12,7 @@
 // conceptually always there, and the row is written the first time you title or
 // describe it. The shelf card shows that title and when it was last edited.
 
+import Explainer from "@/components/ui/Explainer"
 import { useState } from "react"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useReadings } from "@/components/providers/ReadingsProvider"
@@ -111,21 +112,21 @@ export default function ClothFold({ openOnArrival = false }: {
           )}
         </h2>
       </summary>
-      <p className="hint" style={{ marginTop: 10 }}>
+      <Explainer className="hint" style={{ marginTop: 10 }}>
         Your work on this reading, under your own name for it. The title is a
         sentence or headline — yours, not the reading&apos;s — and both show on
         the reading&apos;s card in the Library.
-      </p>
+      </Explainer>
       {/* The cloth is the whole of your work here; a projection is one lens on
           it. Both carry a title and a description, and students reasonably
           assume they are the same field — they are not, and a projection's
           travel with the projection. */}
-      <p className="hint" style={{ marginTop: 6, color: "var(--ink-soft)" }}>
+      <Explainer className="hint" style={{ marginTop: 6, color: "var(--ink-soft)" }}>
         This names <b>the cloth</b> — everything you have woven from this reading.
         A <b>projection</b> on 03 · Knowledge Graph is one arrangement of it, a particular lens,
         and carries its <i>own</i> title, one-line and description. Keep several projections and
         each keeps its own; they can say quite different things about the same cloth.
-      </p>
+      </Explainer>
       {/* Plain text in Open Loom: the student's title and description stay
           readable; only the fields go (TJ, 2026-08-21). */}
       {readOnly ? (

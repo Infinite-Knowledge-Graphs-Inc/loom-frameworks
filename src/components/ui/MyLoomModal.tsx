@@ -20,6 +20,7 @@
  * behind it.
  */
 
+import Explainer from "@/components/ui/Explainer"
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { useLoom } from "@/components/providers/LoomProvider"
@@ -204,10 +205,10 @@ export default function MyLoomModal({
                 <li key={word}><b>{n}</b> {noun(n, word)}</li>
               ))}
             </ul>
-            <p className="info-note">
+            <Explainer className="info-note">
               Concepts and links are yours across every reading — a concept does not
               belong to a text, a passage does. Each object downloads where it lives.
-            </p>
+            </Explainer>
 
             {byReading.length > 0 && (
               <>
@@ -252,11 +253,11 @@ export default function MyLoomModal({
                   projection and cloth in {course ? <strong>{course.name}</strong> : "this course"}.
                   Your readings stay, and so does your place on the course.
                 </p>
-                <p className="info-note">
+                <Explainer className="info-note">
                   Your Capture Log keeps the record of the weaving, and your instructor
                   can see it. Download anything you want to keep first — each object
                   downloads from its own row.
-                </p>
+                </Explainer>
                 <button
                   className="btn danger"
                   onClick={() => setArming(true)}
