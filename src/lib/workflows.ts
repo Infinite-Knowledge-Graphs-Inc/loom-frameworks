@@ -155,7 +155,7 @@ const student: Flow = {
     // beta: choose readings and project their concepts together. It is not a
     // step of the course, and it is not the weave removed on 2026-08-11 — that
     // was every reading at once, with no choice.
-    { id: "span", label: "Choose readings and tier their concepts on one board", where: "05 · Projections across readings (beta) — /span" },
+    { id: "span", label: "Choose readings, link concepts across them, and tier them on one board", where: "05 · Projections across readings (beta) — /span" },
     { id: "overlay", label: "Compare a section, or all of them", where: "Overlays — faculty and admins only" },
     // There used to be a "weave" node here — "Every reading at once", at
     // /weave. It came out in 2026-08-09 because the diagram drew a step no
