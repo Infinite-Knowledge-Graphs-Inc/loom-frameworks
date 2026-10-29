@@ -43,11 +43,19 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   const rawKey = scopeOf(rawIds).key
 
   const knownIds = useMemo(() => new Set(readings.map((r) => r.id)), [readings])
+  // The shelf is not known yet while the session is still resolving OR the
+  // provider says it is loading. Both matter: on a hard load (reload, bookmark,
+  // a link) ReadingsProvider's `!session` branch sets `isLoading` false with
+  // `readings = []` before the session arrives, so `loadingShelf` alone is
+  // false at exactly the moment the shelf is empty because it has not been
+  // asked for. Observed 2026-10-28 on the running app: a reload of
+  // /span/<id>/<id> landed on /span with nothing chosen.
+  const shelfPending = status === "loading" || loadingShelf
   const selected = useMemo(() => {
     const ids = scopeOf(rawKey ? rawKey.split(",") : []).sourceIds
-    if (loadingShelf) return ids
+    if (shelfPending) return ids
     return ids.filter((id) => knownIds.has(id))
-  }, [rawKey, loadingShelf, knownIds])
+  }, [rawKey, shelfPending, knownIds])
 
   // Drop an id that is not on this shelf, and rewrite an unsorted path to
   // `spanPath`'s order. `replace` so the cleanup is not its own history step.
@@ -58,12 +66,18 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   // [] on a first-load error (and says so in `error`), so every id would look
   // unknown and a bookmark like /span/a/b would be rewritten to /span by a
   // network blip. Read in ReadingsProvider.tsx; not reproduced in a browser.
+  //
+  // And not while the shelf is empty, for the reason on `shelfPending` above:
+  // an empty list is "not asked yet" far more often than "nothing published".
+  // The cost of waiting is that a bookmark to a course with truly no readings
+  // keeps its ids in the address bar; with no shelf there is nothing it could
+  // have been checked against, and the picker says so.
   useEffect(() => {
-    if (loadingShelf || shelfError) return
+    if (shelfPending || shelfError || readings.length === 0) return
     const kept = scopeOf(rawKey ? rawKey.split(",") : []).sourceIds.filter((id) => knownIds.has(id))
     const next = spanPath(kept)
     if (pathname !== next) router.replace(next)
-  }, [loadingShelf, shelfError, knownIds, rawKey, pathname, router])
+  }, [shelfPending, shelfError, readings.length, knownIds, rawKey, pathname, router])
 
   const toggle = (id: string) => {
     const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]
