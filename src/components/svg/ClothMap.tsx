@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import type { LoomState } from "@/lib/types"
 import { adjacency, componentOf } from "@/lib/clothMath"
 import { conceptNameText } from "@/lib/conceptName"
+import HaloText from "@/components/svg/HaloText"
 
 type ReadSel = {
   type: "concept" | "edge" | "hub",
@@ -356,7 +357,8 @@ export default function ClothMap({
               pointerEvents="none"
             />
 
-            <text
+            <HaloText
+              lines={[e.handle || (e.sentence.length > 34 ? e.sentence.slice(0, 33) + "…" : e.sentence)]}
               x={(fx + tx) / 2}
               y={baseY - 6 - h - 5}
               textAnchor="middle"
@@ -364,16 +366,11 @@ export default function ClothMap({
               fontSize={10}
               fontStyle={beaten ? "normal" : "italic"}
               fill={col}
-              stroke="#f4f2ec"
-              strokeWidth={4}
-              paintOrder="stroke"
               letterSpacing=".04em"
               opacity={op}
               cursor={handleSelect ? "pointer" : undefined}
               onClick={handleSelect}
-            >
-              {e.handle || (e.sentence.length > 34 ? e.sentence.slice(0, 33) + '…' : e.sentence)}
-            </text>
+            />
           </g>
         )
       })}

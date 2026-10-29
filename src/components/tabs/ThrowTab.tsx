@@ -16,6 +16,7 @@ import ConceptName from "@/components/ui/ConceptName"
 import type { Passage } from "@/lib/types"
 import { useRenameConcept } from "@/components/cards/useRenameConcept"
 import { useCoinConcept } from "@/components/cards/useCoinConcept"
+import { useRemoveConcept } from "@/components/cards/useRemoveConcept"
 import NameConceptCard from "@/components/cards/NameConceptCard"
 import ThreadCard from "@/components/cards/ThreadCard"
 
@@ -389,6 +390,7 @@ export default function ThrowTab({ onGotoPassage, pair }: {
    */
   const renameConcept = useRenameConcept()
   const coinConcept = useCoinConcept()
+  const removeThisConcept = useRemoveConcept()
   const [coining, setCoining] = useState(false)
   const conceptRow = (c: typeof state.concepts[number]) => (
     <ConceptCard
@@ -404,12 +406,24 @@ export default function ThrowTab({ onGotoPassage, pair }: {
       readOnly={readOnly}
       onGotoPassage={onGotoPassage}
       /* 02 opens to the same three sections as 01 and 04 (TJ, 2026-08-18). No
-         unfile: this station links concepts, it does not keep their filings. */
+         unfile: this station links concepts, it does not keep their filings.
+         Remove is the vocabulary delete — the same dialog — because the +
+         above coins the concept on this page. */
       edit={{
         isOpen: false,
         onToggle: () => {},
         onRename: readOnly ? undefined : (input) => renameConcept(c, input),
         onEditDef: (def) => editConcept(c.id, { def }),
+        body: readOnly ? undefined : (
+          <button
+            type="button"
+            className="rm"
+            style={{ background: "none", border: "none", padding: 0, marginTop: "12px" }}
+            onClick={() => removeThisConcept(c)}
+          >
+            remove concept
+          </button>
+        ),
       }}
       pick={pairA === c.id ? 1 : pairB === c.id ? 2 : null}
       onPick={() => togglePick(c.id)}

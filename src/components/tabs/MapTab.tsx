@@ -30,6 +30,7 @@ import SvgDownload from "@/components/ui/SvgDownload"
 import ClothReflection from "@/components/tabs/ClothReflection"
 import ConceptName from "@/components/ui/ConceptName"
 import { conceptName, conceptNameText } from "@/lib/conceptName"
+import HaloText from "@/components/svg/HaloText"
 
 const TIERS: [Tier, string][] = [["p", "PRIMARY"], ["s", "SECONDARY"], ["t", "TERTIARY"]]
 const TABLE_H = 560
@@ -972,14 +973,18 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
                   <title>{readOnly ? `“${e.sentence}”` : `“${e.sentence}” — drag to bend this line`}</title>
                 </path>
                 {/* label at the curve's apex, wrapped rather than cut */}
-                <text
-                  x={lx} y={ly - 4 - (lines.length - 1) * 5.5} textAnchor="middle"
-                  fontFamily="ui-monospace,Menlo,monospace" fontSize={10} letterSpacing=".04em"
-                  fill={col} stroke="#f4f2ec" strokeWidth={4} paintOrder="stroke"
-                  fontStyle={named ? undefined : "italic"} pointerEvents="none"
-                >
-                  {lines.map((ln, i) => <tspan key={i} x={lx} dy={i ? 11 : 0}>{ln}</tspan>)}
-                </text>
+                <HaloText
+                  lines={lines}
+                  x={lx}
+                  y={ly - 4 - (lines.length - 1) * 5.5}
+                  textAnchor="middle"
+                  fontFamily="ui-monospace,Menlo,monospace"
+                  fontSize={10}
+                  letterSpacing=".04em"
+                  fill={col}
+                  fontStyle={named ? "normal" : "italic"}
+                  pointerEvents="none"
+                />
               </g>
             )
           })}

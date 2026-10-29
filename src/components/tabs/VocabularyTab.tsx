@@ -28,6 +28,7 @@ import ObjectDownload from "@/components/ui/ObjectDownload"
 import ConceptCard from "@/components/cards/ConceptCard"
 import { useRenameConcept } from "@/components/cards/useRenameConcept"
 import { useCoinConcept } from "@/components/cards/useCoinConcept"
+import { useRemoveConcept } from "@/components/cards/useRemoveConcept"
 import NameConceptCard from "@/components/cards/NameConceptCard"
 import { conceptNameText } from "@/lib/conceptName"
 import { buildVocabularyExport, buildVocabularyMarkdown } from "@/lib/objectExport"
@@ -83,7 +84,7 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
   // — while the coin controls go and every field renders as plain text.
   const {
     state, scope, scoped,
-    editConcept, removeConcept, mergeConcepts, editEdge, flash, unfilePassage,
+    editConcept, mergeConcepts, editEdge, flash, unfilePassage,
     addLink, editLink, readOnly,
   } = useLoom()
   const { titleOf, course } = useReadings()
@@ -92,6 +93,7 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
   // Shared with Your work, so one homonym dialog serves both.
   const renameConcept = useRenameConcept()
   const coinConcept = useCoinConcept()
+  const removeThisConcept = useRemoveConcept()
   /* `coiningConcept`, not `coining`: this file already had one — the busy flag
      on coining a LINK LABEL, further down. Two different objects, two names. */
   const [coiningConcept, setCoiningConcept] = useState(false)
@@ -275,32 +277,6 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
     }
   }
 
-  const handleRemoveConcept = async (concept: Concept, passages: number) => {
-    // Threads first: a concept woven into one cannot be deleted out from under
-    // it. The server enforces this too — this is the readable version.
-    if (state.edges.some((e) => e.fromId === concept.id || e.toId === concept.id)) {
-      await notify({
-        title: "This concept is woven into a thread.",
-        body: "Remove the thread on 02 · Linking first — deleting the concept now would take your thread with it.",
-      })
-      return
-    }
-    // With merge hidden, deleting the row you are not keeping IS the duplicate
-    // repair — so this says where the passages go (01 · Reading, Your work,
-    // under Unlabeled) rather than leaving "unfiled" as a word with no place
-    // attached. It said "Export from Keep first" until 2026-08-12, the day
-    // after Keep was deleted; the vocabulary downloads at the head of this tab.
-    const ok = await confirm({
-      title: `Delete “${conceptNameText(concept)}”?`,
-      body: passages
-        ? `Its ${passages} captured passage${passages !== 1 ? "s" : ""} stay${passages !== 1 ? "" : "s"} in your work on ${passages !== 1 ? "their readings" : "its reading"}, under Unlabeled — file them under another concept whenever you like. Download your vocabulary first if you might want the concept itself back.`
-        : "Download your vocabulary first if you might want this back.",
-      confirmLabel: "Delete concept",
-      danger: true,
-    })
-    if (ok) removeConcept(concept.id)
-  }
-
   return (
     <>
       <div style={{ display: "flex", alignItems: "baseline", gap: "14px", flexWrap: "wrap" }}>
@@ -344,12 +320,10 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
               onClick={() => setCoiningConcept((v) => !v)}
               aria-expanded={coiningConcept}
               /* WORD FOR WORD the warp's (TJ, 2026-08-18: "the same for
-                 vocabulary"). I had trimmed "in the reading" here on the
-                 grounds that 04 is the loom-wide station — but the sentence
-                 holds anyway, and more usefully: a concept coined this way
-                 belongs to no reading and stands in EVERY reading's warp while
-                 you hunt, so "in the reading" is true of whichever one you go
-                 looking in. One control, one sentence, wherever you meet it. */
+                 vocabulary"). The sentence names the reading you are in:
+                 a concept coined here is stamped with that reading and stands
+                 on its linking list until a passage carries it (src/lib/scope.ts).
+                 One control, one sentence, wherever you meet it. */
               aria-label="Add a concept before you have found evidence in the reading"
               title="Add a concept before you have found evidence in the reading"
             >+</button>}
@@ -476,7 +450,7 @@ export default function VocabularyTab({ initialConceptFilter, initialLabelFilter
                       type="button"
                       className="rm"
                       style={{ background: "none", border: "none", padding: 0, marginTop: "12px" }}
-                      onClick={() => handleRemoveConcept(concept, stats.passages)}
+                      onClick={() => removeThisConcept(concept)}
                     >
                       remove concept
                     </button>
