@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
+@import "./tokens.css";
 
 :root{
   /* ===== the heat ramp — ONE definition, five steps =====
@@ -46,15 +46,12 @@
      all: a constant-alpha edge on a 3px rect is most of the rect, which
      inverts the scale (TJ, 2026-08-22). */
   --heat-rule-1:.40;--heat-rule-2:.55;--heat-rule-3:.70;--heat-rule-4:.82;--heat-rule-5:.95;
-  --paper:#edebe3;--paper-2:#e5e2d8;--ink:#1a1916;--ink-soft:#6b675c;
-  --rule:#cbc7ba;--dot:#c3bfb1;
-  --grey:#a39f92;        /* quiet glyphs, loose picks */
-  --ochre:#a8843f;       /* warp — concepts */
-  --sage:#6f7d5c;        /* weft — beaten (distilled) threads */
-  --lav:#8d89c0;         /* a verb borrowed from another field */
-  --slate:#5c7287;       /* a student's own — personal, not the course's */
-  --red:#b23a2b;         /* RESERVED: the one selected thing */
-  --display:"Fraunces",Georgia,serif;--body:"Newsreader",Georgia,serif;--mono:ui-monospace,Menlo,Consolas,monospace;
+  /* Surfaces, ink, object hues and type live in tokens.css. The ramp above
+     was solved against white paper (the comment at the top of this block).
+     --paper is now #f3f4f6, close to that white; the alphas were not re-solved
+     when the chrome moved. The paged-view sum in the table uses ink #1a1916.
+     --ink is now #16181d, which only raises that number. The canvas sum does
+     not use --ink. */
 }
 *{box-sizing:border-box} html,body{margin:0}
 /* The chrome is a frame, not part of the page. The wordmark, the reading's own
@@ -64,7 +61,7 @@
    viewer was a fixed takeover, without taking the nav away with it. */
 html{height:100%}
 body{background:var(--paper);
-  color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
   height:100dvh;overflow:hidden;display:flex;flex-direction:column}
 header,.scopebar,nav{flex:0 0 auto}
 /* min-height:0 or a flex item refuses to shrink below its content and the
@@ -82,9 +79,9 @@ main,.adminshell{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:
    overscroll-behavior:contain swallows the wheel at a scroll boundary rather
    than chaining it up to .adminbody, so the page reads as scroll-broken. */
 .adminshell main{flex:none;min-height:auto;overflow-y:visible;overscroll-behavior:auto}
-h1,h2,h3{font-family:var(--display);font-weight:500;margin:0}
-.label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
-.cap{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+h1,h2,h3{font-family:var(--sans);font-weight:600;margin:0}
+.label{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink-soft)}
+.cap{font-family:var(--sans);font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--grey)}
 header{border-bottom:1px solid var(--rule);padding:10px 26px 8px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--paper)}
 /* A link since 2026-08-25, so it must not wear a link's colour or rule: the
    mark is the mark, and the only thing that changes on hover is the cursor
@@ -96,11 +93,11 @@ header{border-bottom:1px solid var(--rule);padding:10px 26px 8px;display:flex;al
    wherever the header is dropped, and every future context is a chance for it
    to come out some other shade. Declared, the mark wears Loom's ink because
    Loom said so, and a theme that moves --ink moves the mark with it. */
-.wordmark{font-family:var(--display);font-size:24px;font-weight:600;line-height:1;display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none}
+.wordmark{font-family:var(--sans);font-size:20px;font-weight:600;line-height:1;display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none}
 .wordmark:hover,.wordmark:focus-visible,.wordmark:visited,.wordmark:active{text-decoration:none;color:var(--ink)}
 /* Reachable by keyboard, and visibly so — the ring sits off the glyphs rather
    than through them. */
-.wordmark:focus-visible{outline:2px solid var(--ochre);outline-offset:4px;border-radius:3px}
+.wordmark:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:var(--radius)}
 /* The tagline sits BESIDE the name, not under it (TJ, 2026-08-17). Stacked,
    the mark was 36px — 24px of "Loom" over a 9px line plus its 3px gap — and
    since the mini buttons came down to 25px the mark was the only thing left
@@ -109,10 +106,10 @@ header{border-bottom:1px solid var(--rule);padding:10px 26px 8px;display:flex;al
    Baseline, not centre: the tagline is a subtitle to the name and reads as
    one line of type with it, which centring would not give. */
 .wordmark > div{display:flex;align-items:baseline;gap:9px;white-space:nowrap}
-.wordmark small{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);font-weight:400}
+.wordmark small{font-family:var(--sans);font-size:12px;letter-spacing:0;text-transform:none;color:var(--ink-soft);font-weight:400}
 header .spacer{flex:1}
 header .field{display:flex;flex-direction:column;gap:3px}
-header input{font-family:var(--body);font-size:15px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:5px 8px;color:var(--ink)}
+header input{font-family:var(--sans);font-size:15px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:5px 8px;color:var(--ink)}
 /* The border is TRANSPARENT, never absent (TJ, 2026-08-13, on the reading's
    search button: "it does change the layout of the row for some reason"). A
    button that toggles .ghost — search, Your work, anything with an on state —
@@ -123,8 +120,8 @@ header input{font-family:var(--body);font-size:15px;background:#fff;border:1px s
 /* text-decoration:none because a .btn is as often an <a> as a <button>, and
    the browser's default underline read as "underlined text button" on every
    anchor wearing this class (TJ, 2026-08-20, the roster's Open Loom). */
-.btn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:1px solid transparent;border-radius:3px;padding:7px 11px;cursor:pointer;text-decoration:none}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;background:var(--ink);color:var(--surface);border:1px solid transparent;border-radius:var(--radius);padding:7px 11px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule-strong)}
 /* No min-height (TJ, 2026-08-17). It was 36px, and on an 11px label that is
    ~7px of empty box above and below the words — which is why every place that
    cared had already opted out: `.btn.compact` exists only to undo it, the
@@ -132,9 +129,11 @@ header input{font-family:var(--body);font-size:15px;background:#fff;border:1px s
    footer overrode it again to stop being taller than the band it replaced.
    Three opt-outs and no opt-ins is a default that is wrong.
    Released here instead, so the header, the journey bar's search and every
-   mini button elsewhere are sized by their own padding: 25px, not 36. Loom is
+   mini button elsewhere are sized by their own padding. That measured 25px
+   when the label was 11px tracked caps (2026-08-17). The label is 13px sans
+   now; the padding is unchanged and the box was not remeasured. Loom is
    a desktop tool (AGENTS.md) — there is no touch target to protect. */
-.btn.mini{font-size:11px;padding:5px 10px;letter-spacing:.05em}
+.btn.mini{font-size:13px;font-weight:600;padding:5px 10px;letter-spacing:0}
 /* A label is one line. Without this a long one wraps inside its own box and
    the button becomes twice as tall as its neighbours — "download the kit
    .json" and "download the kit .md" were 38px in a row of 25s, for no reason
@@ -181,7 +180,8 @@ header .btn.iconly + .btn.iconly{margin-left:-10px}
    Colour, not opacity: a faded control on a textured ground reads as
    disabled, which is the one thing hover must never say. */
 .btn{transition:background-color .12s ease,border-color .12s ease,color .12s ease}
-.btn:hover:not(:disabled){background:#2d2b26}
+.btn:hover:not(:disabled){background:var(--ink-hover)}
+.btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .btn.ghost:hover:not(:disabled){background:var(--paper-2);border-color:var(--ink);color:var(--ink)}
 .btn:active:not(:disabled){transform:translateY(.5px)}
 /* The journey's own stations. They are type on paper, not boxes, so the move
@@ -210,12 +210,14 @@ nav{display:flex;border-bottom:1px solid var(--rule);padding:0 26px;background:v
    station since 2026-08-13 — the station's search — and the bare element
    selector was dressing it as an 18px display-font tab. Every station form
    (button, link, inert span) carries the class, so the class is the rule. */
-/* 7px, not 11px (TJ, 2026-08-17): the station names are 18px display type in
+/* 7px, not 11px (TJ, 2026-08-17): the station names were 18px display type in
    a bar whose whole job is to be always in view, and 22px of padding around
-   them was more air than the words. The horizontal 16px stays — that is the
-   gap BETWEEN stations, and closing it would run the journey together. */
-nav .station{font-family:var(--display);font-size:18px;background:none;border:none;cursor:pointer;color:var(--ink-soft);padding:7px 16px;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none}
-nav .station.active{color:var(--ink);border-bottom-color:var(--ochre)}
+   them was more air than the words. They are 14px sans now (tokens.css,
+   2026-10-28); the 7px vertical padding was not remeasured. The horizontal
+   16px stays — that is the gap BETWEEN stations, and closing it would run
+   the journey together. */
+nav .station{font-family:var(--sans);font-size:14px;font-weight:600;background:none;border:none;cursor:pointer;color:var(--ink-soft);padding:7px 16px;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none}
+nav .station.active{color:var(--ink);border-bottom-color:var(--ink)}
 /* A station with nowhere to go (JourneyNav's READING_ONLY, TJ 2026-08-09).
    Still drawn and still numbered — the arc is meant to be visible whole — but
    quieter than a link and not interactive. Not `disabled`, because it is not a
@@ -245,8 +247,8 @@ nav .station.staff.active{color:var(--sage);border-bottom-color:var(--sage)}
   text-decoration:underline;cursor:pointer}
 .linkish:hover{opacity:.8}
 nav .station.off .step{color:var(--dot)}
-nav .step{font-family:var(--mono);font-size:10px;letter-spacing:.1em;margin-right:7px;color:var(--grey)}
-nav .station.active .step{color:var(--ochre)}
+nav .step{font-family:var(--mono);font-size:10px;letter-spacing:0;margin-right:7px;color:var(--grey)}
+nav .station.active .step{color:var(--ink)}
 /* Full-bleed so the scrollbar rides the window edge rather than the edge of a
    centred column; the measure is kept by padding instead of max-width.
 
@@ -333,11 +335,12 @@ main.station-reading>.panel.active{height:100%}
 @container (max-width:1060px){
   .projgrid{grid-template-columns:1fr}
 }
-.card{border:1px solid var(--rule);border-radius:4px;padding:18px;background:rgba(255,255,255,.5)}
-.card h2{font-size:21px;margin-bottom:2px} .card h2 .n{font-family:var(--mono);font-size:11px;color:var(--grey);font-weight:400;letter-spacing:.08em}
+.card{border:1px solid var(--rule);border-radius:var(--radius);padding:18px;background:var(--surface)}
+.card h2{font-size:21px;margin-bottom:2px} .card h2 .n{font-family:var(--mono);font-size:11px;color:var(--grey);font-weight:400;letter-spacing:0}
 .card .hint{color:var(--ink-soft);font-size:14px;margin:2px 0 14px}
 .form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
-textarea,.form-row input,.tinput{width:100%;font-family:var(--body);font-size:15px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:8px;color:var(--ink)}
+textarea,.form-row input,.tinput{width:100%;font-family:var(--sans);font-size:15px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:8px;color:var(--ink)}
+textarea:focus-visible,.form-row input:focus-visible,.tinput:focus-visible,header input:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--ink)}
 textarea{min-height:62px;resize:vertical;line-height:1.45}
 .mono-in{font-family:var(--mono);font-size:13px}
 /* Height tracks the WINDOW, not a constant (contracts.md §2c-iii): vertical is
@@ -345,19 +348,19 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
    floor and far too short on a 1440-tall monitor. Floored so a short window
    still shows a list, capped so a very tall one does not run a single column
    the length of the page. */
-.scrollbox{max-height:clamp(320px,52vh,620px);overflow:auto;border:1px solid var(--rule);border-radius:4px;background:rgba(255,255,255,.55)}
+.scrollbox{max-height:clamp(320px,52vh,620px);overflow:auto;border:1px solid var(--rule);border-radius:var(--radius);background:var(--surface)}
 .empty{padding:26px 14px;text-align:center}
 .empty .cap{display:block;margin-top:9px}
 .quietrow{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px dotted var(--rule)}
-.quietrow input{flex:1;font-family:var(--body);font-size:13.5px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:6px 8px;color:var(--ink)}
+.quietrow input{flex:1;font-family:var(--sans);font-size:13.5px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:6px 8px;color:var(--ink)}
 /* stuck scaffold */
-.scaffold{margin:-2px 0 11px;padding:9px 11px;border-left:2px solid var(--ochre);background:rgba(168,132,63,.06);border-radius:0 4px 4px 0}
+.scaffold{margin:-2px 0 11px;padding:9px 11px;border-left:2px solid var(--ochre);background:color-mix(in srgb, var(--ochre) 6%, transparent);border-radius:0 4px 4px 0}
 .scaffold .snote{font-size:13px;color:var(--ink-soft);margin-bottom:6px} .scaffold .snote b{color:var(--ink);font-weight:500}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-family:var(--mono);font-size:12px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:3px 9px;cursor:pointer}
+.chip{font-family:var(--sans);font-size:13px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:3px 9px;cursor:pointer}
 .chip:hover{border-color:var(--ochre);color:var(--ochre)}
 .ladder{margin-top:9px;font-size:13.5px;color:var(--ink-soft)}
-.ladder summary{cursor:pointer;color:var(--ochre);font-family:var(--mono);font-size:11px;letter-spacing:.04em}
+.ladder summary{cursor:pointer;color:var(--ochre);font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:0}
 .ladder ul{margin:7px 0 0;padding-left:18px} .ladder li{margin-bottom:3px}
 .ladder .eg{font-style:italic}
 /* What Your work is made of (TJ, 2026-08-09, amended 2026-08-12): concepts in
@@ -402,16 +405,16 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .labelsay{text-transform:none;letter-spacing:0;color:var(--ochre)}
 /* A concept's gloss is prose up to 100 words (model §Concept), so it wraps.
    It was a one-line input, which showed about eight of them. */
-.conceptdef{width:100%;font-family:var(--body);font-size:14px;line-height:1.45;
-  background:#fff;border:1px solid var(--rule);border-radius:3px;padding:6px 8px;
+.conceptdef{width:100%;font-family:var(--sans);font-size:14px;line-height:1.45;
+  background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:6px 8px;
   color:var(--ink);resize:vertical;min-height:40px}
-.passagenote-edit{width:100%;min-height:44px;font-family:var(--body);font-size:13.5px;
-  line-height:1.45;background:#fff;border:1px solid var(--rule);border-radius:3px;
+.passagenote-edit{width:100%;min-height:44px;font-family:var(--sans);font-size:13.5px;
+  line-height:1.45;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);
   padding:6px 8px;color:var(--ink);resize:vertical}
 .passagenote{font-size:13px;font-style:italic;color:var(--ink-soft);margin-top:5px;line-height:1.45}
 .passageconcepts{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
-.pchip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;
-  letter-spacing:.04em;border:1px solid var(--rule);border-radius:999px;padding:2px 5px 2px 8px;
+.pchip{display:inline-flex;align-items:center;gap:5px;font-family:var(--sans);font-size:12px;font-weight:600;
+  letter-spacing:0;border:1px solid var(--rule-strong);border-radius:999px;padding:2px 5px 2px 8px;
   background:rgba(255,255,255,.5)}
 .pchip-x{background:none;border:none;padding:0 2px;cursor:pointer;color:var(--grey);
   font-size:12px;line-height:1;transition:color .12s ease}
@@ -426,7 +429,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
   width:18px;height:18px;line-height:1;padding:0;cursor:pointer;
   color:var(--ink-soft);font-family:var(--mono);font-size:12px}
 .pchip-add:hover,.pchip-add:focus-visible{border-color:var(--ink);color:var(--ink)}
-.lgroup{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+.lgroup{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;
   color:var(--ochre);padding:14px 12px 5px;border-bottom:1px solid var(--rule)}
 /* An unlabeled capture. Not a concept row — it has no head, because there is
    nothing folded under it — so it carries its own padding, and it borrows the
@@ -501,22 +504,23 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
      change as text does so select and picked x should have same size button").
      "SELECT" and "PICKED 1" are 6 and 8 mono characters, so the button grew
      when you pressed it and the evidence count beside it jumped left. Sized to
-     the longer of the two and left there. */
+     the longer of the two and left at 92px. The label is 12px sans now
+     (2026-10-28); that width was not remeasured. */
   min-width:92px;
   background:none;border:0;border-left:1px solid var(--rule);border-radius:0 3px 3px 0;
-  padding:0 10px;margin:-9px 0;cursor:pointer;font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;
+  padding:0 10px;margin:-9px 0;cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:600;
+  letter-spacing:0;white-space:nowrap;
   /* A HINT OF OCHRE at rest (TJ, 2026-08-18), not only on hover: ochre is the
      warp's colour and this button is the warp's one act, so the end of the row
      should read as belonging to it before you touch it. Faint enough that the
      picked state — a solid ochre fill — is still the loud one. */
-  background:rgba(168,132,63,.07);color:#8a7647}
+  background:color-mix(in srgb, var(--ochre) 7%, transparent);color:var(--ochre)}
 /* The ochre it always had (TJ liked it): ochre type on hover, ochre fill when
    picked. What changed with the full-height button is that the outline became
    the row's own edge, so the hover reads as a tint behind ochre text rather
    than as a pill outlining itself. */
-.cselect:hover,.cselect:focus-visible{background:rgba(168,132,63,.18);color:var(--ochre)}
-.ywcard.ywpick.picked .cselect{background:var(--ochre);color:var(--paper);border-left-color:var(--ochre)}
+.cselect:hover,.cselect:focus-visible{background:color-mix(in srgb, var(--ochre) 18%, transparent);color:var(--ochre)}
+.ywcard.ywpick.picked .cselect{background:var(--ochre);color:var(--surface);border-left-color:var(--ochre)}
 /* Open, the head is no longer the card's bottom edge, so the button squares
    off with it. */
 .ywcard.ywpick.open .cselect{border-radius:0 3px 0 0}
@@ -525,8 +529,8 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .ywcard.ywpick .cbody{border-left:0;margin:0;padding:0 12px 12px}
 .ywcard.ywpick .cbody .oconcept-def{font-size:13px;margin:0 0 8px}
 .ywcard.ywpick .clabel{font-size:16px}
-.ywcard.ywpick:hover{background:rgba(168,132,63,.08)}
-.ywcard.ywpick.picked{box-shadow:inset 3px 0 var(--ochre);background:rgba(168,132,63,.1)}
+.ywcard.ywpick:hover{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
+.ywcard.ywpick.picked{box-shadow:inset 3px 0 var(--ochre);background:color-mix(in srgb, var(--ochre) 10%, transparent)}
 /* "no evidence" is a designation, not a warning — so it is the quiet grey of
    a count, never the red of a problem. It replaced a bare empty slot, which
    read the same as a concept whose evidence is simply in another reading. */
@@ -584,7 +588,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .lrow{border-bottom:1px dotted var(--rule)}
 .lhead{display:flex;gap:10px;align-items:baseline;padding:9px 12px;cursor:pointer}
 .lhead:hover{background:rgba(0,0,0,.025)}
-.lrow.open .lhead{background:rgba(168,132,63,.08)}
+.lrow.open .lhead{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .lhead .lconcept{font-size:15.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lhead .lsrc{font-family:var(--mono);font-size:10px;color:var(--ink-soft);white-space:nowrap}
 .lbody{padding:2px 12px 12px 22px;border-left:2px solid var(--rule);margin:0 12px 10px}
@@ -604,7 +608,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .lbody .passage{font-size:13.5px;margin:4px 0 8px}
 .lbody .src{font-family:var(--mono);font-size:10px;color:var(--ink-soft)}
 .lbody .defrow{margin:7px 0 5px}
-.lbody .defrow input{width:100%;font-family:var(--body);font-size:14px;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:6px}
+.lbody .defrow input{width:100%;font-family:var(--sans);font-size:14px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:6px}
 .rm{font-family:var(--mono);font-size:10px;color:var(--ink-soft);cursor:pointer;display:inline-block}
 .rm:hover{color:var(--red)}
 .rm:disabled{opacity:.45;cursor:not-allowed}
@@ -643,15 +647,15 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
    now — kept as this line rather than deleted so the next reader knows the
    note is deliberately absent from a concept's evidence, not forgotten. */
 .ocard-foot{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:5px}
-.ocard-where{font-family:var(--mono);font-size:.62em;letter-spacing:.05em;color:var(--ink-soft);
+.ocard-where{font-family:var(--mono);font-size:.62em;letter-spacing:0;color:var(--ink-soft);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* .ocard-goto went with the separate "goto" button on 2026-08-18 — the
    quotation is the door now, as it is everywhere else a Passage is drawn. */
 .opassage-text.isdoor{cursor:pointer;border-radius:3px}
-.opassage-text.isdoor:hover{background:rgba(168,132,63,.08)}
+.opassage-text.isdoor:hover{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .opassage-text.isdoor:focus-visible{outline:2px solid var(--ochre);outline-offset:2px}
 .ocard-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.ocard-chip{font-family:var(--mono);font-size:.6em;letter-spacing:.06em;text-transform:uppercase;
+.ocard-chip{font-family:var(--sans);font-size:.6em;letter-spacing:0;
   color:var(--ochre);border:1px solid var(--rule);border-radius:999px;padding:2px 7px}
 
 /* The warp's dot, and the card it opens. */
@@ -681,10 +685,10 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
   font-size:.72em;line-height:1.4;color:var(--ink-soft)}
 
 .crow{padding:10px 12px;border-bottom:1px dotted var(--rule);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:4px}
-.crow:hover{background:rgba(168,132,63,.08)}
+.crow:hover{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .crow .clabel{font-size:16px}
-.crow.picked{box-shadow:inset 3px 0 var(--ochre);background:rgba(168,132,63,.1)}
-.pickedtag{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ochre);white-space:nowrap}
+.crow.picked{box-shadow:inset 3px 0 var(--ochre);background:color-mix(in srgb, var(--ochre) 10%, transparent)}
+.pickedtag{font-family:var(--sans);font-size:9px;letter-spacing:0;color:var(--ochre);white-space:nowrap}
 /* bench */
 .slots{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch;margin-bottom:11px}
 @media(max-width:560px){.slots{grid-template-columns:1fr}}
@@ -697,18 +701,18 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .swapcol{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink-soft)}
 .swapcol .arr{font-size:20px}
 .swapcol button{font-family:var(--mono);font-size:10px;background:none;border:1px solid var(--rule);border-radius:3px;color:var(--ink-soft);cursor:pointer;padding:2px 6px}
-.distill{margin:10px 0 6px;padding:9px 11px;border-left:2px solid var(--sage);background:rgba(111,125,92,.06);border-radius:0 4px 4px 0}
+.distill{margin:10px 0 6px;padding:9px 11px;border-left:2px solid var(--sage);background:color-mix(in srgb, var(--sage) 6%, transparent);border-radius:0 4px 4px 0}
 .distill .rnote{font-size:13px;color:var(--ink-soft);margin-bottom:7px} .distill .rnote b{color:var(--ink);font-weight:500}
-.verbchip{font-family:var(--mono);font-size:12px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:3px 9px;cursor:pointer;color:var(--sage)}
+.verbchip{font-family:var(--sans);font-size:13px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:3px 9px;cursor:pointer;color:var(--sage)}
 .verbchip:hover{border-color:var(--sage)}
 .verbchip.borrowed{color:var(--lav)} .verbchip.borrowed:hover{border-color:var(--lav)}
-.wordchip{font-family:var(--mono);font-size:12px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:3px 9px;cursor:pointer;color:var(--ink-soft)}
+.wordchip{font-family:var(--sans);font-size:13px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:3px 9px;cursor:pointer;color:var(--ink-soft)}
 .wordchip:hover{border-color:var(--ink-soft)}
-.openchip{font-family:var(--body);font-style:italic;font-size:13.5px;background:#fff;border:1px solid var(--rule);border-radius:12px;padding:3px 11px;cursor:pointer;color:var(--ink-soft)}
+.openchip{font-family:var(--sans);font-style:italic;font-size:13.5px;background:var(--surface);border:1px solid var(--rule-strong);border-radius:var(--radius);padding:3px 11px;cursor:pointer;color:var(--ink-soft)}
 .openchip:hover{border-color:var(--sage);color:var(--sage)}
 .benchbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:10px}
-.drawnote{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);margin:-4px 0 10px;line-height:1.7}
-.borrowbtn{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;background:transparent;color:var(--lav);border:1px solid var(--lav);border-radius:3px;padding:5px 9px;cursor:pointer;margin-top:9px}
+.drawnote{font-family:var(--sans);font-size:9.5px;letter-spacing:0;color:var(--grey);margin:-4px 0 10px;line-height:1.7}
+.borrowbtn{font-family:var(--sans);font-size:10px;letter-spacing:0;background:transparent;color:var(--lav);border:1px solid var(--lav);border-radius:3px;padding:5px 9px;cursor:pointer;margin-top:9px}
 .readsas{font-size:13.5px;color:var(--ink-soft);margin:8px 0;font-style:italic}
 .readsas b{font-style:normal;color:var(--ink);font-weight:500}
 /* thread list */
@@ -726,9 +730,9 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
    always had: it is "the one selected thing", which is what the palette
    reserves that colour for. */
 .thread.ispick{cursor:pointer}
-.thread.ispick:hover{background:rgba(111,125,92,.07)}
+.thread.ispick:hover{background:color-mix(in srgb, var(--sage) 7%, transparent)}
 .thread.ispick:focus-visible{outline:2px solid var(--sage);outline-offset:-2px}
-.thread.sel{box-shadow:inset 3px 0 var(--red);background:rgba(178,58,43,.05)}
+.thread.sel{box-shadow:inset 3px 0 var(--red);background:color-mix(in srgb, var(--red) 5%, transparent)}
 /* AS A CARD the spine itself turns, rather than a red bar being laid over the
    sage one: two colours on one 3px edge read as a smudge, and the object's
    colour and its state are not both edges. Red because that is what the
@@ -745,7 +749,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
    `.ywcard.ywpick .lhead` does for a concept. */
 .thread .trip.isopen,.thread .sent.isopen{cursor:pointer;border-radius:3px;
   margin-inline:-4px;padding-inline:4px}
-.thread .trip.isopen:hover,.thread .sent.isopen:hover{background:rgba(111,125,92,.09)}
+.thread .trip.isopen:hover,.thread .sent.isopen:hover{background:color-mix(in srgb, var(--sage) 9%, transparent)}
 .thread .trip.isopen:focus-visible{outline:2px solid var(--sage);outline-offset:1px}
 /* The opened body. `.defrow` and `.label`/`.labelsay` are the siblings' own —
    a labelled field that commits on blur, which is how ConceptCard writes a
@@ -755,8 +759,8 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .thread .tbody .defrow:last-child{margin-bottom:2px}
 .thread .tbody .label{display:block;margin-bottom:4px}
 .thread .tbody .chips{margin:2px 0 0}
-.threadlabel{width:100%;font-family:var(--body);font-size:14px;background:#fff;
-  border:1px solid var(--rule);border-radius:3px;padding:6px 8px;color:var(--ink)}
+.threadlabel{width:100%;font-family:var(--sans);font-size:14px;background:var(--surface);
+  border:1px solid var(--rule-strong);border-radius:var(--radius);padding:6px 8px;color:var(--ink)}
 /* The trip wraps as a row rather than one line: the card no longer truncates
    its ends at 30 characters (the 02 column did), so two long concept names
    have to be able to sit over two lines with the pill between them. */
@@ -771,7 +775,7 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 .thread .tmeta{font-family:var(--mono);font-size:10px;margin-top:6px;display:flex;
   gap:6px 12px;align-items:center;flex-wrap:wrap}
 .thread .tmeta .act,.thread .tmeta .rm{white-space:nowrap}
-.pill{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:9px}
+.pill{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:0;padding:1px 7px;border-radius:9px}
 .pill.loose{color:var(--grey);border:1px dashed var(--grey)}
 .pill.beaten{color:var(--sage);border:1px solid var(--sage)}
 /* A reading a student added for themselves — slate, its own hue, because in
@@ -781,8 +785,8 @@ textarea{min-height:62px;resize:vertical;line-height:1.45}
 /* The badge alone was too subtle (TJ, same day) — the whole card wears the
    wash, so an own-reading reads as a different kind of row from across the
    page, not on close inspection. */
-.card.owncard{background:rgba(92,114,135,.09);border-color:rgba(92,114,135,.45)}
-.act{font-family:var(--mono);font-size:10px;color:var(--sage);cursor:pointer;letter-spacing:.04em}
+.card.owncard{background:color-mix(in srgb, var(--slate) 9%, transparent);border-color:color-mix(in srgb, var(--slate) 45%, transparent)}
+.act{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--sage);cursor:pointer;letter-spacing:0}
 .act:hover{text-decoration:underline}
 /* .act and .rm sit on <a>, <summary> and <button> alike; strip the native
    button chrome so the same word reads the same whatever the element. */
@@ -798,12 +802,12 @@ button.act,button.rm{appearance:none;background:none;border:none;padding:0}
   display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .sectionhead .n{font-family:var(--body);font-size:13.5px;font-weight:400;color:var(--ink-soft);letter-spacing:0}
 .mapbar{display:flex;gap:16px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.loosebanner{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:10px}
+.loosebanner{font-family:var(--sans);font-size:11px;letter-spacing:0;color:var(--grey);margin-bottom:10px}
 /* Scrolls rather than clips: the cloth lays itself out to its container down
    to 480px and stops there, so a narrower column gets a scrollbar instead of
    losing the concepts at the right-hand end. */
-#mapWrap{border:1px solid var(--rule);border-radius:4px;overflow-x:auto;
-  background:#f4f2ec}
+#mapWrap{border:1px solid var(--rule);border-radius:var(--radius);overflow-x:auto;
+  background:var(--ground)}
 /* user-select:none because SHIFT-CLICK is now a gesture on this drawing
    (ClothReflection's pair). Shift-clicking a second concept extends the
    browser's own text selection from the first, and the screenshot at 1536 was
@@ -855,7 +859,7 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
    this file; this token exists so the ramp can be warm here and stay slate
    everywhere else. */
 .heatpage{--heat-rgb:200, 69, 30}
-.cohortcanvas{position:relative;height:100%;background:#f4f2ec}
+.cohortcanvas{position:relative;height:100%;background:var(--ground)}
 /* No border, no radius, no card: the drawing meets the window.
 
    The bottom padding RESERVES the resting read-out's band, because an arc
@@ -937,10 +941,10 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
 .crow.ywcard.ywmini:last-child{border-bottom:0}
 .crow.ywcard.ywmini .lhead{padding:7px 9px;cursor:pointer}
 .crow.ywcard.ywmini .lconcept{font-size:14.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.crow.ywcard.ywmini:hover{background:rgba(168,132,63,.08)}
+.crow.ywcard.ywmini:hover{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 /* The one lit row, in the ochre wash every "this is the open one" wears, with
    the same inset bar .crow.picked has always had. */
-.crow.ywcard.ywmini.picked{box-shadow:inset 3px 0 var(--ochre);background:rgba(168,132,63,.1)}
+.crow.ywcard.ywmini.picked{box-shadow:inset 3px 0 var(--ochre);background:color-mix(in srgb, var(--ochre) 10%, transparent)}
 .crow.ywcard.ywmini:focus-visible{outline:2px solid var(--sage);outline-offset:-2px}
 /* ThreadCard, minified. The card's own trip is 15px and names its ends in
    <b> — right on a page where the card IS the content, too loud in a 316px
@@ -975,14 +979,14 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
 /* The evidence, folded. Same twirl idiom as every other disclosure here. */
 .canvasfoot .footmore{margin-top:7px}
 .canvasfoot .footmore > summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;
-  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+  font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
 .canvasfoot .footmore > summary::-webkit-details-marker{display:none}
 .canvasfoot .footmore > summary:hover{color:var(--ink)}
 .canvasfoot .footmore > summary .tw{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--ochre);transition:transform .15s}
 .canvasfoot .footmore[open] > summary .tw{transform:rotate(90deg)}
 /* Nothing selected: one quiet line, not an empty panel. */
 .canvasfoot.idle{color:var(--ink-soft);font-size:13px}
-.canvasfoot .who{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+.canvasfoot .who{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--grey)}
 .canvasfoot .said{font-size:14px;font-style:italic;color:var(--ink-soft);min-width:0}
 .canvasfoot .subject{font-family:var(--display);font-size:16px;color:var(--red)}
 /* The pair's offer. TOP LAYER, via popover="auto" — #mapWrap directly above
@@ -1034,7 +1038,7 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
   border:1px dashed var(--rule);border-radius:4px;background:var(--paper-2)}
 .pairpop-slot b{font-weight:600;overflow-wrap:anywhere}
 .pairpop-swap{display:flex;flex-direction:column;align-items:center;gap:3px}
-.pairpop-swap button{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;
+.pairpop-swap button{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;
   background:none;border:1px solid var(--rule);border-radius:3px;padding:1px 6px;cursor:pointer;color:var(--ink-soft)}
 .pairpop-swap button:hover{border-color:var(--sage);color:var(--sage)}
 .pairpop-actions{display:flex;gap:8px;margin-top:8px}
@@ -1061,9 +1065,9 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
 .report .cap{display:block;margin:13px 0 3px;color:var(--ink-soft)}
 .report .line{font-size:14.5px;padding:1px 0}
 .report .ct{font-family:var(--mono);font-size:11px;color:var(--grey)}
-.passagequote{margin:5px 0 10px;padding-left:9px;border-left:2px solid var(--rule);font-size:13.5px;color:var(--ink-soft)}
+.passagequote{margin:5px 0 10px;padding-left:9px;border-left:2px solid var(--rule-strong);font-family:var(--read);font-size:15px;color:var(--ink)}
 .passagequote .src{font-family:var(--mono);font-size:10px}
-.legend{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px;display:flex;gap:22px;flex-wrap:wrap}
+.legend{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft);margin-top:8px;display:flex;gap:22px;flex-wrap:wrap}
 .legend .sw{display:inline-block;width:22px;height:0;border-top-width:2px;vertical-align:middle;margin-right:5px}
 /* footer rule, poster-style. pointer-events:none because a fixed full-width
    strip is a click shield over whatever scrolls beneath it — the shelf's
@@ -1071,7 +1075,7 @@ main.canvasfull{padding:0 0 34px;margin:0;height:100%;overflow:hidden;box-sizing
    The footer is print, not controls, so clicks belong to the page below. */
 footer{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:12px;
   padding:5px 26px;border-top:1px solid var(--ink);background:var(--paper);z-index:5;pointer-events:none}
-footer span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+footer span{font-family:var(--sans);font-size:11px;letter-spacing:0}
 footer .fl{color:var(--ink)} footer .fr{color:var(--ink-soft)}
 /* The footer stopped being print on 2026-08-17: its left half carries the
    signed-in name, the role badge and Sign out. pointer-events stays OFF on the
@@ -1086,7 +1090,7 @@ footer .foottitle{font-family:var(--display);font-size:14px;letter-spacing:0;tex
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46ch}
 footer .footmeta{color:var(--ink-soft);white-space:nowrap}
 footer .footrule{width:1px;height:12px;background:var(--rule);display:inline-block;flex:none}
-footer .footid .label{letter-spacing:.1em}
+footer .footid .label{letter-spacing:0}
 /* Reading focus (TJ, 2026-08-17): with the text open, the station is the text.
    The header belongs to the root layout, so the workbench cannot withhold it
    the way it withholds its own footer — it sets this attribute on <body>
@@ -1127,7 +1131,7 @@ body[data-reading-focus] header{display:none}
 .do.calm{color:var(--ink-soft);font-weight:400}
 /* rhythm rail: pick·pick·say·throw / look·trace·question·write */
 .rail{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap;align-items:center}
-.rail .rstep{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);
+.rail .rstep{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey);
   border:1px solid var(--rule);border-radius:11px;padding:3px 10px;transition:all .15s}
 .rail .rstep.now{color:var(--paper);background:var(--ink);border-color:var(--ink)}
 .rail .rstep.done{color:var(--sage);border-color:var(--sage)}
@@ -1136,11 +1140,11 @@ body[data-reading-focus] header{display:none}
 .sleeper{position:relative;transition:opacity .2s}
 .sleeper.asleep{opacity:.42}
 .sleeper.asleep::after{content:"";position:absolute;inset:0;cursor:default;background:transparent}
-.sleepmsg{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);
+.sleepmsg{font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--grey);
   text-align:center;padding:8px 0 2px;display:none}
 .sleeper.asleep .sleepmsg{display:block}
 /* distil demoted to a quiet optional disclosure */
-.distilltoggle{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--sage);cursor:pointer;
+.distilltoggle{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:0;color:var(--sage);cursor:pointer;
   display:inline-flex;align-items:center;gap:6px;margin:4px 0 2px;user-select:none}
 .distilltoggle:hover{opacity:.8}
 .distilltoggle .tw{display:inline-block;transition:transform .15s}
@@ -1150,7 +1154,7 @@ body[data-reading-focus] header{display:none}
 .trow{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px dotted var(--rule)}
 .trow .tlabel{flex:1;font-size:15px;min-width:0}
 .tierchips{display:flex;gap:4px}
-.tchip{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;border:1px solid var(--rule);background:#fff;border-radius:3px;padding:3px 8px;cursor:pointer;color:var(--ink-soft)}
+.tchip{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;border:1px solid var(--rule-strong);background:var(--surface);border-radius:var(--radius);padding:3px 8px;cursor:pointer;color:var(--ink-soft)}
 .tchip:hover{border-color:var(--ochre)}
 .tchip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .tchip.on.off{background:var(--grey);border-color:var(--grey)}
@@ -1161,18 +1165,18 @@ body[data-reading-focus] header{display:none}
   background:rgba(255,255,255,.55);transition:border-color .15s}
 .prompt:hover{border-color:var(--ochre)}
 .prompt.on{border-color:var(--red);box-shadow:inset 3px 0 var(--red)}
-.prompt .pk{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ochre);display:block;margin-bottom:4px}
+.prompt .pk{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;color:var(--ochre);display:block;margin-bottom:4px}
 .prompt .pq{font-size:14.5px;line-height:1.45} .prompt .pq b{font-weight:500;color:var(--ink)}
 .prompt .pm{font-family:var(--mono);font-size:10px;color:var(--sage);margin-top:7px;display:inline-block}
-.prompt .youdecide{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);float:right}
+.prompt .youdecide{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0;color:var(--grey);float:right}
 #yourRead,#yourRead2{min-height:170px}
 #bText{min-height:150px}
 .readq{font-size:13.5px;color:var(--ink-soft);font-style:italic;margin:0 0 7px}
 .drafted{font-family:var(--mono);font-size:11px;color:var(--sage);margin-top:8px;min-height:14px}
 .heading-with-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--rule);border-radius:50%;background:transparent;color:var(--ink-soft);cursor:pointer;line-height:1}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid var(--rule-strong);border-radius:var(--radius);background:transparent;color:var(--ink-soft);cursor:pointer;line-height:1}
 .iconbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.iconbtn:hover,.iconbtn:focus-visible{border-color:var(--ochre);color:var(--ochre);outline:none}
+.iconbtn:hover,.iconbtn:focus-visible{border-color:var(--ink);color:var(--ink);outline:none}
 .cloth-info-btn{flex:0 0 auto;margin-left:2px}
 /* THE CAPTURE CARD, slimmed 2026-08-18 and put in Your work's order (TJ: "the
    capture passage card needs to keep its content but be slimmer. maybe the
@@ -1197,7 +1201,7 @@ body[data-reading-focus] header{display:none}
 /* The address line: the file position, under the citation it belongs to.
    Quieter than the title above it, because it is the thing you read only
    when you are checking where a capture came from. */
-.capturewhere{opacity:.8;letter-spacing:.02em}
+.capturewhere{opacity:.8;letter-spacing:0}
 .capturecard .form-row{margin-bottom:0;margin-top:12px}
 /* The concept block is a disclosure, closed until asked for (CaptureFields).
    The summary carries .label, so it already reads as the section heading it
@@ -1240,9 +1244,9 @@ body[data-reading-focus] header{display:none}
    one line in there not addressed to a student, so it sits below everything
    and takes no attention it is not asked for. */
 .aboutbuild{margin:18px 0 0;padding-top:10px;border-top:1px solid var(--rule);
-  font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  font-family:var(--sans);font-size:9.5px;letter-spacing:0;
   color:var(--grey)}
-.info-dialog .info-k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ochre)}
+.info-dialog .info-k{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre)}
 .info-dialog h2{font-family:var(--display);font-size:25px;font-weight:600;margin:6px 34px 8px 0}
 .info-dialog p{font-size:15.5px;line-height:1.5;margin:0 0 10px}
 .info-dialog ul{margin:10px 0 12px;padding-left:19px;font-size:15px;line-height:1.45}
@@ -1367,11 +1371,11 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* Where you are, above the tabs: which reading, and the way back to the shelf. */
 .scopebar{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
   padding:9px 26px;border-bottom:1px solid var(--rule);background:var(--paper)}
-.scopeback{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+.scopeback{font-family:var(--sans);font-size:11px;letter-spacing:0;
   color:var(--ink-soft);text-decoration:none}
 .scopeback:hover{color:var(--ochre)}
 .scopetitle{font-family:var(--display);font-size:18px}
-.scopemeta{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey)}
+.scopemeta{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey)}
 
 /* `.shelfbar` held the shelf's quick links, then only its tally, and on
    2026-08-17 the tally moved to the footer — where the same words already
@@ -1385,7 +1389,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    capture); the cloth row beneath carries the work's own doors. */
 .shelfcard{display:flex;flex-direction:column;gap:10px;padding:14px;
   border:1px solid var(--rule);border-radius:4px;background:rgba(255,255,255,.5)}
-.shelfcard:hover{border-color:var(--ochre);background:rgba(168,132,63,.06)}
+.shelfcard:hover{border-color:var(--ochre);background:color-mix(in srgb, var(--ochre) 6%, transparent)}
 .shelfmain{display:flex;gap:14px;flex:1;min-width:0;text-decoration:none;color:inherit}
 .clothrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
   border-top:1px solid var(--rule);padding-top:10px}
@@ -1394,7 +1398,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .shelfbody h3{font-family:var(--display);font-size:16px;font-weight:500;margin:0 0 3px}
 .shelfauthor{font-size:13px;color:var(--ink-soft);margin:0 0 6px}
 .shelfdesc{font-size:13.5px;line-height:1.4;color:var(--ink-soft);margin:0}
-.shelftally{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);margin:0}
+.shelftally{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);margin:0}
 .shelfquiet{color:var(--grey)}
 
 /* Shelf search: which reading says this? A hit is a link into the reading,
@@ -1438,7 +1442,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
      translucent one let the dim through on one side of the cutout boundary
      and the lit page through on the other — a seam down the sentence. The
      gradient is that same wash, composited over paper instead of the page. */
-  background:linear-gradient(rgba(111,125,92,.13),rgba(111,125,92,.13)),var(--paper);
+  background:linear-gradient(color-mix(in srgb, var(--sage) 13%, transparent),color-mix(in srgb, var(--sage) 13%, transparent)),var(--paper);
   border:1px solid var(--sage);border-radius:6px;
   box-shadow:0 8px 24px rgba(0,0,0,.14);
   color:var(--ink);font-family:var(--body);font-size:12.5px;line-height:1.45;
@@ -1506,7 +1510,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    everything else in their row. */
 .stationhome{display:flex;align-items:center;margin-left:10px;margin-right:-6px;
   color:var(--ink-soft);text-decoration:none;border-radius:4px;padding:2px 4px}
-.stationhome:hover{color:var(--ochre);background:rgba(168,132,63,.08)}
+.stationhome:hover{color:var(--ochre);background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .stationhome:focus-visible{outline:2px solid var(--ochre);outline-offset:1px}
 /* Anchored to the button, dropping over the work below. `nav` clips nothing,
    and this is a sibling of <main> — whose station-reading variant is
@@ -1523,7 +1527,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
   display:flex;flex-direction:column;gap:2px}
 .headermenu-item{display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;
   padding:7px 9px;border-radius:3px;color:var(--ink);text-decoration:none;
-  font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+  font-family:var(--sans);font-size:11px;letter-spacing:0}
 .headermenu-item:hover{background:var(--paper-2)}
 /* What the item is for, under its name — the same sentence its tooltip used
    to carry, said outright now there is room for it. */
@@ -1549,14 +1553,14 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* What the open search covers. Mono caps like every other label in the app,
    quiet enough to read as a caption rather than as a result, and it stands
    above the input so it is still there once the placeholder has gone. */
-.stationsearch-covers{margin:0 0 9px;font-family:var(--mono);font-size:9.5px;
-  letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);line-height:1.5}
+.stationsearch-covers{margin:0 0 9px;font-family:var(--sans);font-size:9.5px;
+  letter-spacing:0;color:var(--ink-soft);line-height:1.5}
 .searchinput{max-width:none}
 .searchresults{margin-top:12px;display:flex;flex-direction:column;gap:10px}
 .searchtally{display:block}
 .searchhit{display:block;padding:12px 14px;text-decoration:none;color:inherit;
   border:1px solid var(--rule);border-radius:4px;background:rgba(255,255,255,.5)}
-.searchhit:hover{border-color:var(--ochre);background:rgba(168,132,63,.06)}
+.searchhit:hover{border-color:var(--ochre);background:color-mix(in srgb, var(--ochre) 6%, transparent)}
 /* A hit with no reading to open: shown, never clickable, and it says why.
    Dashed rather than dimmed — the work is real, it just has no door yet. */
 .searchhit.off{border-style:dashed;background:transparent;cursor:default}
@@ -1567,9 +1571,9 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .searchhit-multi{padding:0}
 .searchhit-multi:hover{border-color:var(--rule);background:rgba(255,255,255,.5)}
 .searchhit-door{display:block;padding:12px 14px 8px;text-decoration:none;color:inherit;border-radius:4px 4px 0 0}
-.searchhit-door:hover{background:rgba(168,132,63,.06)}
+.searchhit-door:hover{background:color-mix(in srgb, var(--ochre) 6%, transparent)}
 .searchsnip-door{display:block;padding:7px 14px;text-decoration:none;color:inherit;border-top:1px solid var(--rule)}
-.searchsnip-door:hover{background:rgba(168,132,63,.10)}
+.searchsnip-door:hover{background:color-mix(in srgb, var(--ochre) 10%, transparent)}
 .searchsnip-door:last-child{border-radius:0 0 4px 4px}
 /* The page number is the thing you aimed at, so it earns the hover colour
    rather than staying the quiet caption it is at rest. */
@@ -1596,7 +1600,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    it just told you to press is worse than no tutorial. No transition — the
    rAF tracking IS the animation, and a second one on the same rect smears. */
 .guideglow{position:fixed;z-index:6101;pointer-events:none;border-radius:5px;
-  box-shadow:0 0 0 2px var(--ochre),0 0 18px 6px rgba(168,132,63,.30)}
+  box-shadow:0 0 0 2px var(--ochre),0 0 18px 6px color-mix(in srgb, var(--ochre) 30%, transparent)}
 
 /* The popover, at the target rather than in a corner. */
 .guidepop{position:fixed;z-index:6102;width:min(320px,calc(100vw - 32px));
@@ -1646,7 +1650,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .guidefoot .gwhybtn{margin-left:auto}
 /* The one primary: filled where the others are ghosts. */
 .btn.gnext{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.btn.gnext:hover:not(:disabled){background:var(--ochre);border-color:var(--ochre)}
+.btn.gnext:hover:not(:disabled){background:var(--ink-hover);border-color:var(--ink-hover)}
 /* "Hit this button now": the gesture landed and going on is the move. Slow and
    small — this app does not flash. */
 /* Light only, never movement. A `transform: scale()` in here made the button
@@ -1654,27 +1658,27 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    element, and a person chasing a button that breathes is the same problem
    with better manners. The halo does all the work. */
 @keyframes gpulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(168,132,63,.55),0 0 10px 2px rgba(168,132,63,.35)}
-  50%{box-shadow:0 0 0 8px rgba(168,132,63,.22),0 0 26px 8px rgba(168,132,63,.65)}}
+  0%,100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--ochre) 55%, transparent),0 0 10px 2px color-mix(in srgb, var(--ochre) 35%, transparent)}
+  50%{box-shadow:0 0 0 8px color-mix(in srgb, var(--ochre) 22%, transparent),0 0 26px 8px color-mix(in srgb, var(--ochre) 65%, transparent)}}
 .btn.gpulse{animation:gpulse 1.25s ease-in-out infinite;background:var(--ochre);
-  border-color:var(--ochre);color:#241f14;font-weight:600}
+  border-color:var(--ochre);color:var(--surface);font-weight:600}
 @media(prefers-reduced-motion:reduce){
-  .btn.gpulse{animation:none;box-shadow:0 0 0 4px rgba(168,132,63,.45)}}
+  .btn.gpulse{animation:none;box-shadow:0 0 0 4px color-mix(in srgb, var(--ochre) 45%, transparent)}}
 @media(max-width:640px){
   .guidepop{left:12px !important;right:12px;top:auto !important;bottom:14px;width:auto}
   .guidepop::before,.guidepop::after{display:none}
 }
 .searchhithead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .searchhithead h3{font-family:var(--display);font-size:16px;font-weight:500;margin:0}
-.searchwhere{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre);margin:2px 0 0}
+.searchwhere{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);margin:2px 0 0}
 .searchsnip{font-size:13.5px;line-height:1.45;color:var(--ink-soft);margin:6px 0 0}
-.searchsnip .n{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--grey);margin-right:7px}
+.searchsnip .n{font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey);margin-right:7px}
 .snipmark{background:rgba(255,204,0,.35);color:inherit;padding:0 1px;border-radius:2px}
 
 /* The seam: the same concept met in a second text. Counted, never advised. */
 .seam{margin-top:12px;padding:11px 13px;border-left:2px solid var(--sage);background:rgba(122,138,110,.09);border-radius:0 4px 4px 0}
 .seam p{font-size:14px;line-height:1.45;margin:4px 0 9px}
-.fromwhere{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--grey);margin-top:2px}
+.fromwhere{display:block;font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey);margin-top:2px}
 
 /* The replay slider and its tick strip. `accent-color` because the browser
    default is a blue nothing else in Loom is, and the bar is ochre like every
@@ -1694,8 +1698,8 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
   border-bottom:1px dotted var(--rule);cursor:pointer}
 .logrow:last-child{border-bottom:none}
 .logrow:hover{background:rgba(0,0,0,.025)}
-.logrow.on{background:rgba(168,132,63,.10)}
-.logwhen{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--grey);
+.logrow.on{background:color-mix(in srgb, var(--ochre) 10%, transparent)}
+.logwhen{font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey);
   flex:0 0 auto;min-width:52px}
 .logwhat{font-size:14px;flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .logact{color:var(--ink)}
@@ -1705,7 +1709,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .logctx{display:flex;flex-direction:column;gap:2px}
 .logquote{font-size:13.5px;line-height:1.45;color:var(--ink-soft)}
 .lognote{font-size:13px;font-style:italic;color:var(--ink-soft)}
-.logmeta{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--grey)}
+.logmeta{font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--grey)}
 /* The act that just landed, glowing out (TJ, 2026-08-12). One second, ochre,
    and gone — long enough to catch the eye at a play beat of 420ms, short
    enough that a paused replay is not left with a light on. */
@@ -1750,7 +1754,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .logrows{height:400px;max-height:400px}
 .yourwork-body .logrows{height:400px;max-height:400px}
 /* The badge that crosses between the views. Quiet until you want it. */
-.logjump{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--sage);
+.logjump{font-family:var(--mono);font-size:10px;letter-spacing:0;color:var(--sage);
   background:none;border:none;padding:2px 4px;cursor:pointer;flex:0 0 auto;
   opacity:0;transition:opacity .12s}
 .logbar .logjump{opacity:1;margin-left:auto}
@@ -1758,7 +1762,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .logjump:hover{text-decoration:underline}
 
 /* A day's worth of work, headed where the date turns over. */
-.logday{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+.logday{font-family:var(--sans);font-size:10px;letter-spacing:0;
   color:var(--ochre);padding:12px 12px 4px;border-bottom:1px solid var(--rule)}
 /* The act's number — the same unit the slider is ticked in, so a row and a
    notch are legibly the same thing. */
@@ -1767,12 +1771,12 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 /* Concepts from the student's other readings — reachable, out of the way. */
 .outsideband{border-top:1px solid var(--rule);background:rgba(0,0,0,.015)}
 .bandtoggle{display:flex;align-items:center;gap:6px;width:100%;padding:9px 12px;
-  font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  font-family:var(--sans);font-size:10px;letter-spacing:0;
   color:var(--ink-soft);background:none;border:none;cursor:pointer;text-align:left}
 .bandtoggle:hover{color:var(--ochre)}
 .bandtoggle .tw{display:inline-block;transition:transform .15s}
 .bandtoggle.open .tw{transform:rotate(90deg)}
-.bandtoggle .n{color:var(--grey);letter-spacing:.04em}
+.bandtoggle .n{color:var(--grey);letter-spacing:0}
 .scopebar .scopedl{margin-left:auto}
 .shelfnofile{display:flex;align-items:center;justify-content:center;flex:0 0 auto;
   width:70px;min-height:92px;border:1px dashed var(--rule);border-radius:3px;background:rgba(0,0,0,.02)}
@@ -1821,7 +1825,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
    first row of its own main. Same border-bottom idiom as the journey
    stations. */
 .rostertabs{display:flex;gap:2px;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--rule)}
-.rostertabs a{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;padding:8px 12px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.rostertabs a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:8px 12px;border-bottom:2px solid transparent;margin-bottom:-1px}
 .rostertabs a:hover{color:var(--ink)}
 .rostertabs a.on{color:var(--ink);border-bottom-color:var(--ochre)}
 .rostertabsline{margin-left:auto;font-size:13px;color:var(--ink-soft);padding-right:4px}
@@ -1836,7 +1840,7 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .rosterfind{display:flex;gap:6px;align-items:center;margin-left:18px}
 .rosterfind .tinput{width:210px;font-size:12.5px;padding:4px 7px}
 .rosterdl{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.rosterfilter a{display:flex;gap:7px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;padding:4px 8px;border:1px solid var(--rule);border-radius:3px}
+.rosterfilter a{display:flex;gap:7px;align-items:center;font-family:var(--sans);font-size:10.5px;letter-spacing:0;color:var(--ink-soft);text-decoration:none;padding:4px 8px;border:1px solid var(--rule);border-radius:3px}
 .rosterfilter a:hover{color:var(--ink);border-color:var(--ink)}
 .rosterfilter a.on{color:var(--ink);border-color:var(--ochre)}
 .rosterlist{padding:0}
@@ -1872,12 +1876,12 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .signinrow .sigrefused{color:var(--red)}
 .rosterstamp{font-family:var(--mono);font-size:11px;color:var(--ink-soft);white-space:nowrap}
 .rosterhead{border-bottom:1px solid var(--rule);padding-top:7px;padding-bottom:7px}
-.rosterhead button{background:none;border:none;padding:0;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;text-align:left}
+.rosterhead button{background:none;border:none;padding:0;font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft);cursor:pointer;text-align:left}
 /* The one header that is not a sort button — `open loom` — had this class in
    the markup and no rule anywhere, so it fell back to the 17px body serif
    beside seven 10px mono headings. A header row reads as a row or it reads as
    a mistake; sortable or not is not a reason to look different. */
-.rosterhead .rostercol{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.rosterhead .rostercol{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
 .rosterhead button:hover{color:var(--ink)}
 .rosterhead button.on{color:var(--ochre)}
 /* Two sorts over one column — name over address. The separator is quiet and
@@ -1928,13 +1932,13 @@ header .btn{display:inline-flex;align-items:center;justify-content:center}
 .catlist{padding:0}
 .cathead,a.catrow{display:grid;grid-template-columns:minmax(240px,1fr) 140px 90px 90px 90px 110px;gap:6px 14px;align-items:center;padding:6px 14px}
 .cathead{border-bottom:1px solid var(--rule);padding-top:8px;padding-bottom:8px}
-.cathead span{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.cathead span{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ink-soft)}
 a.catrow{border-bottom:1px dotted var(--rule);color:inherit;text-decoration:none}
 a.catrow:last-child{border-bottom:none}
 a.catrow:hover{background:rgba(0,0,0,.025)}
 /* The selected course wears the ochre open wash the coding log's open row
    wears (.lrow.open) — the catalog and the detail below it are one thing. */
-a.catrow.on{background:rgba(168,132,63,.08)}
+a.catrow.on{background:color-mix(in srgb, var(--ochre) 8%, transparent)}
 .catname{font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .catterm{font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .catnum{font-family:var(--mono);font-size:12px;color:var(--ink-soft)}
@@ -1997,14 +2001,14 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 .foldline input.numin{width:66px;text-align:center}
 .foldline .hint{margin:0;font-size:13px}
 .radiorow{display:flex;flex-wrap:wrap;gap:8px}
-.radiopick{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;
-  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);background:#fff;
+.radiopick{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:11px;
+  letter-spacing:0;color:var(--ink-soft);background:#fff;
   border:1px solid var(--rule);border-radius:999px;padding:6px 12px;cursor:pointer}
 .radiopick:hover{border-color:var(--sage)}
 .radiopick input{margin:0;accent-color:var(--sage);cursor:pointer}
 /* :has keeps the checked skin on the label without a client component; the
    :focus-within ring is the keyboard's only sign the pill is live. */
-.radiopick:has(input:checked){color:var(--sage);border-color:var(--sage);background:rgba(111,125,92,.08)}
+.radiopick:has(input:checked){color:var(--sage);border-color:var(--sage);background:color-mix(in srgb, var(--sage) 8%, transparent)}
 .radiopick:has(input:focus-visible){outline:2px solid var(--sage);outline-offset:2px}
 
 /* --- Repair review (admin) ---------------------------------------------- */
@@ -2012,15 +2016,15 @@ a.catrow.on{background:rgba(168,132,63,.08)}
    can answer that no measurement can is whether the transcription matches the
    page, and that needs both in view at once. */
 .repair-panel { display: grid; gap: 14px; margin-top: 10px; }
-.repair-region { border-top: 1px solid var(--rule, #ddd8cc); padding-top: 12px; }
+.repair-region { border-top: 1px solid var(--rule, #c0c4cc); padding-top: 12px; }
 .repair-region h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 14px; }
 .repair-split { display: grid; grid-template-columns: minmax(200px, 34%) 1fr; gap: 16px; align-items: start; }
 @media (max-width: 900px) { .repair-split { grid-template-columns: 1fr; } }
 .repair-split figure { margin: 0; position: sticky; top: 12px; }
-.repair-split img { max-width: 100%; border: 1px solid var(--rule, #ccc6b8); background: #fff; }
+.repair-split img { max-width: 100%; border: 1px solid var(--rule, #c0c4cc); background: #fff; }
 .repair-panel pre {
   white-space: pre-wrap; word-break: break-word; font: 12px/1.5 var(--mono, monospace);
-  background: #fff; border: 1px solid var(--rule, #e3ddd0); padding: 8px; margin: 4px 0;
+  background: #fff; border: 1px solid var(--rule, #c0c4cc); padding: 8px; margin: 4px 0;
   max-height: 240px; overflow: auto;
 }
 .repair-damaged { border-color: #e0c3c3 !important; background: #fdf6f6 !important; }
@@ -2037,7 +2041,7 @@ a.catrow.on{background:rgba(168,132,63,.08)}
    reads as reference rather than as a fifth step. */
 .repair-steps {
   display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 14px; flex-wrap: wrap; border-bottom: 1px solid var(--rule, #e3ddd0); padding-bottom: 10px;
+  gap: 14px; flex-wrap: wrap; border-bottom: 1px solid var(--rule, #c0c4cc); padding-bottom: 10px;
 }
 .repair-steps ol {
   display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0; padding: 0; list-style: none;
@@ -2055,21 +2059,21 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 .repair-split figure a:hover img { border-color: var(--ochre); }
 
 .repair-settings {
-  border: 1px solid var(--rule, #ccc6b8); background: var(--paper, #fbf9f4);
+  border: 1px solid var(--rule, #c0c4cc); background: var(--paper, #f3f4f6);
   max-width: 760px; width: calc(100% - 48px); padding: 0; color: var(--ink);
 }
 .repair-settings::backdrop { background: rgba(20, 18, 14, 0.45); }
 .repair-settings-head {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 16px 20px; border-bottom: 1px solid var(--rule, #e3ddd0); position: sticky; top: 0;
-  background: var(--paper, #fbf9f4);
+  padding: 16px 20px; border-bottom: 1px solid var(--rule, #c0c4cc); position: sticky; top: 0;
+  background: var(--paper, #f3f4f6);
 }
 .repair-settings-head h3 { margin: 0; font-size: 16px; }
 .repair-settings-body { padding: 4px 20px 20px; max-height: 70vh; overflow: auto; display: grid; gap: 18px; }
 .repair-settings-body section { display: grid; gap: 4px; }
 .repair-settings-body pre {
   white-space: pre-wrap; word-break: break-word; font: 11.5px/1.5 var(--mono, monospace);
-  background: #fff; border: 1px solid var(--rule, #e3ddd0); padding: 9px; margin: 4px 0; max-height: 220px; overflow: auto;
+  background: #fff; border: 1px solid var(--rule, #c0c4cc); padding: 9px; margin: 4px 0; max-height: 220px; overflow: auto;
 }
 .repair-readers { margin: 4px 0; padding-left: 20px; font: 12px/1.7 var(--mono, monospace); }
 .repair-settings-list { margin: 4px 0; padding-left: 17px; font-size: 13px; line-height: 1.5; }
@@ -2077,9 +2081,9 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 /* Costs per reader, not just a total: a total hides the reader that spends most
    of the money for none of the quality. */
 .repair-costs { width: 100%; border-collapse: collapse; font: 11.5px/1.4 var(--mono, monospace); margin: 8px 0; }
-.repair-costs th, .repair-costs td { text-align: right; padding: 3px 6px; border-bottom: 1px solid var(--rule, #eee7d9); }
+.repair-costs th, .repair-costs td { text-align: right; padding: 3px 6px; border-bottom: 1px solid var(--rule, #c0c4cc); }
 .repair-costs th:first-child, .repair-costs td:first-child { text-align: left; }
-.repair-costs thead th { color: #7a7a7a; font-weight: normal; text-transform: uppercase; letter-spacing: .05em; }
+.repair-costs thead th { color: var(--grey); font-weight: normal;  letter-spacing:0}
 .repair-costs-total td { font-weight: 600; border-bottom: none; }
 .pill.repair-accepted { color: var(--sage); border-color: var(--sage); }
 .pill.repair-applied { color: var(--sage); border-color: var(--sage); }
@@ -2271,9 +2275,9 @@ a.catrow.on{background:rgba(168,132,63,.08)}
    own horizontal padding, so the band reaches the card's padding edge and
    stops inside its 1px border.
 
-   The background must be opaque and must match what the card paints, which is
-   rgba(255,255,255,.5) over the panel's --paper. color-mix says exactly that
-   and keeps saying it if --paper moves. */
+   The background must be opaque and must match what the card paints. The card
+   is solid --surface, so the band is the same token. It used to be a
+   color-mix of white over --paper, because the card was rgba(255,255,255,.5). */
 .yourwork-body .viewswitch {
   position: sticky;
   top: 0;
@@ -2284,19 +2288,21 @@ a.catrow.on{background:rgba(168,132,63,.08)}
      panel body, and the switch sat against the head bar's rule with nothing
      between them. At rest it costs 6px. */
   padding: 6px 9px 8px;
-  background: color-mix(in srgb, #fff 50%, var(--paper));
+  background: var(--surface);
   border-bottom: 1px solid var(--rule);
 }
 .yourwork-body .viewswitch .segmented { margin-bottom: 0; }
 /* TYPE STEP-DOWN (TJ, 2026-08-13: "the font sizes seem overly large to me").
-   They were, and not by taste. The app's base is 17px Newsreader — right for
-   60-75ch of prose on a full-width page, which is what a reading tool should
-   set. This sheet is 380px, about 330px of content, and inherited that scale
-   unchanged: a concept row came out at 15.5px against a 17px panel title, so
-   the step between "the name of this sheet" and "one row in a list" was 1.5px
-   and the hierarchy read flat. The cloth card's own h2 was 21px — LARGER than
-   the panel containing it — because .card h2 is sized for a full-width card
-   at 01 and nothing scoped it down when the card moved in here.
+   They were, and not by taste. The app's base was 17px Newsreader when this
+   ladder was set (TJ, 2026-08-13) — right for 60-75ch of prose on a full-width
+   page. The design-system pass moved the base to 16px sans (tokens.css); these
+   sheet sizes were not remeasured. This sheet is 380px, about 330px of content,
+   and had inherited that scale unchanged: a concept row came out at 15.5px
+   against a 17px panel title, so the step between "the name of this sheet"
+   and "one row in a list" was 1.5px and the hierarchy read flat. The cloth
+   card's own h2 was 21px — LARGER than the panel containing it — because
+   .card h2 is sized for a full-width card at 01 and nothing scoped it down
+   when the card moved in here.
 
    Scoped to .yourwork on purpose. The reading prose is correctly sized and a
    global change would shrink it. The ladder: 17 sheet / 15 card / 14 row /
@@ -2397,7 +2403,7 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 .handfold > summary .tw { font-family: var(--mono); font-size: 12px; color: var(--ochre);
   transition: transform .15s; display: inline-block; }
 /* The Linking step bar: named moves, not four abbreviations (TJ, 2026-08-08). */
-.steprail .rstep { text-transform: none; letter-spacing: .01em; font-family: var(--body); font-size: 12.5px; }
+.steprail .rstep { text-transform: none; letter-spacing:0; font-family: var(--body); font-size: 12.5px; }
 .steprail .stepn {
   font-family: var(--mono); font-size: 10px; opacity: .7; margin-right: 3px;
 }
@@ -2451,9 +2457,9 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 .scrollx{overflow-x:auto;margin-top:14px}
 .mtable{border-collapse:collapse;width:100%;font-size:14px}
 .mtable th,.mtable td{text-align:left;padding:7px 10px;border-bottom:1px dotted var(--rule);vertical-align:top}
-.mtable thead th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);border-bottom:1px solid var(--rule)}
+.mtable thead th{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--grey);border-bottom:1px solid var(--rule)}
 .mtable tbody th[scope="row"]{font-weight:400;font-family:var(--body)}
-.mgroup th{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ochre);padding-top:16px;border-bottom:none}
+.mgroup th{font-family:var(--sans);font-size:10px;letter-spacing:0;color:var(--ochre);padding-top:16px;border-bottom:none}
 /* One column each for the three roles: narrow, so the glyphs line up and the
    eye can run down a role rather than across a row. */
 .mcell{width:132px}
@@ -2465,7 +2471,7 @@ a.catrow.on{background:rgba(168,132,63,.08)}
 .mgate{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft)}
 .mfile{display:block;color:var(--grey);font-size:10.5px;margin-top:2px}
 /* A hole is a finding and should read like one. */
-.mhole{background:rgba(178,58,43,.05)}
+.mhole{background:color-mix(in srgb, var(--red) 5%, transparent)}
 .mhole th[scope="row"]{color:var(--red)}
 .mnotes{margin-top:18px;padding-left:18px;max-width:76ch}
 .mnotes li{font-size:13.5px;color:var(--ink-soft);margin-bottom:7px}

@@ -799,7 +799,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         <div id="triageList" onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropAt(null) }}>
           {!scopedState.concepts.length ? (
             <div className="empty">
-              <svg width={34} height={18} viewBox="0 0 34 18" fill="none" stroke="#a39f92" strokeWidth={1.3}><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13" /></svg>
+              <svg width={34} height={18} viewBox="0 0 34 18" fill="none" stroke="var(--grey)" strokeWidth={1.3}><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13" /></svg>
               <span className="cap">lay some warp on 01 — open first</span>
             </div>
           ) : sortList.map((c, i) => (
@@ -904,7 +904,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         )}
 
       {/* position:relative anchors the card menus, which are HTML over the SVG. */}
-      <div id="tableWrap" style={{ position: "relative", overflowX: "auto", border: "1px solid var(--rule)", borderRadius: 4, background: "#f4f2ec" }}>
+      <div id="tableWrap" style={{ position: "relative", overflowX: "auto", border: "1px solid var(--rule)", borderRadius: 4, background: "var(--ground)" }}>
         <svg
           ref={svgRef}
           id="cardTable"
@@ -934,12 +934,12 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             return (
               <g key={k}>
                 {i > 0 && <line x1={14} y1={top} x2={W - 14} y2={top} stroke="var(--rule)" strokeWidth={1} strokeDasharray="2 5" />}
-                <text x={W - 18} y={top + 18} textAnchor="end" fontFamily="ui-monospace,Menlo,monospace" fontSize={9} letterSpacing={2} fill="var(--grey)">{name}</text>
+                <text x={W - 18} y={top + 18} textAnchor="end" fontFamily="var(--sans)" fontSize={12} fontWeight={600} letterSpacing={0} fill="var(--grey)">{name[0] + name.slice(1).toLowerCase()}</text>
               </g>
             )
           })}
           {!placed.length && (
-            <text x={W / 2} y={TABLE_H / 2} textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize={9} letterSpacing={2} fill="var(--grey)">SORT CONCEPTS ABOVE — THEY LAND HERE AS CARDS</text>
+            <text x={W / 2} y={TABLE_H / 2} textAnchor="middle" fontFamily="var(--sans)" fontSize={13} letterSpacing={0} fill="var(--grey)">Sort concepts above — they land here as cards</text>
           )}
           {/* edges first, under the cards — quadratic, bendable by drag */}
           {drawnEdges.map(e => {
@@ -976,11 +976,11 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
                 <HaloText
                   lines={lines}
                   x={lx}
-                  y={ly - 4 - (lines.length - 1) * 5.5}
+                  y={ly - 4 - (lines.length - 1) * 7}
                   textAnchor="middle"
-                  fontFamily="ui-monospace,Menlo,monospace"
-                  fontSize={10}
-                  letterSpacing=".04em"
+                  fontFamily="var(--sans)"
+                  fontSize={12}
+                  lineHeight={14}
                   fill={col}
                   fontStyle={named ? "normal" : "italic"}
                   pointerEvents="none"
@@ -995,12 +995,12 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             return (
               <g key={c.id} cursor={readOnly ? "default" : "grab"} data-card={c.id}>
                 <rect x={pos.x} y={pos.y} width={w} height={h} rx={4 * s} fill="#fff" stroke="var(--ochre)" strokeWidth={1.2} />
-                <text x={pos.x + w / 2} y={pos.y + (twoLine ? 19 * s : h / 2 + 4 * s)} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={12.5 * s} fill={conceptName(c).unlabeled ? "var(--ink-soft)" : "var(--ink)"}>
+                <text x={pos.x + w / 2} y={pos.y + (twoLine ? 19 * s : h / 2 + 4 * s)} textAnchor="middle" fontFamily="var(--sans)" fontSize={12.5 * s} fill={conceptName(c).unlabeled ? "var(--ink-soft)" : "var(--ink)"}>
                   {short(conceptNameText(c), Math.floor(w / (6.4 * s)))}
                   <title>{conceptNameText(c)}</title>
                 </text>
                 {twoLine && (
-                  <text x={pos.x + w / 2} y={pos.y + 36 * s} textAnchor="middle" fontFamily='"Newsreader",Georgia,serif' fontSize={10 * s} fontStyle="italic" fill="var(--ink-soft)">
+                  <text x={pos.x + w / 2} y={pos.y + 36 * s} textAnchor="middle" fontFamily="var(--sans)" fontSize={10 * s} fontStyle="italic" fill="var(--ink-soft)">
                     {defLines(c).map((ln, i) => (
                       <tspan key={i} x={pos.x + w / 2} dy={i ? 12 * s : 0}>{ln}</tspan>
                     ))}

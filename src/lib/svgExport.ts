@@ -10,7 +10,7 @@
  *
  * 1. NO COLOUR. Both draw with `fill="var(--red)"` and friends, and the flow
  *    diagram styles its labels by className. Custom properties resolve against
- *    `:root` in src/app/globals.css, and class rules live in a stylesheet — a
+ *    `:root` in src/app/tokens.css, and class rules live in a stylesheet — a
  *    file opened from disk has neither, so every stroke falls back to black.
  * 2. NO SIZE. Neither carries a `viewBox`, a `width` attribute or a `height`
  *    attribute; the geometry is raw CSS pixels against a width a ResizeObserver
@@ -19,7 +19,8 @@
  * 3. NO NAMESPACE. React puts elements in the SVG namespace at DOM level
  *    without writing `xmlns`, which a standalone file must declare.
  * 4. NO GROUND. Neither svg paints a background; the paper comes from the
- *    wrapper around it (#mapWrap / #tableWrap, both `#f4f2ec`). On a file with
+ *    wrapper around it (#mapWrap / #tableWrap, both `var(--ground)`, which is
+ *    #ffffff — the same literal as DRAWING_GROUND below). On a file with
  *    no ground, a viewer's own background shows through — white here, black in
  *    a dark image viewer, with dark ink either way.
  *
@@ -186,18 +187,11 @@ export function serializeSvg(source: SVGSVGElement, options: SvgExportOptions): 
   clone.insertBefore(ground, clone.firstChild)
 
   /**
-   * The webfont, for readers that can fetch it. The concept labels ask for
-   * "Newsreader" (ClothMap.tsx:448), which the app loads from Google Fonts in
-   * globals.css:1 — a file opened from disk has no such stylesheet, so it
-   * falls to Georgia. An @import inside the file gets the real face back in a
-   * browser and is ignored, harmlessly, by Illustrator and Inkscape, which use
-   * the fallback. Not embedded as base64: that would carry the whole variable
-   * font and its licence notice into every download.
+   * No webfont. Concept labels use the UI sans (`var(--sans)` in the drawing).
+   * getComputedStyle, copied above, writes the resolved family list into the
+   * file, and every machine has that stack. A Google font import used to sit
+   * here for Newsreader; a file opened from disk was the only reader of it.
    */
-  const fonts = clone.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "style")
-  fonts.textContent =
-    "@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');"
-  clone.insertBefore(fonts, clone.firstChild)
 
   const markup = new XMLSerializer().serializeToString(clone)
   return `<?xml version="1.0" encoding="UTF-8"?>\n${markup}`
@@ -205,9 +199,9 @@ export function serializeSvg(source: SVGSVGElement, options: SvgExportOptions): 
 
 /**
  * The ground each drawing sits on in the app, so an export matches the screen.
- * Both wrappers set it in the same literal — #mapWrap at globals.css:806 and
- * #tableWrap inline at MapTab.tsx:907 — and it is NOT `--paper`: the linking-word
- * halo is this exact colour (`DRAWING_GROUND`, drawn by HaloText), so a
- * background that drifted from it would leave a plate behind every label.
+ * Both wrappers set it from `--ground` in tokens.css (`#ffffff`) — #mapWrap
+ * in globals.css and #tableWrap inline in MapTab. It is not `--paper`.
+ * HaloText paints its knockout with this constant, because an exported file
+ * cannot resolve a custom property. Keep this hex equal to `--ground`.
  */
-export const DRAWING_GROUND = "#f4f2ec"
+export const DRAWING_GROUND = "#ffffff"

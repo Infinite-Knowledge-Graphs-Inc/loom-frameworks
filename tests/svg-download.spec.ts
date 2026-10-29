@@ -79,7 +79,7 @@ test.describe("Download the drawing", () => {
       expect(file.text, `${label}: colours resolved to literals`).toMatch(/rgb\(\d+, ?\d+, ?\d+\)/)
 
       // Its own ground, so a dark viewer does not put dark ink on black.
-      expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#f4f2ec"/)
+      expect(file.text, `${label}: an opaque background`).toMatch(/<rect[^>]*fill="#ffffff"/)
 
       /**
        * Linking words used to be one <text> with a 4px paper-coloured stroke
@@ -95,7 +95,9 @@ test.describe("Download the drawing", () => {
         m[2].includes("constrains")
       )
       expect(labelled.length, `${label}: a paper halo and an ink copy`).toBeGreaterThanOrEqual(2)
-      const ink = labelled.find((m) => !m[1].includes("244, 242, 236"))
+      // The knockout is DRAWING_GROUND, #ffffff. getComputedStyle writes that
+      // as rgb(255, 255, 255); the ink copy is the sage or grey of the thread.
+      const ink = labelled.find((m) => !/255,\s*255,\s*255/.test(m[1]) && !m[1].includes("#ffffff"))
       expect(ink, `${label}: an unstroked copy of the linking word`).toBeTruthy()
       expect(ink?.[1], `${label}: the ink copy has no stroke`).not.toMatch(/stroke-width/)
 

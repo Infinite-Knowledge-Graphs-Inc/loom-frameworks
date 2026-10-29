@@ -2757,11 +2757,11 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           font-family: var(--body);
           color: var(--ink);
         }
-        .pdf-search-hit:hover { background: rgba(122, 138, 110, 0.09); }
+        .pdf-search-hit:hover { background: var(--paper-2); }
         .pdf-search-hit .n {
           font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.06em;
+          font-size: 11px;
+          letter-spacing: 0;
           color: var(--grey);
           margin-right: 7px;
         }
@@ -2776,8 +2776,8 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           position: fixed;
           z-index: 9500;
           max-width: min(320px, calc(100vw - 24px));
-          background: rgba(26, 25, 22, 0.95);
-          color: var(--paper);
+          background: var(--ink);
+          color: var(--surface);
           border: 1px solid rgba(255, 204, 0, 0.4);
           border-radius: 6px;
           padding: 8px 10px;
@@ -2801,10 +2801,11 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           margin-bottom: 2px;
         }
         .loom-highlight-tooltip .meta {
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
+          font-family: var(--sans);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0;
+          text-transform: none;
           opacity: 0.88;
           margin-bottom: 0;
           color: rgba(255, 204, 0, 0.9);
@@ -2838,9 +2839,9 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           margin-top: 8px;
           border-top: 1px solid rgba(255, 255, 255, 0.18);
           padding-top: 6px;
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.03em;
+          font-family: var(--sans);
+          font-size: 12px;
+          letter-spacing: 0;
           color: rgba(255, 255, 255, 0.8);
         }
         .loom-highlight-tooltip button {
@@ -2849,10 +2850,11 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           border: 1px solid rgba(255, 204, 0, 0.45);
           color: rgba(255, 204, 0, 0.98);
           border-radius: 4px;
-          font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
+          font-family: var(--sans);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0;
+          text-transform: none;
           padding: 4px 7px;
           cursor: pointer;
         }
@@ -3118,8 +3120,8 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
         }
         .pdf-slot-label {
           font-family: var(--mono);
-          font-size: 10px;
-          letter-spacing: .1em;
+          font-size: 11px;
+          letter-spacing: 0;
           color: var(--ink-soft);
           text-align: center;
           padding-top: 4px;
@@ -3453,10 +3455,11 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           font-family: var(--body);
         }
         .pdf-draftcard-head {
-          font-family: var(--mono, var(--body));
-          font-size: 10.5px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
+          font-family: var(--sans);
+          font-size: 12px;
+          font-weight: 600;
+          letter-spacing: 0;
+          text-transform: none;
           color: var(--ink-soft);
           margin-bottom: 6px;
         }
@@ -3522,17 +3525,17 @@ export default function PdfViewer({ url, sourceName, sourceId, initialPageNumber
           font-style: italic;
         }
         .pdf-railcard-note-edit:focus {
-          outline: 2px solid rgba(255, 204, 0, 0.8); outline-offset: -1px;
+          outline: 2px solid var(--focus); outline-offset: -1px;
         }
         /* Smaller than the note above it and quieter than the badges: the one
            act on this card that destroys something should be the last thing
-           the eye reaches, not a target it lands on. The same quiet mono
-           register Your work uses for the identical button.
+           the eye reaches, not a target it lands on. Same type as .rm in
+           globals.css.
            (No backticks in here — this block is a template literal.) */
         .pdf-railcard-rm {
           display: block; margin-top: 6px; padding: 2px 5px;
           background: none; border: none; cursor: pointer;
-          font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em;
+          font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0;
           color: var(--dot); text-align: left;
         }
         .pdf-railcard-rm:hover, .pdf-railcard-rm:focus-visible { color: var(--red); }

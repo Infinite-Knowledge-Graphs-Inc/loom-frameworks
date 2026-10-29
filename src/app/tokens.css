@@ -1,0 +1,53 @@
+/* Loom's interface tokens.
+   One place for the chrome: surfaces, ink, object hues, type, control shape.
+   Component CSS should use these names. A literal palette color in a
+   component is a second copy and will drift.
+
+   Choices, 2026-10-28, starting from the warm paper / Fraunces / tracked-caps
+   chrome this file replaces:
+
+   - Cool neutral surfaces. The page is not a cream sheet.
+   - One sans for the interface. --mono is for data (addresses, times,
+     counts), not for labels. --read is for a quoted passage.
+   - Sentence case. Labels are not small-caps.
+   - Text ink clears 4.5:1 on --paper. Ratios below were computed with the
+     WCAG relative-luminance formula against --paper #f3f4f6, not measured
+     on a screen. Object hues keep their roles (warp, weft, borrowed,
+     personal, the one selected thing) and are darker so they can be text.
+   - Controls are a border and a fill, one radius. The heat ramp is not a
+     chrome color; it stays in globals.css. */
+
+:root {
+  --paper: #f3f4f6;
+  --paper-2: #e6e8ec;
+  --surface: #ffffff;
+  /* Drawings sit on this. HaloText knocks the line out with DRAWING_GROUND
+     in svgExport.ts, the same hex, because an exported file cannot resolve
+     a custom property. Keep the two equal. */
+  --ground: #ffffff;
+
+  --ink: #16181d;            /* 16.14:1 */
+  --ink-hover: #2c313b;
+  --ink-soft: #525868;       /* 6.46:1. Was #6b675c, 4.73:1 on #edebe3. */
+  --grey: #5e6573;           /* 5.32:1. Was #a39f92, 2.22:1 on #edebe3. */
+  --rule: #c0c4cc;           /* 1.59:1, a hairline. Was 1.42:1. */
+  --rule-strong: #8d939e;    /* 2.81:1. Fields and ghost controls. */
+  --dot: #747b88;            /* 3.87:1. Inactive labels, still readable. */
+
+  --ochre: #8c5a12;          /* 5.32:1. Warp — concepts. Was #a8843f, 2.91:1. */
+  --sage: #3f5c38;           /* 6.82:1. Weft — beaten threads. */
+  --lav: #534e86;            /* 6.81:1. A verb borrowed from another field. */
+  --slate: #3c5670;          /* 6.92:1. A student's own, not the course's. */
+  --red: #a33b2c;            /* 5.93:1. RESERVED: the one selected thing. */
+
+  --focus: var(--ink);
+  --radius: 4px;
+
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --read: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  /* Older rules name these two. Both are the UI sans: a heading is not
+     a second display face. */
+  --display: var(--sans);
+  --body: var(--sans);
+}

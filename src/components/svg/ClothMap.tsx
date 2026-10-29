@@ -265,8 +265,8 @@ export default function ClothMap({
           {[[480, 156, 480, 163], [480, 177, 480, 184], [466, 170, 473, 170], [487, 170, 494, 170]].map(([x1, y1, x2, y2], i) => (
             <line key={`tick-${i}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="var(--red)" strokeWidth={1.3} />
           ))}
-          <text x={480} y={206} textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize={9} letterSpacing={2} fill="var(--red)">HERE.</text>
-          <text x={480} y={226} textAnchor="middle" fontFamily="ui-monospace,Menlo,monospace" fontSize={9} letterSpacing={2} fill="var(--grey)">THE CLOTH BEGINS WITH ONE THROWN THREAD.</text>
+          <text x={480} y={206} textAnchor="middle" fontFamily="var(--sans)" fontSize={13} letterSpacing={0} fill="var(--red)">Here.</text>
+          <text x={480} y={226} textAnchor="middle" fontFamily="var(--sans)" fontSize={13} letterSpacing={0} fill="var(--grey)">The cloth begins with one thrown thread.</text>
         </g>
       )}
 
@@ -280,7 +280,7 @@ export default function ClothMap({
           all (the warp line is drawn under, but it wins any pixel the arc's
           hairline does not exactly cover). */}
       {cs.map((c, i) => (
-        <line key={`warp-${c.id}`} x1={X(i)} y1={28} x2={X(i)} y2={baseY} stroke="rgba(168,132,63,.14)" strokeWidth={1} pointerEvents="none" />
+        <line key={`warp-${c.id}`} x1={X(i)} y1={28} x2={X(i)} y2={baseY} stroke="color-mix(in srgb, var(--ochre) 14%, transparent)" strokeWidth={1} pointerEvents="none" />
       ))}
 
       {/* Edges */}
@@ -362,11 +362,10 @@ export default function ClothMap({
               x={(fx + tx) / 2}
               y={baseY - 6 - h - 5}
               textAnchor="middle"
-              fontFamily="ui-monospace,Menlo,monospace"
-              fontSize={10}
+              fontFamily="var(--sans)"
+              fontSize={12}
               fontStyle={beaten ? "normal" : "italic"}
               fill={col}
-              letterSpacing=".04em"
               opacity={op}
               cursor={handleSelect ? "pointer" : undefined}
               onClick={handleSelect}
@@ -442,7 +441,7 @@ export default function ClothMap({
             />
             <text
               transform={`translate(${x + 4},${baseY + 13}) rotate(30)`}
-              fontFamily='"Newsreader",Georgia,serif'
+              fontFamily="var(--sans)"
               fontSize={11.5}
               fill={isSel || picked ? "var(--red)" : "var(--ink)"}
               opacity={op}

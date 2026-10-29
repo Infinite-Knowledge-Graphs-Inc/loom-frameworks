@@ -211,13 +211,13 @@ export function guestLinkEmail(url: string): { subject: string; text: string; ht
       `The link works once, and expires in 24 hours.\n` +
       `If you did not ask to sign in, you can ignore this — nobody can use the link but you.\n`,
     html:
-      `<body style="font-family: Georgia, serif; color: #2b2b2b; background: #f2f0ea; padding: 32px;">` +
-      `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; margin: 0 auto; background: #fbfaf7; border: 1px solid #ddd8cc; border-radius: 4px;">` +
+      `<body style="font-family: ui-sans-serif, system-ui, sans-serif; color: #16181d; background: #f3f4f6; padding: 32px;">` +
+      `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; margin: 0 auto; background: #ffffff; border: 1px solid #c0c4cc; border-radius: 4px;">` +
       `<tr><td style="padding: 28px;">` +
-      `<h1 style="font-size: 21px; margin: 0 0 14px;">Sign in to Loom</h1>` +
+      `<h1 style="font-size: 21px; font-weight: 600; margin: 0 0 14px;">Sign in to Loom</h1>` +
       `<p style="font-size: 15px; line-height: 1.5; margin: 0 0 22px;">You asked for a link to sign in. It works once, and expires in 24 hours.</p>` +
-      `<p style="margin: 0 0 22px;"><a href="${href}" style="display: inline-block; background: #2b2b2b; color: #fbfaf7; text-decoration: none; padding: 11px 18px; border-radius: 3px; font-family: monospace; font-size: 13px; letter-spacing: .06em; text-transform: uppercase;">Sign in</a></p>` +
-      `<p style="font-size: 13px; line-height: 1.5; color: #6d6a63; margin: 0;">If you did not ask to sign in, you can ignore this — nobody can use the link but you.</p>` +
+      `<p style="margin: 0 0 22px;"><a href="${href}" style="display: inline-block; background: #16181d; color: #ffffff; text-decoration: none; padding: 8px 14px; border-radius: 4px; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 600;">Sign in</a></p>` +
+      `<p style="font-size: 13px; line-height: 1.5; color: #525868; margin: 0;">If you did not ask to sign in, you can ignore this — nobody can use the link but you.</p>` +
       `</td></tr></table></body>`,
   }
 }
