@@ -261,6 +261,17 @@ test.describe("The guide", () => {
     // 'glowing button/card'. how do we indicate where the 'glow' is?"* — on
     // a Library many cards deep, and the beat goes on saying "press
     // the glowing card" with nothing glowing anywhere on screen.
+    //
+    // THE SHELF IS NOT ALWAYS DEEP. The CI database seeds four readings
+    // (scripts/seed-sources.ts), and the practice card sits 526px below the
+    // top of that shelf — measured 2026-10-29 on a four-reading shelf at
+    // viewport heights 720, 560, 480 and 400, where card top plus the shelf's
+    // scrollTop came to 526 every time. At the default 720 it can never leave
+    // the viewport upward, so this test could not pass on that database, and
+    // said nothing about the guide. 480 is under 526 with room to spare;
+    // width stays at the 1280 floor, so the layout is the one the app is
+    // built for. A deeper shelf only overflows more, so this holds there too.
+    await page.setViewportSize({ width: 1280, height: 480 })
     await page.goto("/sandbox")
     await expect(page.locator(".guidepop")).toBeVisible({ timeout: 30_000 })
     await expect(page.locator(".guideglow")).toBeVisible()
@@ -273,7 +284,13 @@ test.describe("The guide", () => {
     // wheel going through a mask pane, which used to swallow it entirely: a
     // fixed pane is not in `main`'s scroll chain, so the page moved or did not
     // depending on where the pointer happened to be.
-    await page.mouse.move(700, 500)
+    // y=440, not the 500 this used to be: at the 480px viewport set above, 500
+    // is below the page and the wheel goes nowhere. Not 300 either — at 1280
+    // wide the guide card sits over (700, 300) and swallows the wheel, so the
+    // shelf never moves. Probed 2026-10-29 with document.elementsFromPoint:
+    // (700, 440) and (900, 300) are over a `.gpane` and the wheel scrolls the
+    // shelf to the top; (700, 300) is over `.guidepop` and it does not.
+    await page.mouse.move(700, 440)
     await expect
       .poll(async () => page.evaluate(() => document.querySelector(".gpane") !== null))
       .toBe(true)
