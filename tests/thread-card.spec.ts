@@ -91,8 +91,18 @@ test.describe("The thread card", () => {
       // The roster's Open Loom became the read-only mode's door on
       // 2026-08-21; the summary page this test exercises is still routable,
       // just unlinked — reach it by the id the enter link carries.
+      //
+      // THE STUDENT IS NAMED, NOT "FIRST". The roster sorts by name
+      // (RosterTable, sortKey "name"), and on the CI database that put "Test
+      // Two Courses" first — an account with no threads — so the page drew
+      // "0 threads" and this test failed on a missing `.thread`. Test User A
+      // is the one account seed:demo gives a worked loom (6 threads; checked
+      // 2026-10-29 by counting `edge` rows per user on the ci branch), so it
+      // is the row that has something to draw whatever sorts first.
       await page.goto("/admin")
-      const door = page.locator("a.openloom").first()
+      const door = page
+        .locator(".rosterrow", { hasText: "test-user-a@loom.local" })
+        .locator("a.openloom")
       await expect(door).toBeVisible({ timeout: 20_000 })
       const href = await door.getAttribute("href")
       const userId = new URL(href ?? "", "http://resolve.invalid").searchParams.get("user")
