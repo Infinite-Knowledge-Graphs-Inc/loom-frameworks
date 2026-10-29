@@ -11,6 +11,7 @@
 // their own.
 
 import { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useLoom } from "@/components/providers/LoomProvider"
@@ -20,7 +21,7 @@ import Identity from "@/components/ui/Identity"
 import SignedOutWelcome from "@/components/ui/SignedOutWelcome"
 import ConceptCard from "@/components/cards/ConceptCard"
 import MapTab from "@/components/tabs/MapTab"
-import { scopeOf, spanPath, readingsOf } from "@/lib/scope"
+import { scopeOf, scopeFromKey, spanPath, readingsOf } from "@/lib/scope"
 import { sortedByLabel } from "@/lib/utils"
 import type { Passage } from "@/lib/types"
 import styles from "./SpanStation.module.css"
@@ -85,6 +86,27 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
       return a - b
     })
   }, [courseReadings])
+
+  // The sets this student has already made a projection of — the way back to
+  // them after they leave the station, since a set otherwise lives only in the
+  // address bar. A map row's key with a comma IS a set (the split search.ts
+  // and createMap make). A set naming a reading no longer on the shelf is not
+  // listed: the cleanup above would drop that id and open a different scope
+  // than the one stored, which is worse than not offering it. Newest work
+  // first; `updatedAt` moves on every tier, drag and rewrite (`updateMap`).
+  const savedSets = useMemo(() => {
+    const bySet = new Map<string, { ids: string[]; projections: number; at: number }>()
+    for (const m of state.maps) {
+      if (!m.scopeKey.includes(",")) continue
+      const ids = scopeFromKey(m.scopeKey).sourceIds
+      if (!ids.every((id) => knownIds.has(id))) continue
+      const row = bySet.get(m.scopeKey) ?? { ids, projections: 0, at: 0 }
+      row.projections += 1
+      row.at = Math.max(row.at, m.updatedAt.getTime())
+      bySet.set(m.scopeKey, row)
+    }
+    return [...bySet.values()].sort((a, b) => b.at - a.at)
+  }, [state.maps, knownIds])
 
   const concepts = useMemo(() => sortedByLabel(scopedState.concepts), [scopedState.concepts])
   const [filter, setFilter] = useState("")
@@ -152,6 +174,32 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
           tertiary the same way Knowledge Graph does. The lines are threads you have already thrown.
           Nothing here places a card for you.
         </p>
+
+        {!loadingShelf && savedSets.length > 0 && (
+          <>
+            <h2 className="sectionhead">
+              Sets you have worked on <span className="n">{savedSets.length}</span>
+            </h2>
+            <div className="chips" style={{ marginBottom: 14 }}>
+              {savedSets.map((set) => {
+                const href = spanPath(set.ids)
+                const names = set.ids.map((id) => titleOf(id))
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`chip ${styles.saved}`}
+                    aria-current={pathname === href ? "page" : undefined}
+                    title={`${names.join(" + ")} — ${set.projections} projection${set.projections === 1 ? "" : "s"}`}
+                  >
+                    {names.join(" + ")}
+                    <span className={styles.savedn}> · {set.projections}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </>
+        )}
 
         <h2 className="sectionhead">
           Readings <span className="n">
