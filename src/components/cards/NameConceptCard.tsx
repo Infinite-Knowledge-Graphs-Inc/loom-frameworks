@@ -11,16 +11,13 @@ import { useState } from "react"
  * the three places a student looks at their concepts, and coining one ahead of
  * its evidence is the same act in all of them.
  *
- * A concept coined here joins NO reading. The model is explicit — §Concept: "A
- * Concept with no Passages therefore belongs to NO Reading, and is in scope
- * EVERYWHERE — it stands in every Reading's warp while the student hunts for
- * what backs it" — which is why the button names the VOCABULARY as its
- * destination from all three, and why the same component can sit in a
- * reading-scoped station without lying about where the concept lands.
- *
- * The prose above the fields says the same thing to the student, so the two
- * cannot drift: whichever station you coin from, it "stays in view in every
- * reading while you hunt".
+ * A concept coined here is stamped with the reading that is open
+ * (`mintedInSourceId`, model §Concept). Until a passage backs it, it stands
+ * on that reading's linking list only. Once a passage backs it, it shows in
+ * the readings that evidence it — the same rule as any other concept
+ * (src/lib/scope.ts). The button still says vocabulary: the concept joins
+ * the student's holdings, not this reading's passages. The sentence above
+ * the fields says where it will show, so the two cannot drift.
  */
 export default function NameConceptCard({
   listId,
@@ -60,8 +57,8 @@ export default function NameConceptCard({
     <p className="hint" style={{ marginTop: 2 }}>
       Expecting an idea before you have found it in the text? Name it, say what you
       think it is, and go looking. It shows as <b>no evidence</b> until a passage
-      backs it — a state, not a fault — and it stays in view in every reading while
-      you hunt.
+      backs it — a state, not a fault — and it stays on this reading&apos;s linking
+      list while you hunt. A passage is what carries it into another reading.
     </p>
     <div className="form-row">
       {/* The explanation moves INTO the label and the placeholder becomes
@@ -106,18 +103,15 @@ export default function NameConceptCard({
       />
     </div>
     {/* "add concept to VOCABULARY", not "to cloth" (TJ proposed the
-        pair; the destination is the correction). A concept coined
-        before its evidence joins nothing here: model §Concept — "A
-        Concept with no Passages therefore belongs to NO Reading, and is
-        in scope EVERYWHERE — it stands in every Reading's warp while the
-        student hunts for what backs it" — and the Concept List "belongs
-        to the User, spans Cloths". It enters THIS cloth the moment a
-        passage here evidences it, which is what the two "add concept to
-        passage" buttons above do.
+        pair; the destination is the correction). The Concept List belongs
+        to the User and spans Cloths. A concept coined ahead of evidence is
+        stamped with the open reading and stands on that reading's linking
+        list until a passage backs it (model §Concept, src/lib/scope.ts).
+        It enters another reading when a passage there evidences it.
 
-        The paragraph directly over this input already says as much: "it
-        stays in view in every reading while you hunt". A button reading
-        "to cloth" would have contradicted its own instructions.
+        The paragraph directly over this input already says as much. A
+        button reading "to cloth" would have contradicted its own
+        instructions.
 
         Naming the destination on all three is the point: the same three
         words, three different objects, was the confusion TJ started
