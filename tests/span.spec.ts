@@ -99,6 +99,39 @@ test('two readings offer the linking bench, without coining and without 02\'s ow
   await expect(page.locator('#throwBench')).toHaveCount(0);
 });
 
+test('the readings drawer: open to start, named strip once chosen, shut on a bookmark, filterable', async ({ page }) => {
+  test.setTimeout(90_000);
+  await openSpan(page);
+  const drawer = page.locator('#span-reading-picker');
+  const strip = page.getByRole('list', { name: 'Chosen readings' });
+  await expect(drawer).toBeVisible({ timeout: 15000 });
+  await expect(strip).toHaveCount(0);
+
+  await pickers(page).nth(0).click();
+  await pickers(page).nth(1).click();
+  // Choosing must not shut the drawer under the pointer.
+  await expect(drawer).toBeVisible();
+  await expect(strip.getByRole('listitem').filter({ has: page.getByRole('button', { name: /^Remove / }) })).toHaveCount(2);
+
+  // The × takes one back out, through the same path the picker uses.
+  await strip.getByRole('button', { name: /^Remove / }).first().click();
+  await expect(page).toHaveURL(new RegExp(`/span/${UUID}$`));
+
+  // A bookmark with a reading chosen comes up with the drawer shut — the
+  // buttons stay in the page (hidden) so the pressed set is still the chosen set.
+  await page.reload();
+  await expect(page.getByText('Loading your loom...')).toHaveCount(0, { timeout: 20000 });
+  await expect(drawer).toBeHidden();
+  await expect(page.locator('main button.chip[aria-pressed="true"]')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Change readings' }).click();
+  await expect(drawer).toBeVisible();
+
+  // The filter narrows by title; nothing matching says so.
+  await page.getByLabel('Filter readings').fill('zzzz-no-such-reading');
+  await expect(pickers(page)).toHaveCount(0);
+  await expect(drawer.getByText(/No reading matches/)).toBeVisible();
+});
+
 test('with nothing chosen there is no board to sort on', async ({ page }) => {
   await openSpan(page);
   await expect(page.getByText('pick at least one')).toBeVisible({ timeout: 15000 });

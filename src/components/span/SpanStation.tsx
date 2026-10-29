@@ -33,6 +33,12 @@ function idsFromParam(raw: string | string[] | undefined): string[] {
   return []
 }
 
+/** The student's own open/shut choice for the readings drawer; null = not chosen yet. See `pickerPinned`. */
+const pickerMemory: { open: boolean | null } = { open: null }
+const rememberPicker = (open: boolean) => {
+  pickerMemory.open = open
+}
+
 export default function SpanStation({ isPreviewDeployment = false }: { isPreviewDeployment?: boolean }) {
   const { data: session, status } = useSession()
   const { readings, isLoading: loadingShelf, error: shelfError, refresh, titleOf } = useReadings()
@@ -80,8 +86,32 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
     if (pathname !== next) router.replace(next)
   }, [shelfPending, shelfError, readings.length, knownIds, rawKey, pathname, router])
 
+  // The picker is a drawer. Open when nothing is chosen (there is nothing else
+  // to do yet), shut when a set is already chosen (the student came to work on
+  // it, and 34 readings of chips are what pushed the work off the screen). Once
+  // the student has opened or closed it themselves that choice wins, and
+  // choosing a reading pins it as it was: picking a second reading must not
+  // close the drawer under the pointer because the first one made `selected`
+  // non-empty.
+  //
+  // The pin lives in a module variable (`pickerMemory`, above the component), not
+  // only in state. Observed 2026-10-28 on the running app: with the pin in
+  // `useState` alone, choosing two readings left the drawer shut — the state
+  // did not survive `router.push`. Why it did not (something above this
+  // component remounting it on navigation) was NOT determined; the module
+  // variable survives a remount and a hard reload clears it, which is the
+  // behaviour wanted. `setPickerPinned` writes both.
+  const [pickerPinned, setPickerPinnedState] = useState<boolean | null>(() => pickerMemory.open)
+  const setPickerPinned = (open: boolean) => {
+    rememberPicker(open)
+    setPickerPinnedState(open)
+  }
+  const pickerOpen = pickerPinned ?? selected.length === 0
+  const [readingFilter, setReadingFilter] = useState("")
+
   const toggle = (id: string) => {
     const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]
+    setPickerPinned(pickerOpen)
     router.push(spanPath(next))
   }
 
@@ -101,6 +131,31 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
       return a - b
     })
   }, [courseReadings])
+
+  // What the drawer lists: weeks in order, then the student's own readings, each
+  // narrowed by the filter (title or author). A group with no match is dropped.
+  const groups = useMemo(() => {
+    const needle = readingFilter.trim().toLowerCase()
+    const match = (r: ReadingMeta) =>
+      !needle || r.title.toLowerCase().includes(needle) || (r.author ?? "").toLowerCase().includes(needle)
+    const all = [
+      ...byWeek.map(([week, list]) => ({
+        key: String(week ?? "none"),
+        label: week === null ? "unscheduled" : `week ${week}`,
+        list,
+      })),
+      ...(ownReadings.length ? [{ key: "own", label: "your own", list: ownReadings }] : []),
+    ]
+    return all.map((g) => ({ ...g, list: g.list.filter(match) })).filter((g) => g.list.length > 0)
+  }, [byWeek, ownReadings, readingFilter])
+
+  // The chosen readings, named — shown whether or not the drawer is open. Only
+  // ids the shelf knows: while it is still loading `selected` holds the raw ids
+  // from the address, and "another reading" would flash for each of them.
+  const chosen = useMemo(
+    () => selected.filter((id) => knownIds.has(id)),
+    [selected, knownIds]
+  )
 
   // The sets this student has already made a projection of — the way back to
   // them after they leave the station, since a set otherwise lives only in the
@@ -160,7 +215,7 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   }
 
   const picker = (list: ReadingMeta[]) => (
-    <div className="chips" style={{ marginBottom: 14 }}>
+    <div className={styles.groupchips}>
       {list.map((r) => {
         const on = selected.includes(r.id)
         return (
@@ -192,12 +247,57 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
           readings. Nothing here places a card for you.
         </p>
 
+        <div className={styles.headrow}>
+          <h2 className="sectionhead" style={{ margin: 0 }}>
+            Readings <span className="n">
+              {selected.length === 0
+                ? "pick at least one"
+                : `${selected.length} chosen`}
+            </span>
+          </h2>
+          {readings.length > 0 && (
+            <button
+              type="button"
+              className="btn ghost mini compact"
+              aria-expanded={pickerOpen}
+              aria-controls="span-reading-picker"
+              onClick={() => setPickerPinned(!pickerOpen)}
+            >
+              {pickerOpen ? "Done choosing" : chosen.length ? "Change readings" : "Choose readings"}
+            </button>
+          )}
+        </div>
+
+        {chosen.length > 0 && (
+          <ul className={styles.chosenlist} aria-label="Chosen readings">
+            {chosen.map((id) => {
+              const title = titleOf(id)
+              return (
+                <li key={id} className={styles.chosen}>
+                  <span className={styles.chosentitle} title={title}>{title}</span>
+                  <button
+                    type="button"
+                    className={styles.chosenx}
+                    aria-label={`Remove ${title}`}
+                    onClick={() => toggle(id)}
+                  >×</button>
+                </li>
+              )
+            })}
+            {chosen.length > 1 && (
+              <li>
+                <button type="button" className="btn ghost mini compact" onClick={() => router.push("/span")}>
+                  clear
+                </button>
+              </li>
+            )}
+          </ul>
+        )}
+
         {!loadingShelf && savedSets.length > 0 && (
-          <>
-            <h2 className="sectionhead">
-              Sets you have worked on <span className="n">{savedSets.length}</span>
-            </h2>
-            <div className="chips" style={{ marginBottom: 14 }}>
+          <div className={styles.savedrow}>
+            <span className="cap">saved sets</span>
+            <div className={styles.savedchips}>
               {savedSets.map((set) => {
                 const href = spanPath(set.ids)
                 const names = set.ids.map((id) => titleOf(id))
@@ -215,16 +315,8 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
                 )
               })}
             </div>
-          </>
+          </div>
         )}
-
-        <h2 className="sectionhead">
-          Readings <span className="n">
-            {selected.length === 0
-              ? "pick at least one"
-              : `${selected.length} chosen`}
-          </span>
-        </h2>
 
         {loadingShelf && <p className="hint">Reading the shelf…</p>}
         {!loadingShelf && shelfError && readings.length === 0 && (
@@ -239,25 +331,28 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
           </div>
         )}
 
-        <div role="group" aria-label="Readings in this projection">
-          {byWeek.map(([week, list]) => (
-            <section key={week ?? "none"}>
-              <div className="weekhead">
-                <span className="cap">{week === null ? "unscheduled" : `week ${week}`}</span>
-                <span className="weekrule" />
+        {/* `hidden`, not unmounted: the buttons stay in the page so the filter
+            text and scroll position survive closing the drawer, and the set
+            of pressed buttons is still the set chosen. */}
+        <div id="span-reading-picker" className={styles.drawer} hidden={!pickerOpen || readings.length === 0}>
+          <input
+            className={styles.filter}
+            placeholder="filter readings by title or author…"
+            aria-label="Filter readings"
+            value={readingFilter}
+            onChange={(e) => setReadingFilter(e.target.value)}
+          />
+          <div className={styles.groups} role="group" aria-label="Readings in this projection">
+            {groups.map((g) => (
+              <div key={g.key} className={styles.group}>
+                <span className={`cap ${styles.grouplabel}`}>{g.label}</span>
+                {picker(g.list)}
               </div>
-              {picker(list)}
-            </section>
-          ))}
-          {ownReadings.length > 0 && (
-            <section>
-              <div className="weekhead">
-                <span className="cap">your own readings</span>
-                <span className="weekrule" />
-              </div>
-              {picker(ownReadings)}
-            </section>
-          )}
+            ))}
+            {groups.length === 0 && readings.length > 0 && (
+              <p className="hint" style={{ margin: 6 }}>No reading matches “{readingFilter.trim()}”.</p>
+            )}
+          </div>
         </div>
 
         {selected.length > 0 && (

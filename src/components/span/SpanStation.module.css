@@ -47,3 +47,129 @@
 .savedn {
   opacity: 0.7;
 }
+
+/* ---- The readings drawer ------------------------------------------------
+   34 readings as wrapped chips under a heading per week took about 500px of a
+   page whose work (the bench, the board) is below it. The drawer keeps the
+   same buttons but (1) names the chosen ones in one row that stays when it is
+   shut, (2) puts each week's label BESIDE its chips instead of above them, and
+   (3) scrolls inside a fixed height. Measured numbers are in the commit
+   message, not here, so this comment cannot go stale. */
+
+.headrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 22px 0 10px;
+}
+
+.chosenlist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.chosen {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 44ch;
+  padding: 2px 4px 2px 10px;
+  background: var(--ink);
+  color: var(--surface, var(--paper));
+  border-radius: var(--radius, 4px);
+  font-family: var(--sans, inherit);
+  font-size: 13px;
+}
+
+.chosentitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chosenx {
+  flex: none;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+  opacity: 0.75;
+}
+.chosenx:hover,
+.chosenx:focus-visible {
+  opacity: 1;
+}
+
+.savedrow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+.savedchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.drawer {
+  margin: 0 0 14px;
+}
+/* A class that sets `display` beats the UA's `[hidden]` rule, so say it. */
+.drawer[hidden] {
+  display: none;
+}
+
+.filter {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  font-family: var(--sans, inherit);
+  font-size: 13.5px;
+  color: var(--ink);
+  background: var(--surface, #fff);
+  border: 1px solid var(--rule-strong, var(--rule));
+  border-radius: var(--radius, 4px);
+}
+
+.groups {
+  max-height: clamp(160px, 30vh, 320px);
+  overflow: auto;
+  padding: 4px 10px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius, 4px);
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px dotted var(--rule);
+}
+.group:first-child {
+  border-top: 0;
+}
+.grouplabel {
+  padding-top: 4px;
+  white-space: nowrap;
+}
+
+.groupchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  min-width: 0;
+}
