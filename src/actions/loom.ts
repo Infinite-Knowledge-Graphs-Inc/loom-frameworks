@@ -984,14 +984,23 @@ export async function createMap(data: { scopeKey: string; name: string }): Promi
   const userId = await getUserId()
   const courseId = await resolveActiveCourseId(userId)
 
-  const existing = await db.select({ id: maps.id }).from(maps)
+  const scope = scopeFromKey(data.scopeKey)
+  const scopeKey = scope.key
+  const isSet = scope.sourceIds.length > 1
+
+  // Two budgets of MAX_MAPS, not one. Projections of a set of readings (station
+  // 05) and projections of one reading (03) used to share a single count, so a
+  // student who worked a lot on 05 could run 03 out of room to start a new
+  // projection — a tab changed by work done in another. A key with a comma is
+  // a set (`scopeOf` joins ids with ","; a reading's id carries none — the
+  // same split search.ts makes with `position(',' IN scopeKey)`).
+  const existing = await db.select({ scopeKey: maps.scopeKey }).from(maps)
     .where(and(eq(maps.userId, userId), inCourse(maps.courseId, courseId)))
-  if (existing.length >= MAX_MAPS) {
+  const sameKind = existing.filter((m) => m.scopeKey.includes(",") === isSet).length
+  if (sameKind >= MAX_MAPS) {
     throw new Error("That is a lot of projections — delete one you are done with first.")
   }
 
-  const scope = scopeFromKey(data.scopeKey)
-  const scopeKey = scope.key
   // Station 05 stores a SET of readings as its scope key. This function is an
   // endpoint anyone signed in can POST to, so a set is held to the rule a
   // single claimed reading already meets in createPassage (`if (data.sourceId)
@@ -1001,7 +1010,7 @@ export async function createMap(data: { scopeKey: string; name: string }): Promi
   // stranger throws, so the cost is bounded by how many real readings the
   // person can open (not measured against a real shelf). One reading and the
   // whole weave are left as they were; this change is about sets only.
-  if (scope.sourceIds.length > 1) {
+  if (isSet) {
     for (const sourceId of scope.sourceIds) await authorizeSourceAccess(sourceId)
   }
   const name = data.name.trim().slice(0, 80) || "Projection"
