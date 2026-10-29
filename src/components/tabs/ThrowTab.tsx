@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
+import { scopedGraph, scopeOf } from "@/lib/scope"
 import LinkDescription from "@/components/ui/LinkDescription"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useDialog } from "@/components/providers/DialogProvider"
@@ -66,8 +67,23 @@ const STEPS: { label: string; says: string }[] = [
    quoted passage you cannot open is a worse version of the popover it
    replaced (TJ: "clicking on the passage in a concept card should take you to
    the reading passage"). */
-export default function ThrowTab({ onGotoPassage, pair }: {
+export default function ThrowTab({ onGotoPassage, pair, across = false }: {
   onGotoPassage?: (passage: Passage) => void
+  /**
+   * Station 05's use of this bench: the scope is a SET of readings, and the job
+   * is the threads that run between them. Three things differ, each so that
+   * nothing here changes what another tab shows:
+   *  - no "+" on the warp. A concept coined where no single reading is the
+   *    scope is stamped with no reading (`soleSourceId(scope)` is null), and
+   *    scope.ts places those in EVERY reading's warp — one act on 05 would
+   *    add a concept to every 02.
+   *  - the thread list is only the threads that belong to no single chosen
+   *    reading: both ends in the set, but no one reading of the set evidences
+   *    both. The rest are already on that reading's own 02 and stay there.
+   *  - no download: `buildThreadsExport` for a set would carry those 02
+   *    threads too, so the file would not match the list above it.
+   */
+  across?: boolean
   /**
    * A pair picked on 03's cloth and sent here (TJ, 2026-08-18: "put you in
    * linking with the 2 concept nodes populating the 'throw a thread'"). In
@@ -344,7 +360,18 @@ export default function ThrowTab({ onGotoPassage, pair }: {
 
   const byNamed = (a: { handle: string | null }, b: { handle: string | null }) =>
     (a.handle ? 1 : 0) - (b.handle ? 1 : 0)
-  const orderedEdges = [...scoped.edges].sort(byNamed)
+  // Across: the set's threads less every thread that one chosen reading
+  // already holds on its own. "Holds" is `scopedGraph` of that single reading,
+  // the same rule 02 draws its own list from, so the two lists cannot overlap.
+  const threadsHere = useMemo(() => {
+    if (!across) return scoped.edges
+    const home = new Set<string>()
+    scope.sourceIds.forEach((id) => {
+      scopedGraph(state, scopeOf([id])).edges.forEach((e) => home.add(e.id))
+    })
+    return scoped.edges.filter((e) => !home.has(e.id))
+  }, [across, state, scope, scoped.edges])
+  const orderedEdges = [...threadsHere].sort(byNamed)
   // The Link List (model §2: "belongs to the User, spans Cloths") — since 5.1 the student's
   // own Link OBJECTS, not strings scraped off threads. Two things follow. A
   // label coined and never used is offered here, which is the whole reason
@@ -538,7 +565,7 @@ export default function ThrowTab({ onGotoPassage, pair }: {
                 2026-08-18). It opens the shared NameConceptCard rather than a
                 field of its own, so the three homes cannot drift. */}
             {/* Not in Open Loom — coining is the student's act (TJ, 2026-08-21). */}
-            {!readOnly && <button
+            {!readOnly && !across && <button
               type="button"
               className="pchip-add"
               onClick={() => setCoining((v) => !v)}
@@ -553,7 +580,7 @@ export default function ThrowTab({ onGotoPassage, pair }: {
               title="Add a concept before you have found evidence in the reading"
             >+</button>}
           </h2>
-          {!readOnly && coining && (
+          {!readOnly && !across && coining && (
             <NameConceptCard
               onAdd={coinConcept}
               onDone={() => setCoining(false)}
@@ -569,8 +596,17 @@ export default function ThrowTab({ onGotoPassage, pair }: {
             </p>
           ) : (
           <p className="hint">
-            The concepts <b>this reading</b> evidences — the ones you captured a
-            passage for here. Select one, then a second — or tap a name to open it.
+            {across ? (
+              <>
+                The concepts <b>these readings</b> evidence. Select one, then a second —
+                from the same reading or from two different ones — or tap a name to open it.
+              </>
+            ) : (
+              <>
+                The concepts <b>this reading</b> evidences — the ones you captured a
+                passage for here. Select one, then a second — or tap a name to open it.
+              </>
+            )}
           </p>
           )}
           {/* Ruled 2026-08-08 (TJ): linking works on this reading's concepts.
@@ -669,12 +705,12 @@ export default function ThrowTab({ onGotoPassage, pair }: {
             the same shape as its two siblings. */}
         <div className="card" id="threadList">
           <h2 style={{ display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap" }}>
-            Threads in this reading
+            {across ? "Threads between these readings" : "Threads in this reading"}
             {' '}
             <span className="n">{orderedEdges.length ? `(${orderedEdges.length})` : ''}</span>
             {/* Threads download where they are thrown (TJ, 2026-08-10). Both
                 ends are named in the file: an id says nothing away from Loom. */}
-            {orderedEdges.length > 0 && (
+            {orderedEdges.length > 0 && !across && (
               <span style={{marginLeft: "auto"}}>
                 <ObjectDownload
                   kind="threads"
@@ -708,7 +744,7 @@ export default function ThrowTab({ onGotoPassage, pair }: {
 
           <div className="scrollbox">
             {orderedEdges.length === 0 ? (
-              <EmptyState caption="nothing thrown yet — pick, pick, say" />
+              <EmptyState caption={across ? "no thread runs between these readings yet — pick, pick, say" : "nothing thrown yet — pick, pick, say"} />
             ) : orderedEdges.map(threadRow)}
           </div>
 

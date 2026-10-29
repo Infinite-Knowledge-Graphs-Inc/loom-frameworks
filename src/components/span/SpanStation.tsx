@@ -21,6 +21,7 @@ import Identity from "@/components/ui/Identity"
 import SignedOutWelcome from "@/components/ui/SignedOutWelcome"
 import ConceptCard from "@/components/cards/ConceptCard"
 import MapTab from "@/components/tabs/MapTab"
+import ThrowTab from "@/components/tabs/ThrowTab"
 import { scopeOf, scopeFromKey, spanPath, readingsOf } from "@/lib/scope"
 import { sortedByLabel } from "@/lib/utils"
 import type { Passage } from "@/lib/types"
@@ -122,6 +123,7 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
     return [...bySet.values()].sort((a, b) => b.at - a.at)
   }, [state.maps, knownIds])
 
+  const across = selected.length >= 2
   const concepts = useMemo(() => sortedByLabel(scopedState.concepts), [scopedState.concepts])
   const [filter, setFilter] = useState("")
   const [open, setOpen] = useState<Record<string, boolean>>({})
@@ -186,7 +188,8 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
           In beta. The list is every concept in the readings you choose — evidenced by a passage there,
           or named there before a passage existed — and the board sorts them into primary, secondary and
           tertiary the same way Knowledge Graph does. The lines are threads you have already thrown.
-          Nothing here places a card for you.
+          With two or more readings you can also throw a thread between concepts of different
+          readings. Nothing here places a card for you.
         </p>
 
         {!loadingShelf && savedSets.length > 0 && (
@@ -259,6 +262,24 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
 
         {selected.length > 0 && (
           <>
+            {/* Two or more readings: the concepts ARE the bench's warp, and the
+                bench is where a thread is thrown between them. One reading
+                keeps the plain list below, because linking inside one reading
+                is 02's job and is not offered twice. */}
+            {across && (
+              <>
+                <h2 className="sectionhead">
+                  Link concepts across these readings <span className="n">
+                    {isLoading ? "reading your loom" : `${concepts.length} concepts in ${selected.length} readings`}
+                  </span>
+                </h2>
+                {isLoading
+                  ? <div className="empty"><span className="cap">reading your loom…</span></div>
+                  : <ThrowTab across onGotoPassage={onGotoPassage} />}
+              </>
+            )}
+            {!across && (
+              <>
             <h2 className="sectionhead">
               Concepts <span className="n">
                 {isLoading
@@ -309,6 +330,8 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
                 />
               ))}
             </div>
+              </>
+            )}
 
             {selected.length === 1 && (
               <p className="hint">
