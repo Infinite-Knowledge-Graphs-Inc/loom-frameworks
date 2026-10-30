@@ -285,10 +285,11 @@ stops offering a sign-in that cannot complete.
 - `checks` (lint + types + build) needs no secrets and runs on every PR,
   including forks.
 - `e2e` runs the Playwright journey suite against a **third Neon branch,
-  `ci`**, created once from `dev`. It migrates, seeds readings and demo
-  accounts, then runs the suite via `next dev` (the backdoor needs a
-  non-production build). Runs queue on a shared concurrency group because the
-  suite owns its demo account exclusively.
+  `ci`**, created once from `dev`. It migrates, seeds readings, the fixture
+  course (`scripts/seed-ci-fixture.ts`: the course, its weeks, and a learner
+  outside every section) and demo accounts, then runs the suite via `next dev`
+  (the backdoor needs a non-production build). Runs queue on a shared
+  concurrency group because the suite owns its demo account exclusively.
 
 Repository secrets to configure (Settings → Secrets → Actions):
 
