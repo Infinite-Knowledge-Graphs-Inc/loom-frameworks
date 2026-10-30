@@ -190,8 +190,15 @@ jobs:
         run: npx drizzle-kit migrate
       - name: Seed readings and demo accounts
         if: steps.scope.outputs.run == 'true'
+        # seed:ci-fixture sits between the two on purpose: it needs the readings
+        # seed:sources registers, and seed:demo stops without a course. What it
+        # supplies, and why a fresh `ci` branch lacks it, is in the script.
+        # LOOM_CI_FIXTURE is the script's own guard: it refuses to run without it.
+        env:
+          LOOM_CI_FIXTURE: "1"
         run: |
           npm run seed:sources
+          npm run seed:ci-fixture
           npm run seed:demo
       - name: Run the suite
         if: steps.scope.outputs.run == 'true'

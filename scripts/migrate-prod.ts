@@ -2,8 +2,8 @@
  * APPLY PENDING MIGRATIONS TO PRODUCTION, deliberately.
  *
  * Nothing else does. CI migrates the CI database (`.github/workflows/ci.yml`,
- * "Migrate CI database") and preview-db.yml migrates preview branches; Vercel
- * runs no migration on deploy. Until this script existed, production was
+ * "Migrate CI database"); Vercel runs no migration on deploy. (A workflow that
+ * migrated per-PR preview branches, preview-db.yml, was removed 2026-10-30.) Until this script existed, production was
  * migrated by someone remembering to, which on 2026-08-23 turned out to mean
  * "two days after the code that needed it" — see check-prod-migrations.ts for
  * what that cost.

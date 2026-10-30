@@ -36,6 +36,7 @@
     "check:vocabulary": "tsx scripts/check-vocabulary.ts",
     "seed:sources": "tsx scripts/seed-sources.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
+    "seed:ci-fixture": "tsx scripts/seed-ci-fixture.ts",
     "check:remap": "tsx scripts/check-offset-remap.ts",
     "check:textlayer": "tsx scripts/check-text-layer-projection.ts",
     "diagnose:readings": "tsx scripts/diagnose-readings.ts",
