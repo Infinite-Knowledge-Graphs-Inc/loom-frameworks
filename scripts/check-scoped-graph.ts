@@ -10,7 +10,7 @@
  *
  * Run: npx tsx scripts/check-scoped-graph.ts   (part of `npm run check`)
  */
-import { scopedGraph, scopeOf, spanPath, spanScopeKey, tallyByReading, WHOLE_WEAVE } from "../src/lib/scope"
+import { scopedGraph, scopeOf, spanIdsFromPath, spanPath, spanScopeKey, tallyByReading, WHOLE_WEAVE } from "../src/lib/scope"
 import type { Concept, Edge, LoomState, Passage } from "../src/lib/types"
 
 let failures = 0
@@ -149,11 +149,16 @@ assert(
   "the span URL is scope order, independent of the order the ids were given",
   spanPath([THERE, HERE])
 )
-assert(spanScopeKey("/span/reading-2/reading-1", ["reading-2", "reading-1"]) === "reading-1,reading-2",
+assert(spanScopeKey("/span/reading-2/reading-1") === "reading-1,reading-2",
   "the span route's scope key matches scopeOf",
-  String(spanScopeKey("/span/reading-2/reading-1", ["reading-2", "reading-1"])))
-assert(spanScopeKey("/span", undefined) === "", "an empty span is the whole-weave key", String(spanScopeKey("/span", undefined)))
-assert(spanScopeKey("/reading/reading-1", undefined) === null, "a reading route is not a span", String(spanScopeKey("/reading/reading-1", undefined)))
+  String(spanScopeKey("/span/reading-2/reading-1")))
+assert(spanScopeKey("/span") === "", "an empty span is the whole-weave key", String(spanScopeKey("/span")))
+assert(spanScopeKey("/reading/reading-1") === null, "a reading route is not a span", String(spanScopeKey("/reading/reading-1")))
+assert(JSON.stringify(spanIdsFromPath("/span/reading-2/reading-1")) === JSON.stringify(["reading-2", "reading-1"]),
+  "span ids come out of the path in path order", JSON.stringify(spanIdsFromPath("/span/reading-2/reading-1")))
+assert(spanIdsFromPath("/span").length === 0 && spanIdsFromPath("/reading/reading-1").length === 0 && spanIdsFromPath(null).length === 0,
+  "no ids for /span, another route, or no path", "")
+assert(spanIdsFromPath("/span/a%20b/c")[0] === "a b", "ids are decoded as useParams decoded them", spanIdsFromPath("/span/a%20b/c")[0])
 
 console.log(`\n${checks} checks, ${failures} failing`)
 if (failures) process.exit(1)

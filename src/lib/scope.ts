@@ -56,14 +56,28 @@ export function spanPath(sourceIds: string[]): string {
  * surface. A chosen set is `scopeOf`'s key: sorted ids, comma-joined, which
  * is what a map row already stores.
  */
-export function spanScopeKey(pathname: string | null, sourceIds: string | string[] | undefined): string | null {
+export function spanScopeKey(pathname: string | null): string | null {
   if (pathname !== "/span" && !pathname?.startsWith("/span/")) return null
-  const ids = Array.isArray(sourceIds)
-    ? sourceIds
-    : typeof sourceIds === "string" && sourceIds
-      ? [sourceIds]
-      : []
-  return scopeOf(ids).key
+  return scopeOf(spanIdsFromPath(pathname)).key
+}
+
+/**
+ * The reading ids in a `/span/<id>/<id>` path, in path order and unsorted;
+ * empty for `/span` or any other route. Read from the pathname rather than
+ * `useParams` because station 05 changes the path with `history.pushState`
+ * (see SpanStation `toggle`), and `usePathname` follows that while
+ * `useParams` does not (Next docs, "Linking and navigating", native History
+ * API section; `useParams` staleness not reproduced in a browser here).
+ */
+export function spanIdsFromPath(pathname: string | null): string[] {
+  if (pathname !== "/span" && !pathname?.startsWith("/span/")) return []
+  return pathname
+    .slice("/span".length)
+    .split("/")
+    .filter(Boolean)
+    .map((part) => {
+      try { return decodeURIComponent(part) } catch { return part }
+    })
 }
 
 export const isWholeWeave = (scope: Scope) => scope.key === ""
