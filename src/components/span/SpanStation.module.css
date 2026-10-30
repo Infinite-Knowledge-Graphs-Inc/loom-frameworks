@@ -139,10 +139,40 @@
   text-decoration: underline;
 }
 
-/* The automatic label (first reading + "n more") reads as a label, not a name. */
+/* An unnamed set's automatic label reads as a label, not as a name. */
 .setauto {
   font-weight: 400;
   font-style: italic;
+}
+
+.setedit {
+  flex: none;
+  font: inherit;
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.6;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.setedit:hover,
+.setedit:focus-visible {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+.setinput {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: inherit;
+  font-size: 13px;
+  padding: 1px 5px;
+  color: var(--ink);
+  background: var(--surface, var(--paper));
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
 }
 
 /* The readings line: small and quiet; Explainer clips it to one line. */

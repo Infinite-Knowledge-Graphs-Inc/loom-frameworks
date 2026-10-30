@@ -11,7 +11,7 @@
 // their own.
 
 import Explainer from "@/components/ui/Explainer"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -24,6 +24,7 @@ import ConceptCard from "@/components/cards/ConceptCard"
 import MapTab from "@/components/tabs/MapTab"
 import ThrowTab from "@/components/tabs/ThrowTab"
 import { scopeOf, scopeFromKey, spanPath, readingsOf } from "@/lib/scope"
+import { listSetNames, setSetName } from "@/actions/loom"
 import { sortedByLabel } from "@/lib/utils"
 import type { Passage } from "@/lib/types"
 import styles from "./SpanStation.module.css"
@@ -37,7 +38,7 @@ function idsFromParam(raw: string | string[] | undefined): string[] {
 export default function SpanStation({ isPreviewDeployment = false }: { isPreviewDeployment?: boolean }) {
   const { data: session, status } = useSession()
   const { readings, isLoading: loadingShelf, error: shelfError, refresh, titleOf } = useReadings()
-  const { state, scopedState, scoped, isLoading } = useLoom()
+  const { state, scopedState, scoped, isLoading, flash } = useLoom()
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams<{ sourceIds?: string | string[] }>()
@@ -124,6 +125,19 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
     return [...bySet.values()].sort((a, b) => b.at - a.at)
   }, [state.maps, knownIds])
 
+  // A set's name, when the student has given it one (`reading_set`, migration
+  // 0031), keyed by scope key. Fetched on its own rather than carried in the loom
+  // state: a database that lacks the table loses these names and nothing else.
+  const [setNames, setSetNames] = useState<Record<string, string>>({})
+  useEffect(() => {
+    if (!session) return
+    let live = true
+    listSetNames()
+      .then((names) => { if (live) setSetNames(names) })
+      .catch((e) => console.error("could not load set names", e))
+    return () => { live = false }
+  }, [session])
+
   // A set's readings in shelf order (week, then as the shelf lists them), not
   // in the id order the scope key sorts by — which reads as random.
   const shelfIndex = useMemo(() => new Map(readings.map((r, i) => [r.id, i])), [readings])
@@ -132,6 +146,33 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   // What an unnamed set is called: its first reading and how many more.
   const autoLabel = (titles: string[]) =>
     titles.length > 1 ? `${titles[0]} + ${titles.length - 1} more` : titles[0] ?? ""
+
+  const [editingSet, setEditingSet] = useState<string | null>(null)
+  const [draftName, setDraftName] = useState("")
+  const savingSet = useRef(false)
+  const commitSetName = async (key: string) => {
+    if (savingSet.current) return
+    savingSet.current = true
+    setEditingSet(null)
+    const prev = setNames[key] ?? ""
+    const next = draftName.replace(/\s+/g, " ").trim()
+    if (next === prev) { savingSet.current = false; return }
+    const put = (name: string) => setSetNames((cur) => {
+      const copy = { ...cur }
+      if (name) copy[key] = name
+      else delete copy[key]
+      return copy
+    })
+    put(next)
+    try {
+      put(await setSetName(key, next))
+    } catch (e) {
+      put(prev)
+      flash(e instanceof Error ? e.message : "could not save the set's name")
+    } finally {
+      savingSet.current = false
+    }
+  }
 
   const across = selected.length >= 2
   const concepts = useMemo(() => sortedByLabel(scopedState.concepts), [scopedState.concepts])
@@ -219,19 +260,48 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
               {savedSets.map((set) => {
                 const href = spanPath(set.ids)
                 const titles = titlesOf(set.ids)
+                const name = setNames[set.key]
                 const isOpen = pathname === href
+                const isEditing = editingSet === set.key
                 return (
                   <div key={set.key} className={`${styles.set}${isOpen ? ` ${styles.setopen}` : ""}`}>
                     <div className={styles.sethead}>
-                      <Link
-                        href={href}
-                        className={styles.setlink}
-                        aria-current={isOpen ? "page" : undefined}
-                        title={`${titles.join(" + ")} — ${set.projections} projection${set.projections === 1 ? "" : "s"}`}
-                      >
-                        <span className={styles.setauto}>{autoLabel(titles)}</span>
-                        <span className={styles.savedn}> · {set.projections}</span>
-                      </Link>
+                      {isEditing ? (
+                        <input
+                          className={styles.setinput}
+                          autoFocus
+                          aria-label="Name this set"
+                          value={draftName}
+                          maxLength={80}
+                          placeholder={autoLabel(titles)}
+                          onChange={(e) => setDraftName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") { e.preventDefault(); void commitSetName(set.key) }
+                            if (e.key === "Escape") { savingSet.current = true; setEditingSet(null); window.setTimeout(() => { savingSet.current = false }, 0) }
+                          }}
+                          onBlur={() => void commitSetName(set.key)}
+                        />
+                      ) : (
+                        <Link
+                          href={href}
+                          className={styles.setlink}
+                          aria-current={isOpen ? "page" : undefined}
+                          title={`${name ? `${name}: ` : ""}${titles.join(" + ")} — ${set.projections} projection${set.projections === 1 ? "" : "s"}`}
+                        >
+                          <span className={name ? undefined : styles.setauto}>{name || autoLabel(titles)}</span>
+                          <span className={styles.savedn}> · {set.projections}</span>
+                        </Link>
+                      )}
+                      {!isEditing && (
+                        <button
+                          type="button"
+                          className={styles.setedit}
+                          aria-label={name ? `Rename ${name}` : `Name this set: ${autoLabel(titles)}`}
+                          onClick={() => { setDraftName(name ?? ""); setEditingSet(set.key) }}
+                        >
+                          {name ? "rename" : "name this set"}
+                        </button>
+                      )}
                     </div>
                     {/* Every reading in the set, which the chip used to cut off.
                         One line, the rest behind the chevron. */}
