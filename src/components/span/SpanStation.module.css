@@ -10,9 +10,77 @@
    `--surface` exists only on the chrome branch (src/app/tokens.css); on
    master the fallback to `--paper` gives the same light-on-ink as before. */
 
+/* The scrollable box the tiles live in. Height is capped, not fixed: a short
+   shelf is a short box. `clamp` so it is never so small it shows one row, nor
+   so tall it is the page. Values are a first cut: unverified at 1280/1536/1920
+   until measured, see the commit message. */
+.picker {
+  max-height: clamp(200px, 32vh, 360px);
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface, var(--paper));
+  padding: 0 12px;
+  margin-bottom: 14px;
+}
+
+/* A week is one row of the box: its label in a fixed narrow column, its tiles
+   beside it. A hairline between weeks stands in for the heading row. */
+.group {
+  display: grid;
+  grid-template-columns: 4.75rem minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  padding: 8px 0;
+}
+
+.group + .group {
+  border-top: 1px solid var(--rule);
+}
+
+.grouplabel {
+  padding-top: 4px;
+  white-space: nowrap;
+}
+
+/* Columns fold on the tile's own minimum (contracts.md 2c-iii), and `1fr`
+   makes every tile in a row — and, with auto-fill's empty tracks, the last
+   row too — the same width. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 6px;
+}
+
+/* Same size every time: two lines, fixed height, text cut not wrapped. */
 .pick {
   color: var(--ink);
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 44px;
+  min-width: 0;
+  padding: 4px 10px;
+  overflow: hidden;
+}
+
+.ptitle,
+.pauthor {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ptitle {
+  line-height: 1.3;
+}
+
+.pauthor {
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: 0.7;
 }
 
 .pick[aria-pressed="true"],
