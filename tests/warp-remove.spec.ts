@@ -14,6 +14,15 @@ test.use({ storageState: "playwright/.auth/testa.json" })
 test("a concept coined on the warp can be removed there", async ({ page }) => {
   test.setTimeout(90_000)
   const name = `warp remove ${Date.now().toString().slice(-6)}`
+  // 900 tall, not Desktop Chrome's 720. At 720 the warp's own scroll box is
+  // 118px high and a new concept sorts last, so its "remove concept" ends up
+  // at 692–703px while the fixed footer starts at 686px: the footer intercepts
+  // the click and Playwright retries until the test times out (call log:
+  // `<span class="footid"> from <footer> subtree intercepts pointer events`).
+  // Measured 2026-10-29 on the ci database, 1280 wide: at 900 the button is at
+  // 829–840px and the footer starts at 866px. That the button is reachable at
+  // 720 at all is a question about the layout, not about this test.
+  await page.setViewportSize({ width: 1280, height: 900 })
   await openReading(page, "Object Worlds")
   await page.locator("nav button.station", { hasText: "Linking" }).first().click()
 
