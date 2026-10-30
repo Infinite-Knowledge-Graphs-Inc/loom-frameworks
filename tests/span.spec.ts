@@ -29,6 +29,25 @@ async function openSpan(page: Page, path = '/span') {
 /** The picker's buttons — the only `.chip`s carrying aria-pressed on this page. */
 const pickers = (page: Page) => page.locator('main button.chip[aria-pressed]');
 
+/**
+ * Choose the first two readings, one at a time.
+ *
+ * The second click waits for the first to show as pressed. SpanStation's
+ * `toggle` builds the next selection from `selected`, which is read from the
+ * URL, and `router.push` has not changed the URL yet when a second click
+ * lands straight after the first — so the second click starts from "nothing
+ * chosen" and REPLACES the first pick instead of adding to it. Seen on the CI
+ * database 2026-10-29: after clicking pickers 0 then 1 back to back, only
+ * "Communities of Practice" (the second) was pressed, the page said "1
+ * chosen", and the address held one id. A person cannot click that fast; a
+ * dev server compiling /span/<id> on demand makes the gap wide enough to hit.
+ */
+async function chooseFirstTwo(page: Page) {
+  await pickers(page).nth(0).click();
+  await expect(pickers(page).nth(0)).toHaveAttribute('aria-pressed', 'true');
+  await pickers(page).nth(1).click();
+}
+
 test('the station is on the journey bar, labelled beta, and is the active one', async ({ page }) => {
   await openSpan(page);
   const nav = page.locator('nav[aria-label="The journey"]');
@@ -45,8 +64,7 @@ test('choosing two readings writes both ids to the address, and a reload keeps t
   await openSpan(page);
   await expect(pickers(page).nth(1)).toBeVisible({ timeout: 15000 });
 
-  await pickers(page).nth(0).click();
-  await pickers(page).nth(1).click();
+  await chooseFirstTwo(page);
 
   await expect(page).toHaveURL(new RegExp(`/span/${UUID}/${UUID}$`));
   await expect(pickers(page).nth(0)).toHaveAttribute('aria-pressed', 'true');
@@ -63,8 +81,7 @@ test('the same two readings in the other order are one bookmark', async ({ page 
   test.setTimeout(90_000);
   await openSpan(page);
   await expect(pickers(page).nth(1)).toBeVisible({ timeout: 15000 });
-  await pickers(page).nth(0).click();
-  await pickers(page).nth(1).click();
+  await chooseFirstTwo(page);
   await expect(page).toHaveURL(new RegExp(`/span/${UUID}/${UUID}$`));
 
   const [, a, b] = new URL(page.url()).pathname.match(new RegExp(`/span/(${UUID})/(${UUID})$`))!;
@@ -84,8 +101,7 @@ test('two readings offer the linking bench, without coining and without 02\'s ow
   test.setTimeout(90_000);
   await openSpan(page);
   await expect(pickers(page).nth(1)).toBeVisible({ timeout: 15000 });
-  await pickers(page).nth(0).click();
-  await pickers(page).nth(1).click();
+  await chooseFirstTwo(page);
 
   // The bench is 02's own (ThrowTab), in its `across` mode.
   await expect(page.locator('#throwBench')).toBeVisible({ timeout: 20000 });
