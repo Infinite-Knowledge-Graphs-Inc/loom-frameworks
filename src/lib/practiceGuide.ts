@@ -243,7 +243,7 @@ export const GUIDE_STEPS: GuideStep[] = [
     targets: ["#triageList"],
     overlay: "mask",
     say:
-      "Give the concepts tiers — primary for what this projection hangs on, then secondary and tertiary. Sorted concepts land on the board below.",
+      "Give the concepts tiers — primary for what this projection hangs on, then secondary and tertiary. Sorted concepts land on the board above.",
     why: "The tiers are the claim about what matters here. Nothing is ranked for you, and another projection may rank them differently.",
   },
   {

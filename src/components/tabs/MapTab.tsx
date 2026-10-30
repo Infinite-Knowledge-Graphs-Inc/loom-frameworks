@@ -34,8 +34,31 @@ import { conceptName, conceptNameText } from "@/lib/conceptName"
 import HaloText from "@/components/svg/HaloText"
 
 const TIERS: [Tier, string][] = [["p", "PRIMARY"], ["s", "SECONDARY"], ["t", "TERTIARY"]]
+/**
+ * The height of the coordinate space a card's STORED y lives in. Every saved
+ * arrangement was made on a board this tall, and y is stored as absolute px
+ * (the x is a fraction of the width; see `usableW`). The board is now drawn at
+ * whatever height the window allows (`H` in the component), so a stored y is
+ * mapped into the drawn height by `toDrawn` and back by `toStored` — otherwise
+ * a taller board would slide every saved card out of the tier band it was
+ * dropped in. At 560 the two are the identity, which is the old board.
+ */
 const TABLE_H = 560
-const BAND_H = (TABLE_H - 20) / 3
+/**
+ * The drawn board's height is set in CSS so it can follow the window: at least
+ * the old 560, at most 960 (past that the bands only get emptier — cards do not
+ * grow), and otherwise the viewport minus everything around the SVG.
+ *
+ * The 300 is the measured 283 rounded up for slack. Measured on the running
+ * app at 1536×864, board scrolled to the top of `main`: 91px above `main`
+ * (journey header 54 + nav 37), 34px of fixed footer bar over its foot, 89px
+ * from the card's top to the SVG (heading + the collapsed explainer) and 69px
+ * from the SVG to the card's bottom (the mirror line + padding): 125 + 158.
+ * It does not hold if the explainer is open or the mirror line wraps to a
+ * second line — the board is then a few lines taller than the window, which
+ * scrolls; nothing clips.
+ */
+const BOARD_H_CSS = "clamp(560px, calc(100vh - 300px), 960px)"
 /** Matches .cardmenu's max-height — used only to decide which way it opens. */
 const MENU_MAX_H = 330
 
@@ -202,6 +225,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
 
   const svgRef = useRef<SVGSVGElement>(null)
   const [width, setWidth] = useState(720)
+  const [height, setHeight] = useState(TABLE_H)
   // ResizeObserver also fires when a hidden panel becomes visible, which a
   // window resize listener does not. Zero width means display:none — hold the
   // last good width rather than reflowing the table to the fallback.
@@ -210,6 +234,10 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
     if (!svg) return
     const observer = new ResizeObserver((entries) => {
       const w = entries[0]?.contentRect.width ?? 0
+      // Height is set by CSS (BOARD_H_CSS), not by the content, so reading it
+      // back cannot feed a loop. Never below the stored space's own height.
+      const h = entries[0]?.contentRect.height ?? 0
+      if (h > 0) setHeight(Math.max(Math.round(h), TABLE_H))
       // 480, not 720 — the same fix the cloth needed when it went into a
       // column (TJ, 2026-08-12). A 720-wide layout inside a narrower box does
       // not shrink: the band labels and the right-hand cards leave the frame.
@@ -220,6 +248,17 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
     return () => observer.disconnect()
   }, [])
   const W = width
+  // The drawn board's height, and its three tier bands. Everything that used to
+  // read TABLE_H / BAND_H as the DRAWN size reads these.
+  const H = height
+  const BAND_H = (H - 20) / 3
+  // Stored y ⇄ drawn y. Scaling is done on the card's CENTRE about the top
+  // margin (10px), because the tier a card belongs to is read from its centre
+  // (onPointerUp below). That keeps a saved card in the band it was dropped in
+  // at any height. Card sizes are not scaled; only the room between them is.
+  const yScale = (H - 20) / (TABLE_H - 20)
+  const toDrawn = (top: number, h: number) => 10 + (top + h / 2 - 10) * yScale - h / 2
+  const toStored = (top: number, h: number) => 10 + (top + h / 2 - 10) / yScale - h / 2
   // Usable width — the denominator for proportional x ("positions stored
   // proportionally", archive/loom-spec-v1.md §5): stored x is a
   // 0..1 fraction of this; y stays absolute px.
@@ -340,12 +379,13 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
         // Stored x is a 0..1 fraction of the usable width (spec §5); values
         // > 1.5 are legacy pixels (v14 import or earlier build) and are used
         // as px directly. Clamp into the visible table so out-of-range values
-        // stay draggable. y is absolute px.
+        // stay draggable. y is absolute px in the stored space (TABLE_H tall),
+        // mapped into the drawn height here.
         const w = cardW(c), h = cardH(c)
         const px = p.x > 1.5 ? p.x : p.x * usableW
         effPos[c.id] = {
           x: Math.max(10, Math.min(W - w - 10, px)),
-          y: Math.max(10, Math.min(TABLE_H - h - 10, p.y)),
+          y: Math.max(10, Math.min(H - h - 10, toDrawn(p.y, h))),
         }
       } else {
         const k = captureIndex.get(c.id) ?? 0
@@ -534,7 +574,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
       setLive({
         id: dragCard.current,
         x: Math.max(10, Math.min(W - w - 10, pt.x - dragOff.current.dx)),
-        y: Math.max(10, Math.min(TABLE_H - h - 10, pt.y - dragOff.current.dy)),
+        y: Math.max(10, Math.min(H - h - 10, pt.y - dragOff.current.dy)),
       })
       return
     }
@@ -566,8 +606,9 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           flash("re-tiered to " + TIERS[idx][1].toLowerCase() + " — placement is the decision")
         }
         // The drag is the student gesture — persist this card's spot, once.
-        // x is stored as a fraction of the usable width (archive/loom-spec-v1.md §5), y in px.
-        setView(`map:${activeMap.id}`, { ...view, positions: { ...stored, [id]: { x: pos.x / usableW, y: pos.y } } })
+        // x is stored as a fraction of the usable width (archive/loom-spec-v1.md §5), y in px
+        // of the stored space — so the drawn y goes back through toStored.
+        setView(`map:${activeMap.id}`, { ...view, positions: { ...stored, [id]: { x: pos.x / usableW, y: toStored(pos.y, cardH(c)) } } })
       }
       setLive(null)
       return
@@ -785,109 +826,14 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           you are in decides what every column beneath it shows. */}
       {mapSwitcher}
 
-      {/* sort · the board · your read — the three moves of a projection, side
-          by side so the sorting that feeds the board and the read that comes
-          off it are one view rather than three screens of scrolling. 1–2–1
-          (TJ, 2026-08-12): the board is the surface you WORK on and the two
-          texts flank it, so it takes half the room and they take a quarter
-          each. */}
-      <div className="projwrap">
-      <div className="projgrid">
-      <div className="card">
-        <div className="heading-with-info">
-          <h2>Sort <span className="n" id="triageCount">{scopedState.concepts.length ? `(${onCount} of ${scopedState.concepts.length} on the board)` : ""}</span></h2>
-          {/* Not in Open Loom — one gesture, thirty writes (TJ, 2026-08-21). */}
-          {!readOnly && <button
-            className="btn ghost mini compact"
-            id="makeAllPrimary"
-            disabled={!scopedState.concepts.length}
-            data-tip="tiers every concept primary in one gesture — you demote from there"
-            onClick={makeAllPrimary}
-          >make all primary</button>}
-        </div>
-        {/* The instructions narrate sorting; Open Loom shows the tiers the
-            student gave and says only that (TJ, 2026-08-21). */}
-        {readOnly ? (
-          <p className="hint">The tiers this projection gives each concept: <b>P</b>rimary · <b>S</b>econdary · <b>T</b>ertiary · <b>–</b> set aside. Sorted concepts stand on the board.</p>
-        ) : (
-        <>
-        <p className="do">Give each concept a tier: <b>P</b>rimary (the projection hangs on it) · <b>S</b>econdary · <b>T</b>ertiary (example / detail) · <b>–</b> set aside. Sorted concepts land on the board below.</p>
-        <Explainer className="hint">A–Z until you say otherwise: drag a row by its handle — or focus the handle and press ↑ / ↓ — to re-order this list, and your sequence sticks. That re-sequences the list only; the board, the counts and the concept-map kit are untouched. <b>Make all primary</b> is a starting point, not a recommendation: it puts everything on the top tier in one move so you can demote from there.</Explainer>
-        </>
-        )}
-        <div id="triageList" onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropAt(null) }}>
-          {!scopedState.concepts.length ? (
-            <div className="empty">
-              <svg width={34} height={18} viewBox="0 0 34 18" fill="none" stroke="var(--grey)" strokeWidth={1.3}><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13" /></svg>
-              <span className="cap">lay some warp on 01 — open first</span>
-            </div>
-          ) : sortList.map((c, i) => (
-            <div
-              key={c.id}
-              className={`trow${dragId === c.id ? " dragging" : ""}${dropAt === i ? " dropbefore" : ""}${dropAt === sortList.length && i === sortList.length - 1 ? " dropafter" : ""}`}
-              ref={el => {
-                if (el) rowRefs.current.set(c.id, el)
-                else rowRefs.current.delete(c.id)
-              }}
-              onDragOver={e => onRowDragOver(e, i)}
-              onDrop={onRowDrop}
-            >
-              {/* No handle in Open Loom: re-ordering persists into the view row
-                  (TJ, 2026-08-21). */}
-              {!readOnly && (
-              <span
-                className="thandle"
-                role="button"
-                tabIndex={0}
-                aria-label={`Reorder ${conceptNameText(c)}`}
-                title="drag to re-order — or press ↑ / ↓"
-                draggable
-                onDragStart={e => {
-                  setDragId(c.id)
-                  setDropAt(i)
-                  e.dataTransfer.effectAllowed = "move"
-                  e.dataTransfer.setData("text/plain", c.id)
-                  const row = rowRefs.current.get(c.id)
-                  if (row) e.dataTransfer.setDragImage(row, 14, row.offsetHeight / 2)
-                }}
-                onDragEnd={() => { setDragId(null); setDropAt(null) }}
-                onKeyDown={e => onHandleKeyDown(e, i)}
-              >
-                <svg width={10} height={16} viewBox="0 0 10 16" aria-hidden="true" focusable="false">
-                  {[3, 8, 13].map(y => (
-                    <g key={y}>
-                      <circle cx={3} cy={y} r={1.25} />
-                      <circle cx={7} cy={y} r={1.25} />
-                    </g>
-                  ))}
-                </svg>
-              </span>
-              )}
-              <span className="tlabel"><ConceptName concept={c} /></span>
-              {/* Inert in Open Loom: the chips still SAY the tier — the lit one
-                  is the student's sort — but no press re-tiers (TJ, 2026-08-21). */}
-              <span className="tierchips">
-                {TIERS.map(([k, name]) => (
-                  <span
-                    key={k}
-                    className={`tchip${tierOf(c.id) === k ? " on" : ""}`}
-                    title={name.toLowerCase()}
-                    onClick={readOnly ? undefined : () => setTier(c, k)}
-                    style={readOnly ? { cursor: "default" } : undefined}
-                  >{k.toUpperCase()}</span>
-                ))}
-                <span
-                  className={`tchip off${tierOf(c.id) === "x" ? " on" : ""}`}
-                  title="set aside"
-                  onClick={readOnly ? undefined : () => setTier(c, "x")}
-                  style={readOnly ? { cursor: "default" } : undefined}
-                >–</span>
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
+      {/* THE BOARD FIRST, AT THE FULL WIDTH, then sort and read below it
+          (user request, 2026-10-29: "change the board itself to take up pretty
+          much the entire available space, and move the sort, and your read of
+          this projection into a different space that you can scroll and see").
+          This replaces the 1–2–1 row of 2026-08-12 (TJ, recorded in
+          contracts.md), where the board was half of a three-column row — a
+          slice of the station's width and a fixed 560px of height. */}
+      <div className="projboard">
       <div className="card">
         {/* The heading row carries the drawing's own download (TJ, 2026-08-23:
             "move the download svg button to the yellow highlighted area").
@@ -932,7 +878,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           // raw CSS pixels (no viewBox), so a 480-wide arrangement inside a
           // 353-wide element is not scaled down, it is cut off. With a real
           // 480 minimum the element outgrows its wrap and `#tableWrap` scrolls.
-          style={{ display: "block", width: "100%", minWidth: 480, height: 560, touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }}
+          style={{ display: "block", width: "100%", minWidth: 480, height: BOARD_H_CSS, touchAction: "none", userSelect: "none", WebkitUserSelect: "none" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -958,7 +904,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             )
           })}
           {!placed.length && (
-            <text x={W / 2} y={TABLE_H / 2} textAnchor="middle" fontFamily="var(--sans)" fontSize={13} letterSpacing={0} fill="var(--grey)">Sort concepts above — they land here as cards</text>
+            <text x={W / 2} y={H / 2} textAnchor="middle" fontFamily="var(--sans)" fontSize={13} letterSpacing={0} fill="var(--grey)">Sort concepts below — they land here as cards</text>
           )}
           {/* edges first, under the cards — quadratic, bendable by drag */}
           {drawnEdges.map(e => {
@@ -968,7 +914,7 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             // Bends stay px deltas, but the control point is clamped so a
             // stored bend can never fling a curve off-table.
             const cx = Math.max(10, Math.min(W - 10, (a0.x + b0.x) / 2 + bend.dx))
-            const cy = Math.max(10, Math.min(TABLE_H - 10, (a0.y + b0.y) / 2 + bend.dy))
+            const cy = Math.max(10, Math.min(H - 10, (a0.y + b0.y) / 2 + bend.dy))
             // Meet the cards at their borders, aimed at the control point, so
             // the arrowhead sits in the open rather than under the target card.
             const a = borderPoint(f, { x: cx, y: cy })
@@ -1094,8 +1040,8 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
             // that opening downward would hang off the table's bottom.
             style={{
               left: Math.min(menuPos.x, Math.max(0, W - 268)),
-              ...(menuPos.y + cardH(menuConcept) + MENU_MAX_H > TABLE_H
-                ? { bottom: TABLE_H - menuPos.y + 6 }
+              ...(menuPos.y + cardH(menuConcept) + MENU_MAX_H > H
+                ? { bottom: H - menuPos.y + 6 }
                 : { top: menuPos.y + cardH(menuConcept) + 6 }),
             }}
             onPointerEnter={() => holdMenu(menuConcept.id)}
@@ -1143,6 +1089,106 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           <>On the board: <b>{n.p}</b> primary · <b>{n.s}</b> secondary · <b>{n.t}</b> tertiary{off ? ` · ${off} set aside` : ""}{unsorted ? ` · ${unsorted} unsorted` : ""} — {onTable.length} proposition{onTable.length !== 1 ? "s" : ""} drawn, <b>{cross}</b> running level-to-level or sideways (possible cross-links — the level-3 move; you decide if they&apos;re real). Right now this reads as: <b>{level}</b>. Counted, not judged.</>
         )}
       </div>
+      </div>
+      </div>
+
+      {/* sort · your read — the two texts that feed and follow the board, side
+          by side underneath it. The row folds on the column's own minimum, not
+          a device width (contracts.md §2c-iii). */}
+      <div className="projlower">
+      <div className="card">
+        <div className="heading-with-info">
+          <h2>Sort <span className="n" id="triageCount">{scopedState.concepts.length ? `(${onCount} of ${scopedState.concepts.length} on the board)` : ""}</span></h2>
+          {/* Not in Open Loom — one gesture, thirty writes (TJ, 2026-08-21). */}
+          {!readOnly && <button
+            className="btn ghost mini compact"
+            id="makeAllPrimary"
+            disabled={!scopedState.concepts.length}
+            data-tip="tiers every concept primary in one gesture — you demote from there"
+            onClick={makeAllPrimary}
+          >make all primary</button>}
+        </div>
+        {/* The instructions narrate sorting; Open Loom shows the tiers the
+            student gave and says only that (TJ, 2026-08-21). */}
+        {readOnly ? (
+          <p className="hint">The tiers this projection gives each concept: <b>P</b>rimary · <b>S</b>econdary · <b>T</b>ertiary · <b>–</b> set aside. Sorted concepts stand on the board above.</p>
+        ) : (
+        <>
+        <p className="do">Give each concept a tier: <b>P</b>rimary (the projection hangs on it) · <b>S</b>econdary · <b>T</b>ertiary (example / detail) · <b>–</b> set aside. Sorted concepts land on the board above.</p>
+        <Explainer className="hint">A–Z until you say otherwise: drag a row by its handle — or focus the handle and press ↑ / ↓ — to re-order this list, and your sequence sticks. That re-sequences the list only; the board, the counts and the concept-map kit are untouched. <b>Make all primary</b> is a starting point, not a recommendation: it puts everything on the top tier in one move so you can demote from there.</Explainer>
+        </>
+        )}
+        <div id="triageList" onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDropAt(null) }}>
+          {!scopedState.concepts.length ? (
+            <div className="empty">
+              <svg width={34} height={18} viewBox="0 0 34 18" fill="none" stroke="var(--grey)" strokeWidth={1.3}><path d="M2 13 L7 5 L12 13 L17 5 L22 13 L27 5 L32 13" /></svg>
+              <span className="cap">lay some warp on 01 — open first</span>
+            </div>
+          ) : sortList.map((c, i) => (
+            <div
+              key={c.id}
+              className={`trow${dragId === c.id ? " dragging" : ""}${dropAt === i ? " dropbefore" : ""}${dropAt === sortList.length && i === sortList.length - 1 ? " dropafter" : ""}`}
+              ref={el => {
+                if (el) rowRefs.current.set(c.id, el)
+                else rowRefs.current.delete(c.id)
+              }}
+              onDragOver={e => onRowDragOver(e, i)}
+              onDrop={onRowDrop}
+            >
+              {/* No handle in Open Loom: re-ordering persists into the view row
+                  (TJ, 2026-08-21). */}
+              {!readOnly && (
+              <span
+                className="thandle"
+                role="button"
+                tabIndex={0}
+                aria-label={`Reorder ${conceptNameText(c)}`}
+                title="drag to re-order — or press ↑ / ↓"
+                draggable
+                onDragStart={e => {
+                  setDragId(c.id)
+                  setDropAt(i)
+                  e.dataTransfer.effectAllowed = "move"
+                  e.dataTransfer.setData("text/plain", c.id)
+                  const row = rowRefs.current.get(c.id)
+                  if (row) e.dataTransfer.setDragImage(row, 14, row.offsetHeight / 2)
+                }}
+                onDragEnd={() => { setDragId(null); setDropAt(null) }}
+                onKeyDown={e => onHandleKeyDown(e, i)}
+              >
+                <svg width={10} height={16} viewBox="0 0 10 16" aria-hidden="true" focusable="false">
+                  {[3, 8, 13].map(y => (
+                    <g key={y}>
+                      <circle cx={3} cy={y} r={1.25} />
+                      <circle cx={7} cy={y} r={1.25} />
+                    </g>
+                  ))}
+                </svg>
+              </span>
+              )}
+              <span className="tlabel"><ConceptName concept={c} /></span>
+              {/* Inert in Open Loom: the chips still SAY the tier — the lit one
+                  is the student's sort — but no press re-tiers (TJ, 2026-08-21). */}
+              <span className="tierchips">
+                {TIERS.map(([k, name]) => (
+                  <span
+                    key={k}
+                    className={`tchip${tierOf(c.id) === k ? " on" : ""}`}
+                    title={name.toLowerCase()}
+                    onClick={readOnly ? undefined : () => setTier(c, k)}
+                    style={readOnly ? { cursor: "default" } : undefined}
+                  >{k.toUpperCase()}</span>
+                ))}
+                <span
+                  className={`tchip off${tierOf(c.id) === "x" ? " on" : ""}`}
+                  title="set aside"
+                  onClick={readOnly ? undefined : () => setTier(c, "x")}
+                  style={readOnly ? { cursor: "default" } : undefined}
+                >–</span>
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="card">
@@ -1220,7 +1266,6 @@ export default function MapTab({ practice = false, focusProjectionId, onThrowPai
           markdown={kitMarkdown}
           onTaken={handleKitTaken}
         />
-      </div>
       </div>
       </div>
 

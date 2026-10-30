@@ -323,18 +323,14 @@ main.station-reading>.panel.active{height:100%}
    warp you pick from, the bench you throw at, and what you have thrown. */
 .three{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px}
 
-/* 03's projections: 1–2–1, because the board is the surface you work ON and
-   the sort list and the read are texts flanking it (TJ, 2026-08-12). An
-   explicit 1fr/2fr/1fr cannot fold itself the way `auto-fit` does, so the fold
-   is a CONTAINER query — the grid's own width, not the window's, which is the
-   rule in §2c-iii and matters here because the station's content box is not
-   the viewport. The breakpoint is the sum of the three minimums, not a device. */
-.projwrap{container-type:inline-size}
-.projgrid{display:grid;gap:28px;
-  grid-template-columns:minmax(260px,1fr) minmax(420px,2fr) minmax(260px,1fr)}
-@container (max-width:1060px){
-  .projgrid{grid-template-columns:1fr}
-}
+/* 03 and 05's projections: the board takes the whole width, and sort + read sit
+   in a row under it (user request, 2026-10-29; it replaced the 1–2–1 container-
+   query grid of TJ, 2026-08-12). The lower row folds on the column's own
+   minimum — auto-fit, never a device width (contracts.md §2c-iii) — which
+   matters here because the station's content box is not the viewport. */
+.projboard{margin-bottom:28px}
+.projlower{display:grid;gap:28px;align-items:start;
+  grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
 .card{border:1px solid var(--rule);border-radius:var(--radius);padding:18px;background:var(--surface)}
 .card h2{font-size:21px;margin-bottom:2px} .card h2 .n{font-family:var(--mono);font-size:11px;color:var(--grey);font-weight:400;letter-spacing:0}
 .card .hint{color:var(--ink-soft);font-size:14px;margin:2px 0 14px}

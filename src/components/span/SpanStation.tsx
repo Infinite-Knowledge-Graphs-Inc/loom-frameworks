@@ -160,8 +160,15 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
     )
   }
 
-  const picker = (list: ReadingMeta[]) => (
-    <div className="chips" style={{ marginBottom: 14 }}>
+  // One tile per reading, all the same size: a one-line title over a one-line
+  // author, each cut with an ellipsis (the full text is on `title`). They used
+  // to be chips as wide as their titles, so a shelf of 31 readings made ragged
+  // rows with a week heading between each group (user request, 2026-10-29:
+  // "each reading like item block is like right now short or long. There should
+  // be a consistent width"). The button keeps `.chip` + aria-pressed: the spec
+  // finds the picker by `main button.chip[aria-pressed]`.
+  const tiles = (list: ReadingMeta[]) => (
+    <div className={styles.grid}>
       {list.map((r) => {
         const on = selected.includes(r.id)
         return (
@@ -173,7 +180,8 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
             title={r.author ? `${r.title} — ${r.author}` : r.title}
             onClick={() => toggle(r.id)}
           >
-            {r.title}
+            <span className={styles.ptitle}>{r.title}</span>
+            <span className={styles.pauthor}>{r.author || "\u00a0"}</span>
           </button>
         )
       })}
@@ -240,23 +248,21 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
           </div>
         )}
 
-        <div role="group" aria-label="Readings in this projection">
+        {/* One scrollable box, so the picker costs a fixed slice of the page
+            however long the shelf is. The week label sits in a narrow column
+            beside its tiles rather than on a row of its own: with a heading row
+            per week, a shelf of 11 weeks spent a third of the box on headings. */}
+        <div role="group" aria-label="Readings in this projection" className={styles.picker}>
           {byWeek.map(([week, list]) => (
-            <section key={week ?? "none"}>
-              <div className="weekhead">
-                <span className="cap">{week === null ? "unscheduled" : `week ${week}`}</span>
-                <span className="weekrule" />
-              </div>
-              {picker(list)}
+            <section key={week ?? "none"} className={styles.group}>
+              <span className={`cap ${styles.grouplabel}`}>{week === null ? "unscheduled" : `week ${week}`}</span>
+              {tiles(list)}
             </section>
           ))}
           {ownReadings.length > 0 && (
-            <section>
-              <div className="weekhead">
-                <span className="cap">your own readings</span>
-                <span className="weekrule" />
-              </div>
-              {picker(ownReadings)}
+            <section className={styles.group}>
+              <span className={`cap ${styles.grouplabel}`}>your own</span>
+              {tiles(ownReadings)}
             </section>
           )}
         </div>
