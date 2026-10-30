@@ -809,7 +809,14 @@ test("with a section scoped, the wash still follows a chosen student", async ({ 
       timeout: 25_000,
       message: "the wash is still the section's — a chosen student must be the band",
     })
-    .toMatch(/passages? 1 STUDENT$/)
+    // Case-insensitive since 5fb9835 ("Give the chrome one cooler,
+    // higher-contrast token set"), which changed the bar's three
+    // `text-transform: uppercase` rules in PdfViewer.tsx to `none`; innerText
+    // follows the transform, so it now reads "1 student". Seen on the ci
+    // database 2026-10-29: received "5 passages 1 student". The shape that
+    // matters is unchanged: "1 student" ends the bar, where the section band
+    // reads "1 … 8 students".
+    .toMatch(/passages? 1 STUDENT$/i)
   expect(await fraction(), "one person is not a fraction of a cohort").toBe(false)
 
   // And back. Clearing the picker returns to the section, not to the whole
