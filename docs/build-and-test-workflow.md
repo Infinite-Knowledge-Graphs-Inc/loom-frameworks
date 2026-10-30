@@ -309,8 +309,9 @@ repository moved: `provision` failed on every run until the workflow was removed
 on 2026-10-30.) `checks` keeps running regardless.
 
 To restore full CI under new ownership: a `ci` branch in the new Neon project
-(`npx drizzle-kit migrate`, then `npm run seed:sources` and `npm run
-seed:demo`) → `CI_DATABASE_URL`; a blob token → `CI_BLOB_READ_WRITE_TOKEN`;
+(`npx drizzle-kit migrate`, then `npm run seed:sources`, `npm run
+seed:ci-fixture` with `LOOM_CI_FIXTURE=1` set, and `npm run seed:demo`) →
+`CI_DATABASE_URL`; a blob token → `CI_BLOB_READ_WRITE_TOKEN`;
 any string → `CI_NEXTAUTH_SECRET`; a read-only role on `main` →
 `PROD_DATABASE_URL`. A `ci` branch must never be cut from `main` for the reason
 the removed preview-db.yml gave: production holds real students' work.
