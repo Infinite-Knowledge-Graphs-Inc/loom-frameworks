@@ -111,18 +111,27 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   // than the one stored, which is worse than not offering it. Newest work
   // first; `updatedAt` moves on every tier, drag and rewrite (`updateMap`).
   const savedSets = useMemo(() => {
-    const bySet = new Map<string, { ids: string[]; projections: number; at: number }>()
+    const bySet = new Map<string, { key: string; ids: string[]; projections: number; at: number }>()
     for (const m of state.maps) {
       if (!m.scopeKey.includes(",")) continue
       const ids = scopeFromKey(m.scopeKey).sourceIds
       if (!ids.every((id) => knownIds.has(id))) continue
-      const row = bySet.get(m.scopeKey) ?? { ids, projections: 0, at: 0 }
+      const row = bySet.get(m.scopeKey) ?? { key: m.scopeKey, ids, projections: 0, at: 0 }
       row.projections += 1
       row.at = Math.max(row.at, m.updatedAt.getTime())
       bySet.set(m.scopeKey, row)
     }
     return [...bySet.values()].sort((a, b) => b.at - a.at)
   }, [state.maps, knownIds])
+
+  // A set's readings in shelf order (week, then as the shelf lists them), not
+  // in the id order the scope key sorts by — which reads as random.
+  const shelfIndex = useMemo(() => new Map(readings.map((r, i) => [r.id, i])), [readings])
+  const titlesOf = (ids: string[]) =>
+    [...ids].sort((a, b) => (shelfIndex.get(a) ?? 0) - (shelfIndex.get(b) ?? 0)).map((id) => titleOf(id))
+  // What an unnamed set is called: its first reading and how many more.
+  const autoLabel = (titles: string[]) =>
+    titles.length > 1 ? `${titles[0]} + ${titles.length - 1} more` : titles[0] ?? ""
 
   const across = selected.length >= 2
   const concepts = useMemo(() => sortedByLabel(scopedState.concepts), [scopedState.concepts])
@@ -206,21 +215,28 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
             <h2 className="sectionhead">
               Sets you have worked on <span className="n">{savedSets.length}</span>
             </h2>
-            <div className="chips" style={{ marginBottom: 14 }}>
+            <div className={styles.sets}>
               {savedSets.map((set) => {
                 const href = spanPath(set.ids)
-                const names = set.ids.map((id) => titleOf(id))
+                const titles = titlesOf(set.ids)
+                const isOpen = pathname === href
                 return (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={`chip ${styles.saved}`}
-                    aria-current={pathname === href ? "page" : undefined}
-                    title={`${names.join(" + ")} — ${set.projections} projection${set.projections === 1 ? "" : "s"}`}
-                  >
-                    {names.join(" + ")}
-                    <span className={styles.savedn}> · {set.projections}</span>
-                  </Link>
+                  <div key={set.key} className={`${styles.set}${isOpen ? ` ${styles.setopen}` : ""}`}>
+                    <div className={styles.sethead}>
+                      <Link
+                        href={href}
+                        className={styles.setlink}
+                        aria-current={isOpen ? "page" : undefined}
+                        title={`${titles.join(" + ")} — ${set.projections} projection${set.projections === 1 ? "" : "s"}`}
+                      >
+                        <span className={styles.setauto}>{autoLabel(titles)}</span>
+                        <span className={styles.savedn}> · {set.projections}</span>
+                      </Link>
+                    </div>
+                    {/* Every reading in the set, which the chip used to cut off.
+                        One line, the rest behind the chevron. */}
+                    <Explainer className={styles.setreads}>{titles.join(" · ")}</Explainer>
+                  </div>
                 )
               })}
             </div>
