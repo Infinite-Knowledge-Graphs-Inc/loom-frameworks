@@ -73,11 +73,12 @@ alias; share the alias.
 Open the branch alias, click **Open preview**, choose an identity — admin,
 learner or faculty. No GitHub account, no key.
 
-The preview has **its own database** (`preview/pr-<n>`, cut from the `preview`
-template when the PR opened and migrated for that branch) and **its own blob
-drawer** (`env/preview-<branch>/`). Create, edit, delete, reprocess a PDF,
-change the schema: none of it reaches production, the tester site, or another
-PR. It is all deleted when the PR closes.
+The preview has **its own blob drawer** (`env/preview-<branch>/`). It used to
+have its own database as well (`preview/pr-<n>`, cut per PR from the `preview`
+template); that workflow was removed on 2026-10-30, so a preview now reads
+whatever the unscoped Preview `DATABASE_URL` points at — see
+[data-environments.md](data-environments.md), "Retired 2026-10-30", before
+trusting "none of it reaches another PR" for database writes.
 
 GitHub sign-in cannot work here and the page says so rather than offering a
 button that fails — an OAuth App holds one callback URL and every preview has
@@ -279,7 +280,7 @@ repository. Read from the workflows on 2026-09-02:
 | `checks` | ci.yml | `CI_DATABASE_URL` (optional — lint, typecheck and the static checks run without it) | a connection string into the `ci` branch of the Neon project |
 | `checks` → **production migration drift**, only on the way into `master` | ci.yml | `PROD_DATABASE_URL` | a **read-only** string for the role `ci_migration_reader` on `main`. See below — this is the one place CI touches production |
 | `e2e` | ci.yml | `CI_DATABASE_URL`, `CI_BLOB_READ_WRITE_TOKEN`, `CI_NEXTAUTH_SECRET` | the same `ci` branch, seeded with the demo cohort the suite asserts on; a blob token; any string |
-| `provision` / `teardown` | preview-db.yml | `NEON_API_KEY`, `VERCEL_TOKEN` | a personal Neon API key and Vercel token, used to create one Neon branch per PR (`preview/pr-N`, parent `preview`) and point the Vercel preview at it |
+| ~~`provision` / `teardown`~~ | ~~preview-db.yml~~ (removed 2026-10-30) | ~~`NEON_API_KEY`, `VERCEL_TOKEN`~~ | were a personal Neon API key and Vercel token, used to create one Neon branch per PR and point the Vercel preview at it. No longer needed |
 | `database` | heartbeat.yml | none | a public URL; it only asks whether production can answer |
 
 **CI does reach production, and only here.** An earlier draft of this section
@@ -300,20 +301,19 @@ migrations table.
 
 **When the repository changes hands**, GitHub moves these secrets with it — so
 CI would go on running on the previous owner's tokens. The previous owner
-deletes `NEON_API_KEY`, `VERCEL_TOKEN` and `PROD_DATABASE_URL` before
-transferring; from then on `provision` and `teardown` fail visibly until the
-new owner adds their own, `e2e` fails when `CI_DATABASE_URL` stops resolving,
-and the drift check returns to skipping green. `checks` keeps running
-regardless.
+deletes `PROD_DATABASE_URL` (and, while preview-db.yml existed,
+`NEON_API_KEY` and `VERCEL_TOKEN`) before transferring; from then on `e2e` fails
+when `CI_DATABASE_URL` stops resolving, and the drift check returns to skipping
+green. (This is what happened to the per-PR database workflow when this
+repository moved: `provision` failed on every run until the workflow was removed
+on 2026-10-30.) `checks` keeps running regardless.
 
 To restore full CI under new ownership: a `ci` branch in the new Neon project
 (`npx drizzle-kit migrate`, then `npm run seed:sources` and `npm run
 seed:demo`) → `CI_DATABASE_URL`; a blob token → `CI_BLOB_READ_WRITE_TOKEN`;
-any string → `CI_NEXTAUTH_SECRET`; the owner's Neon API key and Vercel token →
-`NEON_API_KEY`, `VERCEL_TOKEN`; a read-only role on `main` →
-`PROD_DATABASE_URL`; and a `preview` branch as the per-PR template — the
-parent must never be `main` (preview-db.yml says why: production holds real
-students' work).
+any string → `CI_NEXTAUTH_SECRET`; a read-only role on `main` →
+`PROD_DATABASE_URL`. A `ci` branch must never be cut from `main` for the reason
+the removed preview-db.yml gave: production holds real students' work.
 
 ### The failure this section exists to prevent
 

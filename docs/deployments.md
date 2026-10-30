@@ -138,9 +138,10 @@ my month"; a change branch is a ten-minute read.
    The bare URL lands a reviewer as the **learner**; `?as=faculty` and
    `?as=admin` ask for the other two.
 
-   A preview is no longer read-only, and no longer points at production: each
-   open PR gets its own Neon branch, cut from the `preview` template and
-   dropped when the PR closes (`.github/workflows/preview-db.yml`). What it
+   A preview is no longer read-only, and no longer points at production. (Until
+   2026-10-30 each open PR also got its own Neon branch, cut from the `preview`
+   template and dropped on close by `.github/workflows/preview-db.yml`; that
+   workflow was removed — see data-environments.md, "Retired 2026-10-30".) What it
    still shares with production is the **blob store** — invariant 4 — which is
    why the door's default identity is not the admin.
 2. **PR into `dev`; the other developer reviews.** CI's `checks` job gates

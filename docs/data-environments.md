@@ -21,6 +21,29 @@ The file previously carried a live/gap/target legend, because most of it was
 aspiration. It is not any more, and a legend for marks that no longer appear is
 just another thing to keep true.
 
+## Retired 2026-10-30: the database per pull request
+
+`.github/workflows/preview-db.yml` — the workflow that gave every PR its own
+Neon branch — was removed. Everything below that says a preview has a branch of
+its own (`preview/pr-<n>`) describes how it worked on 2026-08-17 and is **not
+true of this repository now**.
+
+Why: this repository moved to a new GitHub organisation and a new Neon project
+(`cold-recipe-57802821`). The workflow still named the old project
+(`raspy-wave-74437268`), needed `NEON_API_KEY` and `VERCEL_TOKEN` secrets that
+did not come with the move, and needed a `preview` template branch, which is
+archived in the new project. Read from the run history on 2026-10-30: `provision`
+ran 16 times in this repository and failed 16; it never created a branch here.
+So nothing was lost in removing it, and nothing about previews changed: no
+per-PR variable was ever pinned. Which database a preview actually reads is
+whatever the unscoped Preview `DATABASE_URL` in Vercel points at; that was not
+checked.
+
+What is lost is the isolation this file's first point argues for. If previews
+come to be used by several people at once, restore it: revert the removal commit,
+point `NEON_PROJECT_ID` at the new project, recreate the `preview` template
+branch (never from production: it holds real students' work), and add the two secrets.
+
 ## State of play — 2026-08-17
 
 The three hazards this document was written to name are closed, and the shape
