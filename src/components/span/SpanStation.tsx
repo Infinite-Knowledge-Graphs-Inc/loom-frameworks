@@ -13,7 +13,7 @@
 import Explainer from "@/components/ui/Explainer"
 import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { useLoom } from "@/components/providers/LoomProvider"
 import { useReadings, type ReadingMeta } from "@/components/providers/ReadingsProvider"
@@ -23,17 +23,11 @@ import SignedOutWelcome from "@/components/ui/SignedOutWelcome"
 import ConceptCard from "@/components/cards/ConceptCard"
 import MapTab from "@/components/tabs/MapTab"
 import ThrowTab from "@/components/tabs/ThrowTab"
-import { scopeOf, scopeFromKey, spanPath, readingsOf } from "@/lib/scope"
+import { scopeOf, scopeFromKey, spanIdsFromPath, spanPath, readingsOf } from "@/lib/scope"
 import { listSetNames, setSetName } from "@/actions/loom"
 import { sortedByLabel } from "@/lib/utils"
 import type { Passage } from "@/lib/types"
 import styles from "./SpanStation.module.css"
-
-function idsFromParam(raw: string | string[] | undefined): string[] {
-  if (Array.isArray(raw)) return raw
-  if (typeof raw === "string" && raw) return [raw]
-  return []
-}
 
 export default function SpanStation({ isPreviewDeployment = false }: { isPreviewDeployment?: boolean }) {
   const { data: session, status } = useSession()
@@ -41,8 +35,7 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
   const { state, scopedState, scoped, isLoading, flash } = useLoom()
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams<{ sourceIds?: string | string[] }>()
-  const rawIds = idsFromParam(params?.sourceIds)
+  const rawIds = spanIdsFromPath(pathname)
   const rawKey = scopeOf(rawIds).key
 
   const knownIds = useMemo(() => new Set(readings.map((r) => r.id)), [readings])
@@ -79,12 +72,21 @@ export default function SpanStation({ isPreviewDeployment = false }: { isPreview
     if (shelfPending || shelfError || readings.length === 0) return
     const kept = scopeOf(rawKey ? rawKey.split(",") : []).sourceIds.filter((id) => knownIds.has(id))
     const next = spanPath(kept)
-    if (pathname !== next) router.replace(next)
+    if (pathname !== next) window.history.replaceState(null, "", next)
   }, [shelfPending, shelfError, readings.length, knownIds, rawKey, pathname, router])
 
+  // The path changes through the History API, not `router.push`. A router
+  // navigation to a different `/span/<ids>` is a different dynamic segment
+  // value, and layout-router.js keys each segment's subtree by it
+  // (`createRouterCacheKey` joins the param value in; the child renders under
+  // `stateKey`), so the whole station remounted: the picker's own scroll went
+  // back to week 1 and the page scrolled to the top (reported 2026-10-30: choose
+  // a week 13 reading, it is chosen, the list jumps to week 1). Read from the
+  // source, not reproduced in a browser: /span does not load in this dev server.
+  // `usePathname` follows pushState, which is all the scope is read from.
   const toggle = (id: string) => {
     const next = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]
-    router.push(spanPath(next))
+    window.history.pushState(null, "", spanPath(next))
   }
 
   const courseReadings = useMemo(() => readings.filter((s) => !s.isOwn), [readings])

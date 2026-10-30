@@ -231,9 +231,9 @@ export function LoomProvider({
   // has rendered against the wrong one. `/span/...` is station 05 — the ids in
   // the path are the scope (`spanScopeKey`). Everywhere else is the whole weave.
   const pathname = usePathname()
-  const params = useParams<{ sourceId?: string; sourceIds?: string | string[] }>()
+  const params = useParams<{ sourceId?: string }>()
   const routeSourceId = typeof params?.sourceId === "string" ? params.sourceId : null
-  const spanKey = spanScopeKey(pathname, params?.sourceIds)
+  const spanKey = spanScopeKey(pathname)
   const scope = useMemo(() => {
     if (spanKey !== null) return scopeFromKey(spanKey)
     return routeSourceId ? scopeOf([routeSourceId]) : WHOLE_WEAVE
