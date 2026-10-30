@@ -657,6 +657,35 @@ export const cloths = pgTable(
   })
 )
 
+// A reading set's NAME — the student's own label for a set of readings on
+// station 05 (user request, 2026-10-30). A set has no row of its own: it is
+// any `map` whose scopeKey holds a comma (see `maps` below, and the split
+// search.ts and createMap make), so a name cannot hang off the set. It hangs
+// off the same key instead: one row per (student, course, scopeKey), absent =
+// unnamed. The name is display only; nothing keys off it.
+export const readingSets = pgTable(
+  "reading_set",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    courseId: text("courseId").references(() => courses.id, {
+      onDelete: "set null",
+    }),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    scopeKey: text("scopeKey").notNull(),
+    name: text("name").notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (row) => ({
+    // NULLS NOT DISTINCT for the same reason `cloth` has it: a pre-course
+    // (courseId null) row is still one row, and two saves cannot mint two.
+    onePerSet: unique().on(row.userId, row.courseId, row.scopeKey).nullsNotDistinct(),
+  })
+)
+
 // A map — one named, per-scope sorting of the student's concepts, plus its
 // interpretive paragraph and one-line essence. Maps are PARALLEL SIBLINGS
 // (freely created / renamed / deleted), not sealed passes — ratified 2026-07-31,

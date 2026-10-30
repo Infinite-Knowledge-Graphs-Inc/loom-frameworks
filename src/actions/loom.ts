@@ -2,7 +2,7 @@
 
 import { db } from "@/db"
 import { recordEvent } from "@/lib/graphEvent"
-import { concepts, passages, passageConcepts, edges, links, users, sourcePages, cloths, views, graphEvents, maps } from "@/db/schema"
+import { concepts, passages, passageConcepts, edges, links, users, sourcePages, cloths, views, graphEvents, maps, readingSets } from "@/db/schema"
 import { and, asc, eq, inArray, isNull, like, or, sql, type SQL } from "drizzle-orm"
 import type { PgColumn } from "drizzle-orm/pg-core"
 import { getServerSession } from "next-auth/next"
@@ -1020,6 +1020,60 @@ export async function createMap(data: { scopeKey: string; name: string }): Promi
   return inserted[0] as LoomMap
 }
 
+// --- READING SET NAMES ---
+// A set of readings (station 05) is not a row — it is any map whose scopeKey
+// holds a comma — so its name has its own small table, one row per (student,
+// course, scopeKey), absent = unnamed (`readingSets`, migration 0031). Read and
+// written by these two actions alone: they are NOT part of `getLoom`, so a
+// database that has not had 0031 applied costs the student their set names and
+// nothing else — the same reason `leadUserId` taught (docs: check-prod-migrations).
+const MAX_SET_NAME = 80
+
+export async function listSetNames(): Promise<Record<string, string>> {
+  const userId = await getUserId()
+  const courseId = await resolveActiveCourseId(userId)
+  const rows = await db.select({ scopeKey: readingSets.scopeKey, name: readingSets.name })
+    .from(readingSets)
+    .where(and(eq(readingSets.userId, userId), inCourse(readingSets.courseId, courseId)))
+  return Object.fromEntries(rows.map((r) => [r.scopeKey, r.name]))
+}
+
+/**
+ * Name a set, rename it, or — with a blank name — take the name away.
+ * Returns the stored name ('' when unnamed). Only a set the student already has
+ * a projection of can be named: that keeps the table to at most one row per set
+ * they have really made, rather than one per key anyone cares to POST.
+ */
+export async function setSetName(scopeKey: string, name: string): Promise<string> {
+  const userId = await getUserId()
+  const courseId = await resolveActiveCourseId(userId)
+
+  const scope = scopeFromKey(scopeKey)
+  if (scope.sourceIds.length < 2) throw new Error("Only a set of readings can be named.")
+
+  const made = await db.select({ id: maps.id }).from(maps)
+    .where(and(
+      eq(maps.userId, userId), inCourse(maps.courseId, courseId), eq(maps.scopeKey, scope.key)
+    ))
+    .limit(1)
+  if (!made.length) throw new Error("That set has no projections yet.")
+
+  const clean = name.replace(/\s+/g, " ").trim().slice(0, MAX_SET_NAME)
+  if (!clean) {
+    await db.delete(readingSets).where(and(
+      eq(readingSets.userId, userId), inCourse(readingSets.courseId, courseId), eq(readingSets.scopeKey, scope.key)
+    ))
+    return ""
+  }
+
+  await db.insert(readingSets).values({ courseId, userId, scopeKey: scope.key, name: clean })
+    .onConflictDoUpdate({
+      target: [readingSets.userId, readingSets.courseId, readingSets.scopeKey],
+      set: { name: clean, updatedAt: new Date() },
+    })
+  return clean
+}
+
 export async function updateMap(
   id: string,
   data: Partial<{ name: string; read: string; essence: string; tiers: Record<string, Tier> }>
@@ -1332,6 +1386,9 @@ export async function resetLoom() {
     db.delete(passages).where(minePassages),
     db.delete(concepts).where(mineConcepts),
     db.delete(maps).where(mineMaps),
+    // The names of the sets those projections made. Not in the snapshot above:
+    // a name is a label on work that is being deleted, not work.
+    db.delete(readingSets).where(and(eq(readingSets.userId, userId), inCourse(readingSets.courseId, courseId))),
     db.delete(cloths).where(mineCloths),
     db.delete(views).where(mineViews),
   ] as unknown as Parameters<typeof db.batch>[0])

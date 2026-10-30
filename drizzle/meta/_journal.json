@@ -218,6 +218,13 @@
       "when": 1789168810526,
       "tag": "0030_concept_minted_in_source",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1793400473169,
+      "tag": "0031_reading_set_name",
+      "breakpoints": true
     }
   ]
 }
