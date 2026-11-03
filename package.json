@@ -53,8 +53,8 @@
     "clean:fixtures": "tsx scripts/clean-fixtures.ts"
   },
   "dependencies": {
-    "@auth/core": "^0.34.3",
-    "@auth/drizzle-adapter": "^1.11.2",
+    "@auth/core": "^0.41.3",
+    "@auth/drizzle-adapter": "^1.11.3",
     "@napi-rs/canvas": "^1.0.5",
     "@neondatabase/serverless": "^1.1.0",
     "@types/mark.js": "^8.11.12",
@@ -86,5 +86,11 @@
     "eslint-config-next": "16.2.9",
     "tsx": "^4.22.4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "next-auth": {
+      "@auth/core": "$@auth/core",
+      "nodemailer": "^7.0.7"
+    }
   }
 }
